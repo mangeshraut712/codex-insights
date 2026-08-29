@@ -1,5 +1,6 @@
 node_modules/
 .worktrees/
+.superpowers/
 codex-insights-output/
 tmp-report/
 tmp-report-usage/
