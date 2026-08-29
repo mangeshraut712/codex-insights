@@ -1,4 +1,5 @@
 node_modules/
+.worktrees/
 codex-insights-output/
 tmp-report/
 tmp-report-usage/
