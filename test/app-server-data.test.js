@@ -32,6 +32,11 @@ function mainThreadWithItems() {
             id: 'user-1',
             content: [{ type: 'text', text: 'Fix the adapter' }],
           },
+          {
+            type: 'userMessage',
+            id: 'user-follow-up',
+            content: [{ type: 'text', text: 'Run the focused tests too' }],
+          },
           { type: 'agentMessage', id: 'agent-1', text: 'Adapter fixed.', phase: 'final' },
           {
             type: 'commandExecution',
@@ -94,7 +99,10 @@ test('collectAppServerThreadSummaries paginates all source kinds and excludes su
               {
                 startedAt: 1_710_000_000,
                 completedAt: 1_710_000_060,
-                items: [{ type: 'userMessage', id: 'user-2', content: [{ type: 'text', text: 'Second task' }] }],
+                items: [
+                  { type: 'userMessage', id: 'user-2', content: [{ type: 'text', text: 'Second task' }] },
+                  { type: 'userMessage', id: 'user-3', content: [{ type: 'text', text: 'Verify it' }] },
+                ],
               },
             ],
           }),
@@ -167,7 +175,7 @@ test('collectAppServerThreadSummaries paginates all source kinds and excludes su
   const summary = summaries[0]
   assert.equal(summary.title, 'Adapter repair')
   assert.equal(summary.firstUserMessage, 'Fix the adapter')
-  assert.equal(summary.userMessages, 1)
+  assert.equal(summary.userMessages, 2)
   assert.equal(summary.assistantMessages, 1)
   assert.equal(summary.totalToolCalls, 4)
   assert.equal(summary.totalCommandFailures, 1)
@@ -225,7 +233,23 @@ test('collectAppServerThreadSummaries includes all source kinds when subagents a
           nextCursor: null,
         }
       }
-      if (method === 'thread/read') return { thread: makeThread({ id: params.threadId }) }
+      if (method === 'thread/read') {
+        return {
+          thread: makeThread({
+            id: params.threadId,
+            turns: [
+              {
+                startedAt: 1_710_000_000,
+                completedAt: 1_710_000_120,
+                items: [
+                  { type: 'userMessage', id: 'sub-user-1', content: [{ type: 'text', text: 'Review it' }] },
+                  { type: 'userMessage', id: 'sub-user-2', content: [{ type: 'text', text: 'Report back' }] },
+                ],
+              },
+            ],
+          }),
+        }
+      }
       throw new Error(`Unexpected request ${method}`)
     },
     close() {},
@@ -264,6 +288,57 @@ test('collectAppServerThreadSummaries counts an isolated unreadable thread', asy
   assert.deepEqual(result.summaries, [])
   assert.equal(result.coverage.failedToRead, 1)
   assert.equal(result.coverage.analyzed, 0)
+})
+
+test('collectAppServerThreadSummaries applies limit after substantive filtering', async () => {
+  const shortThread = makeThread({
+    id: 'short-thread',
+    turns: [
+      {
+        startedAt: 1_710_000_000,
+        completedAt: 1_710_000_010,
+        items: [{ type: 'userMessage', id: 'short-user', content: [{ type: 'text', text: 'Hi' }] }],
+      },
+    ],
+  })
+  const substantiveThread = makeThread({
+    id: 'substantive-thread',
+    turns: [
+      {
+        startedAt: 1_710_000_000,
+        completedAt: 1_710_000_120,
+        items: [
+          { type: 'userMessage', id: 'user-1', content: [{ type: 'text', text: 'Fix the adapter' }] },
+          { type: 'agentMessage', id: 'agent-1', text: 'Working on it.', phase: 'commentary' },
+          { type: 'userMessage', id: 'user-2', content: [{ type: 'text', text: 'Run the tests too' }] },
+          { type: 'agentMessage', id: 'agent-2', text: 'Tests pass.', phase: 'final' },
+        ],
+      },
+    ],
+  })
+  const reads = []
+  const client = {
+    async request(method, params) {
+      if (method === 'thread/list') {
+        return { data: [shortThread, substantiveThread], nextCursor: null }
+      }
+      if (method === 'thread/read') {
+        reads.push(params.threadId)
+        return { thread: params.threadId === shortThread.id ? shortThread : substantiveThread }
+      }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const result = await collectAppServerThreadSummaries({
+    limit: 1,
+    createClient: async () => client,
+  })
+
+  assert.deepEqual(reads, ['short-thread', 'substantive-thread'])
+  assert.deepEqual(result.summaries.map(summary => summary.id), ['substantive-thread'])
+  assert.equal(result.coverage.analyzed, 1)
 })
 
 test('collectAppServerThreadSummaries propagates a protocol failure from thread/read', async () => {

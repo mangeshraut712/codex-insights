@@ -2,14 +2,19 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
-import { createAppServerClient } from '../lib/app-server-client.js'
+import {
+  AppServerProtocolError,
+  createAppServerClient,
+} from '../lib/app-server-client.js'
 
 function createFakeChild(onRequest) {
   const child = new EventEmitter()
   child.stdin = new PassThrough()
   child.stdout = new PassThrough()
   child.stderr = new PassThrough()
+  child.killCount = 0
   child.kill = () => {
+    child.killCount += 1
     child.emit('close', 0)
     return true
   }
@@ -84,4 +89,44 @@ test('createAppServerClient rejects when initialization exceeds its timeout', as
     }),
     /timed out/i,
   )
+})
+
+test('createAppServerClient classifies JSON-RPC incompatibility errors as protocol failures', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+      return
+    }
+    if (message.method === 'thread/read') {
+      process.stdout.write(
+        `${JSON.stringify({ id: message.id, error: { code: -32602, message: 'Invalid params' } })}\n`,
+      )
+    }
+  })
+
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+
+  await assert.rejects(
+    client.request('thread/read', { threadId: 'thread-1', includeTurns: true }),
+    error => error instanceof AppServerProtocolError && error.code === -32602,
+  )
+  client.close()
+})
+
+test('createAppServerClient kills the child exactly once after malformed JSONL', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+      return
+    }
+    if (message.method === 'thread/list') {
+      process.stdout.write('{malformed}\n')
+    }
+  })
+
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+
+  await assert.rejects(client.request('thread/list', { archived: false }), /malformed JSONL/i)
+  client.close()
+  assert.equal(child.killCount, 1)
 })
