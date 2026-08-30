@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { AppServerProtocolError } from '../lib/app-server-client.js'
 import { collectAppServerThreadSummaries } from '../lib/app-server-data.js'
 import { collectThreadData } from '../lib/codex-data.js'
 
@@ -65,7 +66,7 @@ function mainThreadWithItems() {
   })
 }
 
-test('collectAppServerThreadSummaries paginates interactive threads and maps documented turn items', async () => {
+test('collectAppServerThreadSummaries paginates all source kinds and excludes subagents locally', async () => {
   const calls = []
   const client = {
     async request(method, params) {
@@ -118,7 +119,18 @@ test('collectAppServerThreadSummaries paginates interactive threads and maps doc
         limit: 10,
         sortKey: 'updated_at',
         sortDirection: 'desc',
-        sourceKinds: ['cli', 'vscode', 'exec', 'appServer'],
+        sourceKinds: [
+          'cli',
+          'vscode',
+          'exec',
+          'appServer',
+          'subAgent',
+          'subAgentReview',
+          'subAgentCompact',
+          'subAgentThreadSpawn',
+          'subAgentOther',
+          'unknown',
+        ],
       },
     },
     {
@@ -129,7 +141,18 @@ test('collectAppServerThreadSummaries paginates interactive threads and maps doc
         limit: 10,
         sortKey: 'updated_at',
         sortDirection: 'desc',
-        sourceKinds: ['cli', 'vscode', 'exec', 'appServer'],
+        sourceKinds: [
+          'cli',
+          'vscode',
+          'exec',
+          'appServer',
+          'subAgent',
+          'subAgentReview',
+          'subAgentCompact',
+          'subAgentThreadSpawn',
+          'subAgentOther',
+          'unknown',
+        ],
       },
     },
   ])
@@ -191,18 +214,24 @@ test('collectAppServerThreadSummaries lists archived threads only when requested
   )
 })
 
-test('collectAppServerThreadSummaries requests subagent source kinds only when included', async () => {
+test('collectAppServerThreadSummaries includes all source kinds when subagents are enabled', async () => {
   const calls = []
   const client = {
     async request(method, params) {
       calls.push({ method, params })
-      if (method === 'thread/list') return { data: [], nextCursor: null }
+      if (method === 'thread/list') {
+        return {
+          data: [makeThread({ id: 'subagent', source: { subAgent: 'child' }, parentThreadId: 'thread-main' })],
+          nextCursor: null,
+        }
+      }
+      if (method === 'thread/read') return { thread: makeThread({ id: params.threadId }) }
       throw new Error(`Unexpected request ${method}`)
     },
     close() {},
   }
 
-  await collectAppServerThreadSummaries({ includeSubagents: true, createClient: async () => client })
+  const result = await collectAppServerThreadSummaries({ includeSubagents: true, createClient: async () => client })
 
   assert.deepEqual(calls[0].params.sourceKinds, [
     'cli',
@@ -216,6 +245,43 @@ test('collectAppServerThreadSummaries requests subagent source kinds only when i
     'subAgentOther',
     'unknown',
   ])
+  assert.deepEqual(result.summaries.map(summary => summary.id), ['subagent'])
+  assert.equal(result.coverage.excludedSource, 0)
+})
+
+test('collectAppServerThreadSummaries counts an isolated unreadable thread', async () => {
+  const client = {
+    async request(method, params) {
+      if (method === 'thread/list') return { data: [makeThread()], nextCursor: null }
+      if (method === 'thread/read' && params.threadId === 'thread-main') throw new Error('Thread is unreadable')
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const result = await collectAppServerThreadSummaries({ createClient: async () => client })
+
+  assert.deepEqual(result.summaries, [])
+  assert.equal(result.coverage.failedToRead, 1)
+  assert.equal(result.coverage.analyzed, 0)
+})
+
+test('collectAppServerThreadSummaries propagates a protocol failure from thread/read', async () => {
+  const client = {
+    async request(method, params) {
+      if (method === 'thread/list') return { data: [makeThread()], nextCursor: null }
+      if (method === 'thread/read' && params.threadId === 'thread-main') {
+        throw new AppServerProtocolError('Connection to Codex app-server was lost')
+      }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  await assert.rejects(
+    collectAppServerThreadSummaries({ createClient: async () => client }),
+    /connection to codex app-server was lost/i,
+  )
 })
 
 test('collectThreadData selects the documented app-server source when requested', async () => {

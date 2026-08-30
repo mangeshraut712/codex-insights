@@ -1,6 +1,22 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { filterSubstantiveThreads, summarizeThread } from '../lib/codex-data.js'
+import { AppServerProtocolError } from '../lib/app-server-client.js'
+import { collectThreadData, collectThreadSummaries, filterSubstantiveThreads, summarizeThread } from '../lib/codex-data.js'
+
+function legacyCollection() {
+  return {
+    summaries: [{ id: 'legacy-thread' }],
+    coverage: {
+      dataSource: 'legacy',
+      discovered: 1,
+      eligible: 1,
+      analyzed: 1,
+      excludedSource: 0,
+      failedToRead: 0,
+      warnings: [],
+    },
+  }
+}
 
 test('summarizeThread extracts tool, patch, git, and failure signals', () => {
   const thread = {
@@ -151,6 +167,62 @@ test('filterSubstantiveThreads keeps only substantial threads and sorts by recen
     filtered.map(thread => thread.id),
     ['recent', 'older'],
   )
+})
+
+test('collectThreadData auto falls back with a warning after an app-server protocol failure', async () => {
+  let legacyCalls = 0
+  const result = await collectThreadData({
+    createClient: async () => ({
+      async request(method) {
+        if (method === 'thread/list') {
+          return { data: [{ id: 'thread-main', source: 'cli', updatedAt: 1 }], nextCursor: null }
+        }
+        if (method === 'thread/read') throw new AppServerProtocolError('Malformed JSONL from app-server')
+        throw new Error(`Unexpected request ${method}`)
+      },
+      close() {},
+    }),
+    legacyCollector: async () => {
+      legacyCalls += 1
+      return legacyCollection()
+    },
+  })
+
+  assert.equal(legacyCalls, 1)
+  assert.equal(result.coverage.dataSource, 'legacy')
+  assert.match(result.coverage.warnings[0], /malformed jsonl from app-server/i)
+})
+
+test('collectThreadData with explicit legacy source does not initialize app-server', async () => {
+  let legacyCalls = 0
+  const result = await collectThreadData({
+    dataSource: 'legacy',
+    createClient: async () => {
+      throw new Error('app-server should not be initialized')
+    },
+    legacyCollector: async () => {
+      legacyCalls += 1
+      return legacyCollection()
+    },
+  })
+
+  assert.equal(legacyCalls, 1)
+  assert.deepEqual(result.summaries, [{ id: 'legacy-thread' }])
+})
+
+test('collectThreadSummaries remains a summaries-only compatibility wrapper', async () => {
+  const summaries = await collectThreadSummaries({
+    dataSource: 'app-server',
+    createClient: async () => ({
+      async request(method) {
+        if (method === 'thread/list') return { data: [], nextCursor: null }
+        throw new Error(`Unexpected request ${method}`)
+      },
+      close() {},
+    }),
+  })
+
+  assert.deepEqual(summaries, [])
 })
 
 test('summarizeThread compacts consecutive tool bursts in transcriptForAnalysis', () => {
