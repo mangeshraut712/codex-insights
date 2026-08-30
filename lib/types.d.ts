@@ -2,6 +2,23 @@ export interface CountMap {
   [key: string]: number
 }
 
+export type DataSource = 'auto' | 'app-server' | 'legacy'
+
+export interface CollectionCoverage {
+  dataSource: Exclude<DataSource, 'auto'>
+  discovered: number
+  eligible: number
+  analyzed: number
+  excludedSource: number
+  failedToRead: number
+  warnings: string[]
+}
+
+export interface ThreadCollection {
+  summaries: SessionSummary[]
+  coverage: CollectionCoverage
+}
+
 export interface SessionSummary {
   id: string
   title: string
