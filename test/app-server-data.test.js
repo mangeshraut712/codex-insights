@@ -339,6 +339,8 @@ test('collectAppServerThreadSummaries applies limit after substantive filtering'
   assert.deepEqual(reads, ['short-thread', 'substantive-thread'])
   assert.deepEqual(result.summaries.map(summary => summary.id), ['substantive-thread'])
   assert.equal(result.coverage.analyzed, 1)
+  assert.equal(result.coverage.sampled, 2)
+  assert.equal(result.coverage.excludedShort, 1)
 })
 
 test('collectAppServerThreadSummaries propagates a protocol failure from thread/read', async () => {

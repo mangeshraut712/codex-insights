@@ -9,8 +9,10 @@ export interface CollectionCoverage {
   discovered: number
   eligible: number
   analyzed: number
+  excludedShort: number
   excludedSource: number
   failedToRead: number
+  sampled: number
   warnings: string[]
 }
 
@@ -44,6 +46,7 @@ export interface SessionSummary {
   usesWebFetch: boolean
   toolCounts: CountMap
   toolFailures: CountMap
+  redactions?: number
   firstUserMessage?: string
   transcriptForAnalysis?: string
 }

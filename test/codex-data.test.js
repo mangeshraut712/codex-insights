@@ -153,6 +153,67 @@ test('summarizeThread extracts tool, patch, git, and failure signals', () => {
   })
 })
 
+test('summarizeThread redacts sensitive text before a summary can be persisted', () => {
+  const homeDir = '/Users/synthetic-analyst'
+  const openaiKey = 'sk-proj-SYNTHETICOPENAIKEY1234567890'
+  const githubToken = 'ghp_SYNTHETICGITHUBTOKEN1234567890'
+  const bearerToken = 'SYNTHETICBEARERTOKEN1234567890'
+  const password = 'synthetic-password-value'
+  const privateKey = 'SYNTHETIC_PRIVATE_KEY_BODY'
+  const thread = {
+    id: 'secret-thread',
+    title: `Deploy ${openaiKey}`,
+    firstUserMessage: `Use ${githubToken} from ${homeDir}/project`,
+    cwd: `${homeDir}/project`,
+    model: 'gpt-5.4',
+    modelProvider: 'openai',
+    createdAt: Date.parse('2026-04-01T10:00:00Z') / 1000,
+    updatedAt: Date.parse('2026-04-01T10:03:00Z') / 1000,
+    tokensUsed: 100,
+  }
+  const events = [
+    {
+      timestamp: '2026-04-01T10:00:00Z',
+      type: 'event_msg',
+      payload: { type: 'user_message', message: `Authorization: Bearer ${bearerToken}` },
+    },
+    {
+      timestamp: '2026-04-01T10:00:10Z',
+      type: 'response_item',
+      payload: {
+        type: 'message',
+        role: 'assistant',
+        phase: 'final_answer',
+        content: [{ text: `password=${password}` }],
+      },
+    },
+    {
+      timestamp: '2026-04-01T10:02:00Z',
+      type: 'event_msg',
+      payload: {
+        type: 'exec_command_end',
+        command: ['deploy', openaiKey],
+        exit_code: 1,
+        status: 'failed',
+        aggregated_output: `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`,
+      },
+    },
+  ]
+
+  const summary = summarizeThread(thread, events, { homeDir })
+  const serialized = JSON.stringify(summary)
+
+  for (const secret of [openaiKey, githubToken, bearerToken, password, privateKey, homeDir]) {
+    assert.doesNotMatch(serialized, new RegExp(secret))
+  }
+  assert.match(serialized, /\[REDACTED_API_KEY\]/)
+  assert.match(serialized, /\[REDACTED_GITHUB_TOKEN\]/)
+  assert.match(serialized, /\[REDACTED_BEARER_TOKEN\]/)
+  assert.match(serialized, /\[REDACTED_PASSWORD\]/)
+  assert.match(serialized, /\[REDACTED_PRIVATE_KEY\]/)
+  assert.ok(summary.redactions >= 6)
+})
+
 test('filterSubstantiveThreads keeps only substantial threads and sorts by recency', () => {
   const threads = [
     { id: 'older', userMessages: 3, durationMinutes: 5, transcriptForAnalysis: 'ok', updatedAt: '2026-04-01T00:00:00.000Z' },
