@@ -343,6 +343,42 @@ test('collectAppServerThreadSummaries applies limit after substantive filtering'
   assert.equal(result.coverage.excludedShort, 1)
 })
 
+test('collectAppServerThreadSummaries applies a custom home redaction root', async () => {
+  const homeDir = '/Volumes/synthetic-codex-home'
+  const thread = makeThread({
+    id: 'custom-home-thread',
+    cwd: `${homeDir}/private/project`,
+    preview: `Inspect ${homeDir}/private/project`,
+    turns: [
+      {
+        startedAt: 1_710_000_000,
+        completedAt: 1_710_000_120,
+        items: [
+          { type: 'userMessage', id: 'custom-user-1', content: [{ type: 'text', text: `Read ${homeDir}/one` }] },
+          { type: 'userMessage', id: 'custom-user-2', content: [{ type: 'text', text: `Check ${homeDir}/two` }] },
+        ],
+      },
+    ],
+  })
+  const client = {
+    async request(method) {
+      if (method === 'thread/list') return { data: [thread], nextCursor: null }
+      if (method === 'thread/read') return { thread }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const result = await collectAppServerThreadSummaries({
+    homeDir,
+    createClient: async () => client,
+  })
+  const serialized = JSON.stringify(result.summaries)
+
+  assert.doesNotMatch(serialized, new RegExp(homeDir))
+  assert.match(serialized, /\[REDACTED_HOME\]/)
+})
+
 test('collectAppServerThreadSummaries propagates a protocol failure from thread/read', async () => {
   const client = {
     async request(method, params) {
