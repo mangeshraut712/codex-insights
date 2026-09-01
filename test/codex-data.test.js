@@ -1,7 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { AppServerProtocolError } from '../lib/app-server-client.js'
-import { collectThreadData, collectThreadSummaries, filterSubstantiveThreads, summarizeThread } from '../lib/codex-data.js'
+import {
+  __test as codexDataTest,
+  collectThreadData,
+  collectThreadSummaries,
+  filterSubstantiveThreads,
+  summarizeThread,
+} from '../lib/codex-data.js'
 
 function legacyCollection() {
   return {
@@ -327,4 +333,50 @@ test('summarizeThread compacts consecutive tool bursts in transcriptForAnalysis'
   assert.match(summary.transcriptForAnalysis, /\[Tool: exec_command\]/)
   assert.match(summary.transcriptForAnalysis, /\[Tool: apply_patch\]/)
   assert.match(summary.transcriptForAnalysis, /\[Tool activity truncated: 1 more tool calls\]/)
+})
+
+test('legacy source classification excludes delegated rows without agent_role', () => {
+  assert.equal(
+    codexDataTest.isLegacyDelegatedThread({
+      source: JSON.stringify({ subagent: { thread_spawn: { parent_thread_id: 'parent' } } }),
+      agentRole: '',
+    }),
+    true,
+  )
+  assert.equal(codexDataTest.isLegacyDelegatedThread({ source: 'vscode', agentRole: '' }), false)
+})
+
+test('legacy coverage does not double-count unreadable threads as short', () => {
+  const unreadable = {
+    id: 'unreadable',
+    userMessages: 0,
+    durationMinutes: 0,
+    transcriptForAnalysis: '',
+    toolErrorCategories: { rollout_read: 1 },
+  }
+  const short = {
+    id: 'short',
+    userMessages: 1,
+    durationMinutes: 0.5,
+    transcriptForAnalysis: 'short',
+    toolErrorCategories: {},
+  }
+  const substantive = {
+    id: 'substantive',
+    userMessages: 2,
+    durationMinutes: 2,
+    transcriptForAnalysis: 'substantive',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    toolErrorCategories: {},
+  }
+
+  const coverage = codexDataTest.legacyCoverage({
+    discovered: 3,
+    summaries: [unreadable, short, substantive],
+    selected: [substantive],
+    excludedSource: 0,
+  })
+
+  assert.equal(coverage.failedToRead, 1)
+  assert.equal(coverage.excludedShort, 1)
 })

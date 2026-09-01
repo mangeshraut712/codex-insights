@@ -50,3 +50,25 @@ test('planFacetJobs reuses redacted caches and samples uncached project-week str
   assert.equal(new Set(jobs.slice(1).map(job => job.thread.cwd)).size, 2)
   assert.doesNotMatch(await fs.readFile(cachePath, 'utf8'), new RegExp(secret))
 })
+
+test('planFacetJobs sanitizes stale unselected facet caches', async () => {
+  const cacheDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-stale-facets-'))
+  const model = 'synthetic-model'
+  const thread = makeThread('stale', '/repo/alpha', '2026-01-05T12:00:00.000Z')
+  const secret = 'sk-proj-SYNTHETICSTALESECRET1234567890'
+  const cachePath = path.join(cacheDir, `${thread.id}.json`)
+  await fs.writeFile(
+    cachePath,
+    JSON.stringify({
+      versionKey: 'obsolete-version',
+      facet: { threadId: thread.id, brief_summary: `Used ${secret}` },
+    }),
+  )
+
+  const jobs = await llmTest.planFacetJobs([thread], { cacheDir, model, uncachedLimit: 0 })
+
+  assert.deepEqual(jobs, [])
+  const persisted = await fs.readFile(cachePath, 'utf8')
+  assert.doesNotMatch(persisted, new RegExp(secret))
+  assert.match(persisted, /\[REDACTED_API_KEY\]/)
+})

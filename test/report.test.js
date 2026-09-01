@@ -86,6 +86,17 @@ test('buildReport aggregates summary metrics and terminal output', () => {
     ],
     {
       codexHome: '/tmp/.codex',
+      coverage: {
+        dataSource: 'app-server',
+        discovered: 4,
+        eligible: 3,
+        analyzed: 2,
+        excludedShort: 1,
+        excludedSource: 1,
+        failedToRead: 0,
+        sampled: 3,
+        warnings: [],
+      },
       days: 30,
       threadPreviewLimit: 10,
       insightsOverride: {
@@ -115,6 +126,7 @@ test('buildReport aggregates summary metrics and terminal output', () => {
   }
 
   assert.equal(report.metadata.threadCount, 2)
+  assert.equal(report.metadata.coverage.dataSource, 'app-server')
   assert.equal(report.summary.totalUserMessages, 8)
   assert.equal(report.summary.totalTokens, 267)
   assert.equal(report.summary.sessionsUsingTaskAgent, 2)
@@ -222,4 +234,21 @@ test('sample report fixture generates stable HTML output', async () => {
   assert.match(firstHtml, /The report started testing itself/)
   assert.match(firstHtml, /Snapshot report validation/)
   assert.match(firstHtml, /Existing Codex Features to Try/)
+})
+
+test('writeReportFiles redacts final JSON and HTML boundaries', async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-session-insights-redacted-'))
+  const homeDir = '/Users/synthetic-analyst'
+  const secret = 'sk-proj-SYNTHETICREPORTSECRET1234567890'
+  const report = createSampleReport()
+  report.metadata.codexHome = `${homeDir}/.codex`
+  report.insights.at_a_glance.whats_working = `Used ${secret}`
+
+  const { jsonPath, htmlPath } = await writeReportFiles(report, { outDir: tempDir, homeDir })
+  const serialized = `${await fs.readFile(jsonPath, 'utf8')}\n${await fs.readFile(htmlPath, 'utf8')}`
+
+  assert.doesNotMatch(serialized, new RegExp(homeDir))
+  assert.doesNotMatch(serialized, new RegExp(secret))
+  assert.match(serialized, /\[REDACTED_HOME\]/)
+  assert.match(serialized, /\[REDACTED_API_KEY\]/)
 })
