@@ -380,3 +380,28 @@ test('legacy coverage does not double-count unreadable threads as short', () => 
   assert.equal(coverage.failedToRead, 1)
   assert.equal(coverage.excludedShort, 1)
 })
+
+test('session summary cache keys do not fingerprint raw secret values', () => {
+  const base = {
+    id: 'thread-cache',
+    rolloutPath: '/Users/synthetic-analyst/.codex/sessions/rollout.jsonl',
+    updatedAt: 123,
+    tokensUsed: 456,
+    model: 'gpt-test',
+  }
+  const first = codexDataTest.buildSessionSummaryVersionKey(
+    { ...base, firstUserMessage: 'Use sk-proj-SYNTHETICFIRSTSECRET1234567890' },
+    { homeDir: '/Users/synthetic-analyst' },
+  )
+  const second = codexDataTest.buildSessionSummaryVersionKey(
+    { ...base, firstUserMessage: 'Use sk-proj-SYNTHETICSECONDSECRET1234567890' },
+    { homeDir: '/Users/synthetic-analyst' },
+  )
+  const changed = codexDataTest.buildSessionSummaryVersionKey(
+    { ...base, updatedAt: 124, firstUserMessage: 'Use sk-proj-SYNTHETICSECONDSECRET1234567890' },
+    { homeDir: '/Users/synthetic-analyst' },
+  )
+
+  assert.equal(first, second)
+  assert.notEqual(second, changed)
+})

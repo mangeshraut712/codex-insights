@@ -244,11 +244,16 @@ test('writeReportFiles redacts final JSON and HTML boundaries', async () => {
   report.metadata.codexHome = `${homeDir}/.codex`
   report.insights.at_a_glance.whats_working = `Used ${secret}`
 
-  const { jsonPath, htmlPath } = await writeReportFiles(report, { outDir: tempDir, homeDir })
+  const { jsonPath, htmlPath, sanitizedReport } = await writeReportFiles(report, {
+    outDir: tempDir,
+    homeDir,
+  })
   const serialized = `${await fs.readFile(jsonPath, 'utf8')}\n${await fs.readFile(htmlPath, 'utf8')}`
 
   assert.doesNotMatch(serialized, new RegExp(homeDir))
   assert.doesNotMatch(serialized, new RegExp(secret))
   assert.match(serialized, /\[REDACTED_HOME\]/)
   assert.match(serialized, /\[REDACTED_API_KEY\]/)
+  assert.doesNotMatch(JSON.stringify(sanitizedReport), new RegExp(homeDir))
+  assert.doesNotMatch(JSON.stringify(sanitizedReport), new RegExp(secret))
 })
