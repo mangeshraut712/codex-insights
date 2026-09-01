@@ -127,3 +127,13 @@ test('buildEquivalentCommand includes include-subagents when explicitly enabled'
 
   assert.match(command, /--include-subagents/)
 })
+
+test('withRedactionHome uses the selected non-process Codex home for every analysis stage', () => {
+  const options = cliTest.withRedactionHome(
+    { provider: 'codex-cli' },
+    '/Users/other/.codex',
+  )
+
+  assert.equal(options.homeDir, '/Users/other')
+  assert.equal(options.provider, 'codex-cli')
+})
