@@ -89,6 +89,10 @@ test('parseArgs accepts local data controls and validates their values', () => {
     () => cliTest.parseArgs(['--app-server-timeout', '0']),
     /positive integer/,
   )
+  assert.throws(
+    () => cliTest.parseArgs(['--local-only', '--estimate-only']),
+    /cannot be used together/,
+  )
 })
 
 test('applyQualityPreset maps balanced preset to default model plan', () => {

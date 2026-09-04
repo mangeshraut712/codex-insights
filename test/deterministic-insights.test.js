@@ -40,3 +40,13 @@ test('buildDeterministicInsights uses singular grammar for one analyzed session'
 
   assert.match(insights.at_a_glance.whats_working, /^1 substantive session was analyzed\./)
 })
+
+test('buildDeterministicInsights reports overlap without inferring switching cost', () => {
+  const report = createSampleReport()
+  report.summary.overlap.overlapEvents = 2
+
+  const insights = buildDeterministicInsights(report)
+
+  assert.match(insights.interaction_style.narrative, /2 cross-session 30-minute overlaps/)
+  assert.match(insights.interaction_style.narrative, /does not establish switching cost/)
+})
