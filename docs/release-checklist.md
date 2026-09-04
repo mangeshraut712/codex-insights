@@ -14,8 +14,7 @@ npm ci
 npm run ci
 npm run generate:test-report
 npm pack --dry-run
-python3 /path/to/skill-creator/scripts/quick_validate.py plugin/codex-insights/skills/insights
-python3 /path/to/plugin-creator/scripts/validate_plugin.py plugin/codex-insights
+python3 scripts/validate_plugin.py plugin/codex-insights
 ```
 
 Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Inspect generated reports for schema version, analysis mode, coverage, warnings, redaction count, and absence of seeded secrets.

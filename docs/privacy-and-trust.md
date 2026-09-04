@@ -2,7 +2,7 @@
 
 Codex Session Insights reads session metadata and transcript excerpts on the machine where the CLI or `$insights` runs. It does not upload reports by itself. The selected analysis mode determines whether session-derived text is passed to a model.
 
-This matches Claude Code `/insights` on locality (this machine only, not other devices) and diverges on spend: `$insights` defaults to `--local-only` unless you ask for an estimate or a model-assisted report. See [Claude Code `/insights` mapping](claude-insights.md).
+This matches Claude Code `/insights` on locality (this machine only, not other devices) and diverges on spend: `$insights` defaults to `--local-only` unless you ask for an estimate or a model-assisted report. See [Claude Code `/insights` mapping](claude-insights.md). Directory-facing statements: [privacy policy](privacy-policy.md) and [terms](terms.md).
 
 ## Analysis modes
 

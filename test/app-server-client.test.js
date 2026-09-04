@@ -70,7 +70,7 @@ test('createAppServerClient correlates fragmented JSONL responses after initiali
     clientInfo: {
       name: 'codex-session-insights',
       title: 'Codex Session Insights',
-      version: '0.2.3',
+      version: '0.3.0',
     },
     capabilities: null,
   })

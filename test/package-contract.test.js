@@ -4,6 +4,9 @@ import { promises as fs } from 'node:fs'
 
 const REQUIRED_DOCS = [
   'docs/privacy-and-trust.md',
+  'docs/privacy-policy.md',
+  'docs/terms.md',
+  'docs/plugin-directory.md',
   'docs/app-server-compatibility.md',
   'docs/contributing-analyzers.md',
   'docs/install.md',
