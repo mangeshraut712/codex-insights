@@ -81,6 +81,11 @@ test('parseArgs accepts local data controls and validates their values', () => {
   assert.equal(parsed.options.localOnly, true)
   assert.equal(parsed.options.dataSource, 'legacy')
   assert.equal(parsed.options.appServerTimeoutMs, 2500)
+  assert.equal(parsed.options.reanalyze, false)
+
+  const reanalyze = cliTest.parseArgs(['--reanalyze', '--days', '0'])
+  assert.equal(reanalyze.options.reanalyze, true)
+  assert.equal(reanalyze.options.days, 0)
   assert.throws(
     () => cliTest.parseArgs(['--data-source', 'unknown']),
     /Expected auto, app-server, or legacy/,
@@ -175,6 +180,22 @@ test('buildEquivalentCommand preserves deterministic data controls', () => {
   assert.match(command, /--app-server-timeout 2500/)
 })
 
+test('buildEquivalentCommand includes reanalyze when enabled', () => {
+  const command = cliTest.buildEquivalentCommand({
+    days: 0,
+    limit: 200,
+    facetLimit: 50,
+    lang: 'en',
+    provider: 'codex-cli',
+    localOnly: true,
+    reanalyze: true,
+  })
+
+  assert.match(command, /--days 0/)
+  assert.match(command, /--reanalyze/)
+  assert.match(command, /--local-only/)
+})
+
 test('withRedactionHome uses the selected non-process Codex home for every analysis stage', () => {
   const options = cliTest.withRedactionHome(
     { provider: 'codex-cli' },
@@ -242,7 +263,83 @@ test('runCli local-only performs zero model estimation or generation calls', asy
 
   assert.equal(receivedCollectionOptions.dataSource, 'legacy')
   assert.equal(receivedCollectionOptions.appServerTimeoutMs, 2500)
+  assert.equal(receivedCollectionOptions.usageDataDir, path.resolve(tempDir))
+  assert.equal(receivedCollectionOptions.reanalyze, false)
   assert.equal(writtenReport.analysisMode, 'local-only')
   assert.equal(writtenReport.insights.basis, 'deterministic')
   assert.equal(writtenReport.metadata.coverage.warnings.length, 1)
+  const seenStore = JSON.parse(await fs.readFile(path.join(tempDir, 'seen-sessions.json'), 'utf8'))
+  assert.equal(seenStore.schemaVersion, 1)
+  assert.ok(seenStore.sessions[fixture.threads[0].id])
+})
+
+test('runCli removes expired report copies at startup and honors --reanalyze', async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-cleanup-'))
+  const staleHtml = path.join(tempDir, 'report-2026-02-01T120000Z.html')
+  const staleJson = path.join(tempDir, 'report-2026-02-01T120000Z.json')
+  await fs.writeFile(staleHtml, '<html>stale</html>', 'utf8')
+  await fs.writeFile(staleJson, '{"stale":true}', 'utf8')
+  const fixture = createSampleReport()
+  let receivedCollectionOptions
+  let cleanedBeforeCollect = false
+
+  await runCli(
+    [
+      '--local-only',
+      '--reanalyze',
+      '--days',
+      '0',
+      '--codex-home',
+      tempDir,
+      '--out-dir',
+      tempDir,
+      '--stdout-json',
+      '--no-open',
+    ],
+    {
+      collectThreadData: async options => {
+        receivedCollectionOptions = options
+        try {
+          await fs.access(staleHtml)
+        } catch (error) {
+          cleanedBeforeCollect = error?.code === 'ENOENT'
+        }
+        return {
+          summaries: fixture.threads,
+          coverage: {
+            dataSource: 'legacy',
+            discovered: 2,
+            eligible: 2,
+            analyzed: 2,
+            excludedShort: 0,
+            excludedSource: 0,
+            failedToRead: 0,
+            sampled: 2,
+            unseen: 2,
+            unseenAnalyzed: 2,
+            reused: 0,
+            excludedUnseenOverCap: 0,
+            warnings: [],
+          },
+        }
+      },
+      estimateLlmAnalysisCost: async () => {
+        assert.fail('local-only must not estimate model analysis')
+      },
+      generateLlmInsights: async () => {
+        assert.fail('local-only must not generate model insights')
+      },
+      writeReportFiles: async report => ({
+        jsonPath: path.join(tempDir, 'report.json'),
+        htmlPath: path.join(tempDir, 'report.html'),
+        sanitizedReport: report,
+      }),
+    },
+  )
+
+  assert.equal(cleanedBeforeCollect, true)
+  assert.equal(receivedCollectionOptions.reanalyze, true)
+  assert.equal(receivedCollectionOptions.sinceEpochSeconds, null)
+  await assert.rejects(fs.access(staleHtml), { code: 'ENOENT' })
+  await assert.rejects(fs.access(staleJson), { code: 'ENOENT' })
 })

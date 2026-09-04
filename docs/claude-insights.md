@@ -24,14 +24,24 @@ From the official docs:
 | How you work, not token billing | Same split: the report is workflow-oriented. `--estimate-only` is the token-scope preview for a **model-assisted** run, not a substitute for Codex billing |
 | Local sessions on this machine | Reads this machine only. Other devices are out of scope |
 | Not in cloud sessions | Same: no remote Codex cloud history |
-| Up to 200 unseen sessions; skip very short | Default `--limit 200`; short threads go to `excludedShort` |
+| Up to 200 unseen sessions; skip very short | Default `--limit 200` is the **unseen** cap. Short threads go to `excludedShort` and are journaled so later runs skip them. Previously analyzed sessions are reused from `seen-sessions.json` unless `--reanalyze` |
 | Header `200 sessions (412 total)` | HTML and terminal use the same shape from Trust & Coverage (`analyzed` vs `discovered`) |
-| `~/.claude/usage-data/report.html` plus timestamped copies | `~/.codex/usage-data/report.html` and `report.json`, plus `report-<stamp>.html` / `.json`. Copies older than **30** days are removed when a new report is written |
+| `~/.claude/usage-data/report.html` plus timestamped copies | `~/.codex/usage-data/report.html` and `report.json`, plus `report-<stamp>.html` / `.json`. Copies older than **30** days are removed **at startup** and again when a new report is written |
 | Model-assisted by default (tokens count against the plan) | **Local-only by default** for `$insights`: zero model calls. Model-assisted requires an estimate and confirmation (`--yes` on the CLI) |
 | Same provider/account as sessions | `provider=codex-cli` uses local Codex; `provider=openai` uses the Responses API |
 | Projects, how you use it, friction, features to try | Trust & Coverage, At a Glance, What You Work On, How You Use Codex, Impressive Things You Did, Where Things Go Wrong, Features to Try, On the Horizon, One More Thing |
 
 Privacy-first is the intentional fork from Claude’s default: unspecified `$insights` stays offline. Ask for a model-assisted report when you want Claude-style narrative sections.
+
+## Incremental runs
+
+Claude `/insights` analyzes up to 200 sessions it has not seen before. This plugin keeps a local journal at `{out-dir}/seen-sessions.json` and archived summaries under `{out-dir}/session-summaries/`. A later run:
+
+- Reuses unchanged sessions instead of calling `thread/read` again
+- Reads up to `--limit` (default 200) **unseen** substantive sessions
+- Leaves leftover unseen sessions in `excludedUnseenOverCap` (they appear in `discovered` / the `N sessions (M total)` header)
+- Treats `--days 0` as “all local sessions” (Claude’s time window is “recent on this machine”; Codex session files also age out, so the default remains `--days 30`)
+- Accepts `--reanalyze` to ignore the journal and re-read eligible threads
 
 ## What this plugin does not claim
 

@@ -6,7 +6,7 @@ Inspired by Claude Code `/insights` (how you work, local sessions on this machin
 
 If the user does not choose a mode, run **local-only**. It is the private, offline default for `$insights`.
 
-A run reads sessions on this machine only, targets up to **200** substantive sessions (`--limit`), and skips very short ones. When sessions are left out, Trust & Coverage and the HTML header use `analyzed sessions (discovered total)`, for example `200 sessions (412 total)`.
+A run reads sessions on this machine only, targets up to **200 unseen** substantive sessions (`--limit`), reuses unchanged sessions from `{out-dir}/seen-sessions.json`, and skips very short ones. When sessions are left out, Trust & Coverage and the HTML header use `analyzed sessions (discovered total)`, for example `200 sessions (412 total)`. `--days 0` includes every local session in the index. `--reanalyze` ignores the journal.
 
 ## Estimate
 
@@ -30,8 +30,8 @@ The default population excludes delegated sources. Add `--include-subagents` onl
 
 ## Output
 
-Latest files: `~/.codex/usage-data/report.html` and `report.json` (Claude analogue: `~/.claude/usage-data/report.html`). Each successful write also stores timestamped copies in the same directory. Copies older than 30 days are deleted when a new report is written.
+Latest files: `~/.codex/usage-data/report.html` and `report.json` (Claude analogue: `~/.claude/usage-data/report.html`). Each successful write also stores timestamped copies in the same directory. Copies older than 30 days are deleted at startup and when a new report is written. The seen-session journal (`seen-sessions.json` plus `session-summaries/`) lives in the same directory so later runs can reuse prior analyses.
 
 ## Trust & Coverage
 
-Always inspect and report the data source, discovered, eligible, analyzed, excluded-short, excluded-source, failed-to-read, sampled, fallback warnings, analysis mode, and redaction count. Do not present incomplete coverage as a complete history.
+Always inspect and report the data source, discovered, eligible, analyzed, reused, unseen, unseen-over-cap, excluded-short, excluded-source, failed-to-read, sampled, fallback warnings, analysis mode, and redaction count. Do not present incomplete coverage as a complete history.

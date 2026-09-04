@@ -50,9 +50,10 @@ codex-session-insights --yes             # model-assisted after you confirm
 Reports write to `~/.codex/usage-data/` (Claude analogue: `~/.claude/usage-data/`):
 
 - `report.html` / `report.json` — latest run
-- `report-<stamp>.html` / `report-<stamp>.json` — timestamped copies; copies older than 30 days are removed on the next write
+- `report-<stamp>.html` / `report-<stamp>.json` — timestamped copies; copies older than 30 days are removed at startup and on the next write
+- `seen-sessions.json` / `session-summaries/` — journal of sessions already analyzed so later runs can reuse them
 
-HTML header coverage matches Claude: `200 sessions (412 total)` when some discovered sessions are left out (short threads, source filters, or the 200-session cap). HTML sections: Trust & Coverage, At a Glance, What You Work On, How You Use Codex, Impressive Things You Did, Where Things Go Wrong, Features to Try, On the Horizon, One More Thing.
+HTML header coverage matches Claude: `200 sessions (412 total)` when some discovered sessions are left out (short threads, source filters, unseen cap, or reused history that still leaves newer sessions unread). HTML sections: Trust & Coverage, At a Glance, What You Work On, How You Use Codex, Impressive Things You Did, Where Things Go Wrong, Features to Try, On the Horizon, One More Thing.
 
 The interactive CLI flow is:
 
@@ -67,6 +68,8 @@ The interactive CLI flow is:
 ```bash
 codex-session-insights --preset lite
 codex-session-insights --days 7 --limit 20 --facet-limit 8 --estimate-only
+codex-session-insights --days 0 --local-only
+codex-session-insights --reanalyze --local-only
 codex-session-insights --out-dir ./insights-output
 codex-session-insights --stdout-json
 codex-session-insights --include-archived
@@ -86,8 +89,8 @@ Without a global install, prefix the same flags with `npx github:mangeshraut712/
 
 ## Defaults
 
-- `days`: `30`
-- `limit`: `200` (substantive threads to include, not merely the first indexed rows)
+- `days`: `30` (`0` = all local sessions on this machine)
+- `limit`: `200` (max **unseen** substantive sessions to read this run; earlier analyses are reused)
 - `facet-limit`: `50` (uncached per-thread facet analyses in one report)
 - `provider`: `codex-cli`
 - `facet-model` / `fast-section-model`: `gpt-5.4-mini`

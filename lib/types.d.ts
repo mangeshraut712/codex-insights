@@ -14,12 +14,22 @@ export interface CollectionCoverage {
   excludedSource: number
   failedToRead: number
   sampled: number
+  unseen: number
+  unseenAnalyzed: number
+  reused: number
+  excludedUnseenOverCap: number
   warnings: string[]
+}
+
+export interface SeenSessionEntry {
+  id: string
+  updatedAt: string | number
 }
 
 export interface ThreadCollection {
   summaries: SessionSummary[]
   coverage: CollectionCoverage
+  seenEntries?: SeenSessionEntry[]
 }
 
 export interface SessionSummary {

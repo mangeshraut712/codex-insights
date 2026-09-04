@@ -30,13 +30,13 @@ Pattern-based redaction is defense in depth, not a guarantee. It cannot recogniz
 
 ## Coverage
 
-Trust & Coverage records the selected data source, discovered and eligible populations, analyzed count, source and short-thread exclusions, read failures, sampling count, fallback warnings, analysis mode, and redaction count. Missing or excluded sessions can make deterministic metrics and model narratives incomplete. The HTML header uses Claude’s shape when sessions are left out: `analyzed sessions (discovered total)`.
+Trust & Coverage records the selected data source, discovered and eligible populations, analyzed count, reused vs unseen sessions, unseen-over-cap leftovers, source and short-thread exclusions, read failures, sampling count, fallback warnings, analysis mode, and redaction count. Missing or excluded sessions can make deterministic metrics and model narratives incomplete. The HTML header uses Claude’s shape when sessions are left out: `analyzed sessions (discovered total)`.
 
-Main interactive sessions are included by default, up to `--limit` (200). Very short sessions are skipped. Delegated and subagent sources are excluded unless `--include-subagents` is explicit. This prevents delegated work from being attributed to the primary user by default.
+Main interactive sessions are included by default. `--limit` (200) is the max **unseen** substantive sessions a run will newly read; previously analyzed sessions are reused from `{out-dir}/seen-sessions.json`. Very short sessions are skipped and journaled so they are not re-read. Delegated and subagent sources are excluded unless `--include-subagents` is explicit. This prevents delegated work from being attributed to the primary user by default. `--days 0` includes all local sessions; `--reanalyze` ignores the journal.
 
 ## Storage and deletion
 
-Reports default to `~/.codex/usage-data/report.html` and `report.json`, plus timestamped copies `report-<stamp>.html` / `report-<stamp>.json` in the same directory. Copies older than **30** days are deleted when a new report is written (Claude Code uses `cleanupPeriodDays`, default 30, for `~/.claude/usage-data/`). Facet caches default to `~/.codex-insights-cache`; session-summary caches are stored beneath the selected cache root. A custom output or cache directory may be selected with `--out-dir` and `--cache-dir`.
+Reports default to `~/.codex/usage-data/report.html` and `report.json`, plus timestamped copies `report-<stamp>.html` / `report-<stamp>.json` in the same directory. Copies older than **30** days are deleted at startup (Claude Code uses `cleanupPeriodDays`, default 30) and again when a new report is written. The seen-session journal and archived summaries live beside those reports. Facet caches default to `~/.codex-insights-cache`; session-summary caches for the legacy reader are stored beneath the selected cache root. A custom output or cache directory may be selected with `--out-dir` and `--cache-dir`.
 
 Delete generated artifacts when they are no longer needed:
 

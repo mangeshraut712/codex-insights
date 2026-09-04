@@ -8,6 +8,7 @@ import {
   filterSubstantiveThreads,
   summarizeThread,
 } from '../lib/codex-data.js'
+import { createCoverage, loadUnseenAwarePopulation } from '../lib/seen-sessions.js'
 
 function legacyCollection() {
   return {
@@ -346,39 +347,38 @@ test('legacy source classification excludes delegated rows without agent_role', 
   assert.equal(codexDataTest.isLegacyDelegatedThread({ source: 'vscode', agentRole: '' }), false)
 })
 
-test('legacy coverage does not double-count unreadable threads as short', () => {
-  const unreadable = {
-    id: 'unreadable',
-    userMessages: 0,
-    durationMinutes: 0,
-    transcriptForAnalysis: '',
-    toolErrorCategories: { rollout_read: 1 },
-  }
-  const short = {
-    id: 'short',
-    userMessages: 1,
-    durationMinutes: 0.5,
-    transcriptForAnalysis: 'short',
-    toolErrorCategories: {},
-  }
-  const substantive = {
-    id: 'substantive',
-    userMessages: 2,
-    durationMinutes: 2,
-    transcriptForAnalysis: 'substantive',
-    updatedAt: '2026-01-01T00:00:00.000Z',
-    toolErrorCategories: {},
-  }
-
-  const coverage = codexDataTest.legacyCoverage({
-    discovered: 3,
-    summaries: [unreadable, short, substantive],
-    selected: [substantive],
-    excludedSource: 0,
+test('legacy coverage does not double-count unreadable threads as short', async () => {
+  const coverage = createCoverage('legacy')
+  coverage.discovered = 3
+  coverage.eligible = 3
+  const result = await loadUnseenAwarePopulation({
+    eligibleThreads: [{ id: 'unreadable' }, { id: 'short' }, { id: 'substantive' }],
+    coverage,
+    unseenLimit: 200,
+    readSummary: async thread => {
+      if (thread.id === 'unreadable') throw new Error('rollout_read')
+      if (thread.id === 'short') {
+        return {
+          id: 'short',
+          userMessages: 1,
+          durationMinutes: 0.5,
+          transcriptForAnalysis: 'short',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        }
+      }
+      return {
+        id: 'substantive',
+        userMessages: 2,
+        durationMinutes: 2,
+        transcriptForAnalysis: 'substantive',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      }
+    },
   })
 
-  assert.equal(coverage.failedToRead, 1)
-  assert.equal(coverage.excludedShort, 1)
+  assert.equal(result.coverage.failedToRead, 1)
+  assert.equal(result.coverage.excludedShort, 1)
+  assert.equal(result.coverage.analyzed, 1)
 })
 
 test('session summary cache keys do not fingerprint raw secret values', () => {

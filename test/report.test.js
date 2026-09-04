@@ -256,6 +256,10 @@ test('local-only HTML labels deterministic analysis and renders coverage warning
     excludedSource: 1,
     failedToRead: 1,
     sampled: 5,
+    unseen: 3,
+    unseenAnalyzed: 2,
+    reused: 2,
+    excludedUnseenOverCap: 1,
     warnings: ['Codex app-server unavailable; used legacy SQLite/rollout reader.'],
   }
 
@@ -270,8 +274,12 @@ test('local-only HTML labels deterministic analysis and renders coverage warning
   assert.match(html, /Codex app-server unavailable/)
   assert.match(html, /4 sessions \(8 total\)/)
   assert.match(html, /Very short sessions were skipped\./)
+  assert.match(html, /Reused/)
+  assert.match(html, /Unseen Over Cap/)
   assert.match(terminal, /warning: Codex app-server unavailable/)
   assert.match(terminal, /4 sessions \(8 total\)/)
+  assert.match(terminal, /reused=2/)
+  assert.match(terminal, /overCap=1/)
   assert.equal(json.analysisMode, 'local-only')
   assert.equal(json.metadata.coverage.failedToRead, 1)
   assert.equal(json.insights.basis, 'deterministic')

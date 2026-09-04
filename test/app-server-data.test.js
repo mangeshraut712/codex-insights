@@ -1,8 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { promises as fs } from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import { AppServerProtocolError } from '../lib/app-server-client.js'
 import { collectAppServerThreadSummaries } from '../lib/app-server-data.js'
 import { collectThreadData } from '../lib/codex-data.js'
+import { persistAnalyzedSessions } from '../lib/seen-sessions.js'
 
 function makeThread(overrides = {}) {
   return {
@@ -201,6 +205,10 @@ test('collectAppServerThreadSummaries paginates all source kinds and excludes su
   assert.equal(coverage.eligible, 2)
   assert.equal(coverage.analyzed, 2)
   assert.equal(coverage.failedToRead, 0)
+  assert.equal(coverage.unseen, 2)
+  assert.equal(coverage.unseenAnalyzed, 2)
+  assert.equal(coverage.reused, 0)
+  assert.equal(coverage.excludedUnseenOverCap, 0)
 })
 
 test('collectAppServerThreadSummaries lists archived threads only when requested', async () => {
@@ -341,6 +349,10 @@ test('collectAppServerThreadSummaries applies limit after substantive filtering'
   assert.equal(result.coverage.analyzed, 1)
   assert.equal(result.coverage.sampled, 2)
   assert.equal(result.coverage.excludedShort, 1)
+  assert.equal(result.coverage.unseen, 2)
+  assert.equal(result.coverage.unseenAnalyzed, 1)
+  assert.equal(result.coverage.excludedUnseenOverCap, 0)
+  assert.deepEqual(result.seenEntries, [{ id: 'short-thread', updatedAt: shortThread.updatedAt }])
 })
 
 test('collectAppServerThreadSummaries applies a custom home redaction root', async () => {
@@ -413,4 +425,97 @@ test('collectThreadData selects the documented app-server source when requested'
 
   assert.deepEqual(result.summaries, [])
   assert.equal(result.coverage.dataSource, 'app-server')
+})
+
+function substantiveThread(id) {
+  const thread = mainThreadWithItems()
+  thread.id = id
+  thread.updatedAt = 1_710_000_180 + id.length
+  return thread
+}
+
+test('collectAppServerThreadSummaries caps unseen substantive reads at --limit', async () => {
+  const first = substantiveThread('thread-a')
+  const second = substantiveThread('thread-b')
+  const reads = []
+  const client = {
+    async request(method, params) {
+      if (method === 'thread/list') return { data: [first, second], nextCursor: null }
+      if (method === 'thread/read') {
+        reads.push(params.threadId)
+        return { thread: params.threadId === first.id ? first : second }
+      }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const result = await collectAppServerThreadSummaries({
+    limit: 1,
+    createClient: async () => client,
+  })
+
+  assert.deepEqual(reads, ['thread-a'])
+  assert.deepEqual(result.summaries.map(summary => summary.id), ['thread-a'])
+  assert.equal(result.coverage.unseen, 2)
+  assert.equal(result.coverage.unseenAnalyzed, 1)
+  assert.equal(result.coverage.excludedUnseenOverCap, 1)
+  assert.equal(result.coverage.analyzed, 1)
+})
+
+test('collectAppServerThreadSummaries reuses archived sessions and reanalyze rereads them', async () => {
+  const usageDataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-seen-'))
+  const first = substantiveThread('thread-a')
+  const second = substantiveThread('thread-b')
+  const reads = []
+  const client = {
+    async request(method, params) {
+      if (method === 'thread/list') return { data: [first, second], nextCursor: null }
+      if (method === 'thread/read') {
+        reads.push(params.threadId)
+        return { thread: params.threadId === first.id ? first : second }
+      }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const initial = await collectAppServerThreadSummaries({
+    usageDataDir,
+    createClient: async () => client,
+  })
+  assert.deepEqual(reads, ['thread-a', 'thread-b'])
+  assert.equal(initial.coverage.reused, 0)
+  await persistAnalyzedSessions(usageDataDir, initial.summaries, { alsoSeen: initial.seenEntries })
+
+  reads.length = 0
+  const reused = await collectAppServerThreadSummaries({
+    usageDataDir,
+    createClient: async () => client,
+  })
+  assert.deepEqual(reads, [])
+  assert.equal(reused.coverage.reused, 2)
+  assert.equal(reused.coverage.unseen, 0)
+  assert.equal(reused.coverage.unseenAnalyzed, 0)
+  assert.deepEqual(reused.summaries.map(summary => summary.id).sort(), ['thread-a', 'thread-b'])
+
+  second.updatedAt += 60
+  reads.length = 0
+  const changed = await collectAppServerThreadSummaries({
+    usageDataDir,
+    createClient: async () => client,
+  })
+  assert.deepEqual(reads, ['thread-b'])
+  assert.equal(changed.coverage.reused, 1)
+  assert.equal(changed.coverage.unseenAnalyzed, 1)
+
+  reads.length = 0
+  const again = await collectAppServerThreadSummaries({
+    usageDataDir,
+    reanalyze: true,
+    createClient: async () => client,
+  })
+  assert.deepEqual(reads, ['thread-a', 'thread-b'])
+  assert.equal(again.coverage.reused, 0)
+  assert.equal(again.coverage.unseenAnalyzed, 2)
 })
