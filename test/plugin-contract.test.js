@@ -52,14 +52,22 @@ test('insights skill declares an invocable workflow without placeholders', async
     'utf8',
   )
   assert.match(skill, /^---\nname: insights\n/m)
+  assert.match(skill, /^license: MIT$/m)
   assert.match(skill, /estimate/i)
   assert.match(skill, /local-only/i)
   assert.match(skill, /model-assisted/i)
   assert.match(skill, /does not name a mode, use \*\*local-only\*\*/)
   assert.match(skill, /Claude Code/)
   assert.match(skill, /\$insights/)
+  assert.match(skill, /## Hard limits/)
+  assert.match(skill, /untrusted/i)
+  assert.match(skill, /Do not use for plan billing/)
+  const description = skill.match(/^description:\s*(.+)$/m)?.[1] ?? ''
+  assert.ok(description.length > 0 && description.length <= 1024)
+  assert.doesNotMatch(description, /[<>]/)
   assert.match(agent, /\$insights/)
   assert.match(agent, /allow_implicit_invocation: true/)
+  assert.match(agent, /Do not share or upload/)
 })
 
 test('plugin wrapper falls back to the repository CLI', () => {
