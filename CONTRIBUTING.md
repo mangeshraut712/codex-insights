@@ -15,6 +15,8 @@ GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Nod
 
 This repository is maintained by **mangeshraut712** and **Cursor**. Do not enable Dependabot or other GitHub Apps that open bot pull requests. Do not merge `dependabot[bot]` or `cursor[bot]` commits. Dependency and Actions bumps happen in maintainer commits after review. TypeScript stays on 5.x until a maintainer chooses otherwise.
 
+Keep the GitHub About box in sync with `package.json`: description, homepage (`https://github.com/mangeshraut712/codex-insights#readme`), and topics matching `package.json` `keywords`.
+
 Plugin/skill validators:
 
 ```bash

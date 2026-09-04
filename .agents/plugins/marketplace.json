@@ -1,7 +1,8 @@
 {
   "name": "codex-insights",
   "interface": {
-    "displayName": "Codex Insights"
+    "displayName": "Codex Insights",
+    "shortDescription": "Private, trust-aware reports from local Codex sessions."
   },
   "plugins": [
     {

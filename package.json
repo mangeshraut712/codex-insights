@@ -1,7 +1,11 @@
 {
   "name": "codex-session-insights",
   "version": "0.2.3",
-  "description": "Generate privacy-aware reports from local Codex sessions.",
+  "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
+  "author": {
+    "name": "mangeshraut712",
+    "url": "https://github.com/mangeshraut712"
+  },
   "type": "module",
   "bin": {
     "codex-session-insights": "bin/codex-insights.js"
@@ -36,11 +40,17 @@
   },
   "keywords": [
     "codex",
+    "openai",
     "insights",
     "cli",
-    "report",
+    "plugin",
     "privacy",
-    "plugin"
+    "local-first",
+    "nodejs",
+    "javascript",
+    "html-report",
+    "session-analysis",
+    "developer-tools"
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.8.6",

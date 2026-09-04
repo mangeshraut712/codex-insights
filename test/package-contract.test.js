@@ -18,6 +18,13 @@ test('package declares the dependency runtime floor', async () => {
   const packageJson = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url), 'utf8'))
 
   assert.equal(packageJson.engines.node, '>=18.17.0')
+  assert.equal(
+    packageJson.description,
+    'Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.',
+  )
+  assert.equal(packageJson.author.name, 'mangeshraut712')
+  assert.ok(packageJson.keywords.includes('local-first'))
+  assert.ok(packageJson.keywords.includes('codex'))
   assert.equal(packageJson.repository.url, 'git+https://github.com/mangeshraut712/codex-insights.git')
   assert.ok(packageJson.files.includes('LICENSE'))
   assert.equal(packageJson.scripts.check, 'node ./scripts/check.mjs')

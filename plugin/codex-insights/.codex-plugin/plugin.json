@@ -1,26 +1,29 @@
 {
   "name": "codex-insights",
   "version": "0.2.3",
-  "description": "Generate privacy-aware reports from local Codex sessions.",
+  "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
-    "name": "Codex Session Insights contributors",
-    "url": "https://github.com/cosformula/codex-session-insights"
+    "name": "mangeshraut712",
+    "url": "https://github.com/mangeshraut712"
   },
   "homepage": "https://github.com/mangeshraut712/codex-insights#readme",
   "repository": "https://github.com/mangeshraut712/codex-insights",
   "license": "MIT",
   "keywords": [
     "codex",
+    "openai",
     "insights",
+    "cli",
+    "plugin",
     "privacy",
-    "report"
+    "local-first"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Codex Insights",
     "shortDescription": "Private, trust-aware reports from your local Codex sessions.",
     "longDescription": "Create a local-only or model-assisted report of your Codex sessions on this machine. Inspired by Claude Code /insights (how you work, not a token bill). Local-only is the default: zero model calls, visible coverage, and credential redaction. Model-assisted narratives run only after an estimate and confirmation.",
-    "developerName": "Codex Session Insights contributors",
+    "developerName": "mangeshraut712",
     "category": "Productivity",
     "capabilities": [
       "Local session analysis",
