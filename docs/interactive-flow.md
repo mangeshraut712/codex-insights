@@ -39,6 +39,8 @@ Recommended CLI behavior:
   Alias for script mode. No prompts.
 - `codex-session-insights report --estimate-only`
   Print the estimate and exit.
+- `codex-session-insights report --local-only`
+  Skip model estimation and generation, then write a deterministic HTML and JSON report.
 
 TTY-aware default:
 
@@ -215,6 +217,9 @@ Recommended flags:
 - `--insight-effort <level>`
 - `--yes`
 - `--non-interactive`
+- `--local-only`
+- `--data-source auto|app-server|legacy`
+- `--app-server-timeout <ms>`
 
 Recommended additions:
 
@@ -258,6 +263,8 @@ Recommended defaults:
   - no for CI / non-TTY
 - output path:
   - `~/.codex/usage-data`
+- data source:
+  - `auto` (app-server first, visible legacy fallback)
 - scope preset:
   - Standard
 - quality preset:
@@ -310,6 +317,11 @@ This flow should not:
 - become a terminal dashboard
 - run analysis before the estimate screen
 - make irreversible changes without confirmation
+- imply that deterministic counts establish satisfaction, completion, or code quality
+
+## Local-only flow
+
+Local-only mode is intentionally non-interactive because there is no model-spend confirmation to perform. It still prints Trust & Coverage, writes both report formats, and respects scope, source, output, archive, and subagent flags. Fallback warnings are report provenance and must remain visible.
 
 ## Decision Summary
 

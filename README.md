@@ -2,7 +2,7 @@
 
 Generate a report analyzing your Codex sessions.
 
-`codex-session-insights` reads your local Codex history, extracts recurring patterns from your sessions, and renders a narrative report as both HTML and JSON.
+`codex-session-insights` reads your local Codex history and renders an HTML and JSON report. Use model-assisted analysis for interpreted patterns or `--local-only` for deterministic metrics with zero model calls.
 
 ![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
 
@@ -28,6 +28,12 @@ If you only want the estimate first:
 npx codex-session-insights --estimate-only
 ```
 
+For a private/offline report with no model estimation or generation:
+
+```bash
+npx codex-session-insights --local-only --no-open
+```
+
 If you already know what you want and do not want the confirmation flow:
 
 ```bash
@@ -43,6 +49,7 @@ By default the tool writes:
 
 The HTML report includes these sections:
 
+- `Trust & Coverage`
 - `At a Glance`
 - `What You Work On`
 - `How You Use Codex`
@@ -96,6 +103,15 @@ Include sub-agent threads as well as main threads:
 npx codex-session-insights --include-subagents
 ```
 
+Choose a data source explicitly:
+
+```bash
+npx codex-session-insights --data-source app-server
+npx codex-session-insights --data-source legacy
+```
+
+`auto` is the default: it tries app-server first and records a warning if it falls back to the legacy reader. Use `--app-server-timeout 30000` to change the per-request timeout.
+
 Choose the report language explicitly:
 
 ```bash
@@ -126,6 +142,7 @@ Current default analysis plan:
 
 Important behavior defaults:
 
+- `data-source=auto` uses the documented, read-only app-server adapter before legacy fallback
 - `--preset lite` maps to `days=7`, `limit=20`, `facet-limit=8`, `preview=10`
 - `limit` means the target number of substantive threads to include in the report, not just the first 50 indexed threads
 - `facet-limit` means the max number of uncached per-thread facet analyses to run in a single report
@@ -133,16 +150,19 @@ Important behavior defaults:
 - Main-thread analysis is the default; sub-agent threads are excluded unless you pass `--include-subagents`
 - The CLI shows an estimate before running in interactive terminals
 - The CLI tries to open the generated HTML report in your browser after generation
+- `--local-only` skips all model cost estimation and generation and labels its findings deterministic
 
 ## What It Reads
 
-- `~/.codex/state_*.sqlite` for the thread index
-- `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl` for rollout events
+- Codex app-server `thread/list` and `thread/read` in the default `auto` mode
+- `~/.codex/state_*.sqlite` and rollout JSONL only when legacy mode is selected or app-server fallback is required
+
+Collection is read-only. The CLI does not start turns or change session state.
 
 ## Requirements
 
-- Node.js `>=18`
-- `sqlite3` available on your system `PATH`
+- Node.js `>=18.17.0`
+- `sqlite3` on `PATH` only for legacy mode
 - Codex CLI installed if you use the default `codex-cli` provider
 
 Supported platform status:
@@ -155,16 +175,22 @@ Supported platform status:
 
 The tool reads local Codex data from your machine.
 
+- With `--local-only`, session-derived text stays within the local collector and report renderer; no model is called
 - With `provider=codex-cli`, analysis is performed through your local Codex CLI session
 - With `provider=openai`, prompts are sent through the OpenAI Responses API
-- Generated reports may contain project paths, thread titles, summaries, and other local development context
+- Recognized credentials and home paths are redacted before caches, model prompts, JSON, and HTML, but pattern-based redaction cannot guarantee removal of every sensitive fact
+- Generated reports may still contain project names, thread titles, summaries, and other local development context
 
 Review `report.html` and `report.json` before sharing them.
+
+See [Privacy and trust](docs/privacy-and-trust.md) for coverage semantics, redaction limits, and deletion commands. See [App-server compatibility](docs/app-server-compatibility.md) for fallback behavior.
 
 ## Limitations
 
 - Rollout event schemas may drift across Codex versions
+- App-server response schemas may drift across Codex versions; explicit app-server mode surfaces protocol failures
 - Token estimates are conservative, not billing-accurate
+- Model-assisted narratives are interpretations; deterministic reports can also be incomplete when collection coverage is incomplete
 - The tool is designed around Codex local storage layout and is not a generic agent log analyzer
 - Windows support is not yet verified
 
@@ -208,3 +234,5 @@ npm run generate:test-report
 
 `npm run report:lite` runs a smaller local analysis preset for testing prompt and layout changes without paying the full 200/50 default cost.
 `npm run generate:test-report` writes a deterministic sample report page to `test-artifacts/sample-report/`.
+
+Analyzer changes must follow [the analyzer contribution contract](docs/contributing-analyzers.md).
