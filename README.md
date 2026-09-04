@@ -125,6 +125,25 @@ Use the OpenAI API instead of your local Codex CLI login:
 npx codex-session-insights --provider openai --api-key $OPENAI_API_KEY
 ```
 
+## Codex Plugin
+
+The package includes a validated `codex-insights` plugin with the `$insights` skill. The skill has three routes:
+
+- estimate model-assisted scope and cost;
+- create an offline/private local-only report;
+- create a model-assisted report after showing an estimate and receiving confirmation.
+
+For local development, link the CLI, add the containing marketplace, and install the plugin with the current Codex CLI:
+
+```bash
+npm link
+codex plugin marketplace add /path/to/marketplace-root
+codex plugin add codex-insights@personal
+codex plugin list --json
+```
+
+Bundled skills are discovered in new Codex sessions after installation. The skill does not share reports or apply recommendations without separate authorization.
+
 ## Defaults
 
 Current default analysis plan:
@@ -236,3 +255,4 @@ npm run generate:test-report
 `npm run generate:test-report` writes a deterministic sample report page to `test-artifacts/sample-report/`.
 
 Analyzer changes must follow [the analyzer contribution contract](docs/contributing-analyzers.md).
+Release and installation verification is listed in [the release checklist](docs/release-checklist.md). The proposed native command is documented as an unaccepted [upstream RFC](docs/upstream-rfc.md).
