@@ -43,7 +43,7 @@
     "plugin"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^7.8.6",
+    "@inquirer/prompts": "^8.7.0",
     "ora": "^8.2.0"
   },
   "devDependencies": {
