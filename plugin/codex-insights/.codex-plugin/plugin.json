@@ -1,0 +1,36 @@
+{
+  "name": "codex-insights",
+  "version": "0.2.3",
+  "description": "Generate privacy-aware reports from local Codex sessions.",
+  "author": {
+    "name": "Codex Session Insights contributors",
+    "url": "https://github.com/cosformula/codex-session-insights"
+  },
+  "homepage": "https://github.com/cosformula/codex-session-insights#readme",
+  "repository": "https://github.com/cosformula/codex-session-insights",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "insights",
+    "privacy",
+    "report"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Insights",
+    "shortDescription": "Analyze local Codex sessions with visible trust metadata.",
+    "longDescription": "Create deterministic local-only or model-assisted Codex session reports with privacy redaction, source provenance, and collection coverage.",
+    "developerName": "Codex Session Insights contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "Local session analysis",
+      "Deterministic reports",
+      "Model-assisted reports"
+    ],
+    "defaultPrompt": [
+      "Estimate a Codex Insights report.",
+      "Create a private local-only insights report.",
+      "Create a model-assisted insights report."
+    ]
+  }
+}

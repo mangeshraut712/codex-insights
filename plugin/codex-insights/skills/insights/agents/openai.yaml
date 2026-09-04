@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Insights"
+  short_description: "Create trust-aware Codex session reports"
+  default_prompt: "Use $insights to estimate or create a privacy-aware report from my local Codex sessions."

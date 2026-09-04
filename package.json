@@ -9,6 +9,7 @@
   "files": [
     "bin",
     "lib",
+    "plugin",
     "README.md"
   ],
   "engines": {
