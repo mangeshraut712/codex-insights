@@ -23,6 +23,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
+      - name: Install official plugin validator deps
+        run: python3 -m pip install --user pyyaml
       - run: npm test
       - run: npm run check
       - run: npm pack --dry-run

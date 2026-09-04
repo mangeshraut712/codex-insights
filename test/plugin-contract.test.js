@@ -31,14 +31,59 @@ test('plugin manifest and package publication metadata stay aligned', async () =
   assert.equal(marketplace.plugins[0].name, 'codex-insights')
   assert.equal(marketplace.plugins[0].source.path, './plugin/codex-insights')
   assert.equal(marketplace.plugins[0].source.source, 'local')
+  assert.equal(marketplace.plugins[0].category, 'Productivity')
+  assert.equal(marketplace.plugins[0].policy.installation, 'AVAILABLE')
+  assert.equal(marketplace.plugins[0].policy.authentication, 'ON_USE')
+  assert.deepEqual(marketplace.plugins[0].policy.products, ['CODEX'])
+  assert.equal(marketplace.interface.displayName, 'Codex Insights')
+  assert.notEqual(marketplace.name, 'openai-curated')
+
+  assert.equal(manifest.interface.developerName, 'mangeshraut712')
+  assert.notEqual(manifest.interface.developerName, 'OpenAI')
+  assert.deepEqual(manifest.interface.capabilities, ['Interactive', 'Read'])
+  assert.equal(manifest.interface.category, 'Productivity')
+  assert.equal(manifest.interface.brandColor, '#0F766E')
+  assert.equal(manifest.interface.websiteURL, 'https://github.com/mangeshraut712/codex-insights#readme')
+  assert.equal(
+    manifest.interface.privacyPolicyURL,
+    'https://github.com/mangeshraut712/codex-insights/blob/main/docs/privacy-policy.md',
+  )
+  assert.equal(
+    manifest.interface.termsOfServiceURL,
+    'https://github.com/mangeshraut712/codex-insights/blob/main/docs/terms.md',
+  )
+  assert.equal(manifest.interface.composerIcon, './assets/icon.png')
+  assert.equal(manifest.interface.logo, './assets/logo.png')
+  assert.equal(manifest.interface.logoDark, './assets/logo-dark.png')
+  assert.deepEqual(manifest.interface.screenshots, [])
+  assert.equal(manifest.hooks, undefined)
+  assert.equal(manifest.interface.brandColorDark, undefined)
+  assert.ok(Array.isArray(manifest.interface.defaultPrompt))
+  assert.ok(manifest.interface.defaultPrompt.length > 0)
+  assert.ok(manifest.interface.defaultPrompt.length <= 3)
+  for (const prompt of manifest.interface.defaultPrompt) {
+    assert.equal(typeof prompt, 'string')
+    assert.ok(prompt.trim().length > 0)
+    assert.ok(prompt.length <= 128, `defaultPrompt exceeds 128 characters: ${prompt}`)
+  }
+  assert.equal(manifest.author.email, 'mbr63@drexel.edu')
+  assert.doesNotMatch(JSON.stringify(manifest), /\[TODO:/)
+
+  for (const relativePath of ['assets/icon.png', 'assets/logo.png', 'assets/logo-dark.png']) {
+    await fs.access(new URL(relativePath, pluginRoot))
+  }
 })
 
 test('insights skill declares an invocable workflow without placeholders', async () => {
   const requiredFiles = [
     'skills/insights/SKILL.md',
+    'skills/insights/LICENSE.txt',
+    'skills/insights/assets/icon.png',
+    'skills/insights/assets/logo.png',
     'skills/insights/agents/openai.yaml',
     'skills/insights/references/report-modes.md',
     'scripts/run-insights.mjs',
+    'README.md',
   ]
 
   for (const relativePath of requiredFiles) {
@@ -68,6 +113,19 @@ test('insights skill declares an invocable workflow without placeholders', async
   assert.match(agent, /\$insights/)
   assert.match(agent, /allow_implicit_invocation: true/)
   assert.match(agent, /Do not share or upload/)
+  assert.match(agent, /brand_color: "#0F766E"/)
+  assert.match(skill, /version: "0\.3\.0"/)
+})
+
+test('plugin archive passes the official Codex plugin-creator validator', () => {
+  const result = spawnSync(
+    'python3',
+    [fileURLToPath(new URL('scripts/validate_plugin.py', root)), fileURLToPath(pluginRoot)],
+    { encoding: 'utf8' },
+  )
+
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+  assert.match(result.stdout, /Plugin validation passed/)
 })
 
 test('plugin wrapper falls back to the repository CLI', () => {

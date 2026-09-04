@@ -43,7 +43,7 @@ codex-session-insights --help
 codex plugin list
 ```
 
-`$insights` is ready when `codex-insights@codex-insights` is installed and enabled.
+`$insights` is ready when `codex-insights@codex-insights` is installed and enabled. Packaging matches the official Codex plugin contract; it is still a community marketplace listing. See [Plugin directory](plugin-directory.md).
 
 ## Update
 

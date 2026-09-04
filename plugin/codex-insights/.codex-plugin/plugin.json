@@ -1,9 +1,10 @@
 {
   "name": "codex-insights",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
+    "email": "mbr63@drexel.edu",
     "url": "https://github.com/mangeshraut712"
   },
   "homepage": "https://github.com/mangeshraut712/codex-insights#readme",
@@ -16,7 +17,8 @@
     "cli",
     "plugin",
     "privacy",
-    "local-first"
+    "local-first",
+    "agent-skills"
   ],
   "skills": "./skills/",
   "interface": {
@@ -26,14 +28,21 @@
     "developerName": "mangeshraut712",
     "category": "Productivity",
     "capabilities": [
-      "Local session analysis",
-      "Deterministic reports",
-      "Model-assisted reports"
+      "Interactive",
+      "Read"
     ],
+    "websiteURL": "https://github.com/mangeshraut712/codex-insights#readme",
+    "privacyPolicyURL": "https://github.com/mangeshraut712/codex-insights/blob/main/docs/privacy-policy.md",
+    "termsOfServiceURL": "https://github.com/mangeshraut712/codex-insights/blob/main/docs/terms.md",
     "defaultPrompt": [
-      "Use $insights to make a private local-only report of my recent Codex sessions.",
-      "Use $insights to estimate a model-assisted report.",
-      "Use $insights to create a model-assisted report after I confirm the estimate."
-    ]
+      "Make a private local-only report of my Codex sessions.",
+      "Estimate a model-assisted Codex insights report.",
+      "Create a model-assisted report after I confirm."
+    ],
+    "brandColor": "#0F766E",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo-dark.png",
+    "screenshots": []
   }
 }

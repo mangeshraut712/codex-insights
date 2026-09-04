@@ -12,3 +12,5 @@ github.token
 .env.*
 coverage/
 .DS_Store
+__pycache__/
+*.py[cod]

@@ -9,6 +9,9 @@ Start here: [Install the CLI and `$insights`](install.md). Product overview: [RE
 | [Install](install.md) | Codex marketplace, `npx`, one-line installer, update, uninstall |
 | [Claude Code `/insights`](claude-insights.md) | Official `/insights` behavior vs this `$insights` plugin |
 | [Privacy and trust](privacy-and-trust.md) | Redaction, coverage, deletion, analysis modes |
+| [Privacy policy](privacy-policy.md) | Directory-facing privacy statement |
+| [Terms](terms.md) | License, acceptable use, marketplace listing |
+| [Plugin directory](plugin-directory.md) | Official Codex plugin.json / marketplace contract |
 | [Security](../SECURITY.md) | How to report a vulnerability |
 | [App-server compatibility](app-server-compatibility.md) | `auto` / `app-server` / `legacy` collection |
 | [Interactive flow](interactive-flow.md) | CLI wizard vs `$insights` local-only default |

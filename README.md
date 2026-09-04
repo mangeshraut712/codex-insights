@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
 
-Private reports from your local Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI.
+Private reports from your local Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. The plugin follows the official Codex plugin ingestion contract (manifest, skill, storefront assets, `validate_plugin.py`). It is a community listing, not an OpenAI-published directory tab. See [docs/plugin-directory.md](docs/plugin-directory.md).
 
 This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md).
 
@@ -139,7 +139,7 @@ The tool reads local Codex data on your machine.
 - Recognized credentials and home paths are redacted before caches, prompts, JSON, and HTML. Pattern-based redaction cannot guarantee every sensitive fact is removed
 - Reports may still contain project names, thread titles, and other local development context
 
-Review `report.html` and `report.json` before sharing. See [Privacy and trust](docs/privacy-and-trust.md).
+Review `report.html` and `report.json` before sharing. See [Privacy and trust](docs/privacy-and-trust.md), the [privacy policy](docs/privacy-policy.md), and [terms](docs/terms.md).
 
 ## Limitations
 

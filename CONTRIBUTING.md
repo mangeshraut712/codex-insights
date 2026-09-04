@@ -17,12 +17,14 @@ This repository is maintained by **mangeshraut712** and **Cursor**. Do not enabl
 
 Keep the GitHub About box in sync with `package.json`: description, homepage (`https://github.com/mangeshraut712/codex-insights#readme`), and topics matching `package.json` `keywords`.
 
-Plugin/skill validators:
+Official Codex plugin-creator validator (vendored):
 
 ```bash
-python3 /path/to/skill-creator/scripts/quick_validate.py plugin/codex-insights/skills/insights
-python3 /path/to/plugin-creator/scripts/validate_plugin.py plugin/codex-insights
+python3 -m pip install pyyaml
+python3 scripts/validate_plugin.py plugin/codex-insights
 ```
+
+Directory packaging rules: [docs/plugin-directory.md](docs/plugin-directory.md). Do not set `developerName` to `OpenAI` or rename the marketplace to `openai-curated`.
 
 Owner pushes from a Cursor environment need [docs/github-auth.md](docs/github-auth.md):
 

@@ -1,9 +1,10 @@
 {
   "name": "codex-session-insights",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
+    "email": "mbr63@drexel.edu",
     "url": "https://github.com/mangeshraut712"
   },
   "type": "module",
@@ -33,6 +34,7 @@
     "report": "node ./bin/codex-insights.js report",
     "report:lite": "node ./bin/codex-insights.js --preset lite --yes",
     "generate:test-report": "node ./scripts/generate-test-report.mjs",
+    "generate:plugin-assets": "node ./scripts/generate-plugin-assets.mjs",
     "test": "node --test",
     "check": "node ./scripts/check.mjs",
     "typecheck": "tsc --noEmit",
@@ -50,7 +52,8 @@
     "javascript",
     "html-report",
     "session-analysis",
-    "developer-tools"
+    "developer-tools",
+    "agent-skills"
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.8.6",
