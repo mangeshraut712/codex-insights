@@ -1,6 +1,6 @@
 # Contributing
 
-Read [docs/contributing-analyzers.md](docs/contributing-analyzers.md) before changing collectors, redaction, or report metadata. User-facing install and usage live in [README.md](README.md) and [docs/install.md](docs/install.md).
+Read [docs/contributing-analyzers.md](docs/contributing-analyzers.md) before changing collectors, redaction, or report metadata. User-facing install and usage live in [README.md](README.md) and [docs/install.md](docs/install.md). Claude Code `/insights` mapping: [docs/claude-insights.md](docs/claude-insights.md).
 
 ```bash
 npm ci
@@ -9,7 +9,11 @@ npm run generate:test-report
 bash scripts/install.sh
 ```
 
-GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Node 20, 22, and 24. Keep README, `docs/install.md`, and the `$insights` skill in sync when install commands or default modes change. Vulnerability reports go to [SECURITY.md](SECURITY.md).
+GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Node 20, 22, and 24. Keep README, `docs/install.md`, `docs/claude-insights.md`, and the `$insights` skill in sync when install commands or default modes change. Vulnerability reports go to [SECURITY.md](SECURITY.md).
+
+## Maintainers
+
+This repository is maintained by **mangeshraut712** and **Cursor**. Do not enable Dependabot or other GitHub Apps that open bot pull requests. Do not merge `dependabot[bot]` or `cursor[bot]` commits. Dependency and Actions bumps happen in maintainer commits after review. TypeScript stays on 5.x until a maintainer chooses otherwise.
 
 Plugin/skill validators:
 

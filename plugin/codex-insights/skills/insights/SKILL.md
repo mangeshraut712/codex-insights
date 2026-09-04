@@ -7,6 +7,8 @@ metadata:
 
 # Codex Insights
 
+Inspired by Claude Code `/insights`: a report on **how you work** on this machine, not a billing statement. Codex has no native `/insights`; this skill is `$insights`. Default is **local-only** (zero model calls). Claude’s `/insights` is model-assisted; we do not copy that default.
+
 Run the bundled wrapper at `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`. Do not copy session data into the conversation.
 
 ## Choose a route
@@ -21,12 +23,14 @@ If the user does not name a mode, use **local-only** (private, zero model calls)
 
 Honor user-supplied scope, output, language, data-source, archive, and subagent flags. Keep `--data-source auto` unless they ask to fail closed on app-server incompatibility (`--data-source app-server`) or to force the legacy reader.
 
+Defaults that match Claude Code `/insights` population rules: this machine only, `--limit 200`, skip very short sessions, HTML header `analyzed sessions (discovered total)` when some are left out.
+
 Read `references/report-modes.md` only when choosing flags or explaining Trust & Coverage.
 
 ## After a report
 
-- Give the HTML and JSON paths and invite the user to open the HTML file.
-- Summarize Trust & Coverage (source, analyzed vs discovered, warnings, analysis mode, redactions).
+- Give the HTML and JSON paths (`~/.codex/usage-data/report.html` and `report.json` unless `--out-dir` was set) and invite the user to open the HTML file. Mention that a timestamped copy is kept next to the latest files, and copies older than 30 days are removed.
+- Summarize Trust & Coverage (source, analyzed vs discovered, warnings, analysis mode, redactions). Use the `N sessions (M total)` phrasing when discovered exceeds analyzed.
 - Label deterministic findings vs model interpretations.
 - Do not paste transcript-derived report contents unless the user asks.
 - Do not share, upload, publish, or send a report without explicit authorization.

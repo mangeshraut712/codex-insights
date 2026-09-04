@@ -2,14 +2,14 @@
 
 ## Request
 
-Reserve a native `/insights` entry point in Codex for privacy-aware analysis of a user's own session history. The current community plugin is installed as `$insights`:
+Reserve a native `/insights` entry point in Codex for privacy-aware analysis of a user's own session history. Inspiration is Claude Code [`/insights`](https://code.claude.com/docs/en/costs): how you work on this machine, up to 200 sessions, skip short ones, HTML under a local `usage-data` directory. The current community plugin is installed as `$insights`:
 
 ```bash
 codex plugin marketplace add mangeshraut712/codex-insights
 codex plugin add codex-insights@codex-insights
 ```
 
-Unspecified `$insights` requests default to local-only analysis. This RFC proposes a product-owned command without claiming acceptance or a delivery commitment.
+Unspecified `$insights` requests default to local-only analysis (stricter than Claude’s model-assisted default). This RFC proposes a product-owned command without claiming acceptance or a delivery commitment.
 
 ## User value
 

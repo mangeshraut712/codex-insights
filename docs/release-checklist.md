@@ -24,7 +24,8 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 
 - Run a bounded live app-server report with `--local-only --data-source app-server --no-open`.
 - Run a synthetic legacy report with `--local-only --data-source legacy --no-open`.
-- Confirm both runs make zero model calls and write usable HTML and JSON.
+- Confirm both runs make zero model calls and write usable HTML and JSON, including a timestamped copy next to `report.html`.
+- Confirm the HTML header uses `analyzed sessions (discovered total)` when coverage leaves sessions out.
 - Confirm `auto` records any fallback instead of silently changing provenance.
 
 ## Local installation
@@ -45,7 +46,8 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 ## Contribution
 
 - Review the full branch against the design and privacy contract.
-- Confirm README, `docs/install.md`, and `$insights` still describe the same install and default mode.
+- Confirm README, `docs/install.md`, `docs/claude-insights.md`, and `$insights` still describe the same install and default mode.
+- Do not enable Dependabot or merge bot-authored dependency PRs.
 - Push the verified branch and confirm ahead/behind parity.
 - Open or update the community pull request with behavior, tests, privacy limits, compatibility, and non-goals.
 - Link the `/insights` RFC as a proposal only; do not claim upstream acceptance.

@@ -6,7 +6,9 @@
 
 Private reports from your local Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI.
 
-This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). `--local-only` is the private default for `$insights`: deterministic metrics and **zero model calls**. Use `--yes` only when you want model-assisted narratives.
+This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md).
+
+`--local-only` is the private default for `$insights`: deterministic metrics and **zero model calls**. Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
 
 ![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
 
@@ -45,20 +47,20 @@ codex-session-insights --estimate-only   # token range, no generation
 codex-session-insights --yes             # model-assisted after you confirm
 ```
 
-Reports write to:
+Reports write to `~/.codex/usage-data/` (Claude analogue: `~/.claude/usage-data/`):
 
-- `~/.codex/usage-data/report.html`
-- `~/.codex/usage-data/report.json`
+- `report.html` / `report.json` — latest run
+- `report-<stamp>.html` / `report-<stamp>.json` — timestamped copies; copies older than 30 days are removed on the next write
 
-HTML sections: Trust & Coverage, At a Glance, What You Work On, How You Use Codex, Impressive Things You Did, Where Things Go Wrong, Features to Try, On the Horizon, One More Thing.
+HTML header coverage matches Claude: `200 sessions (412 total)` when some discovered sessions are left out (short threads, source filters, or the 200-session cap). HTML sections: Trust & Coverage, At a Glance, What You Work On, How You Use Codex, Impressive Things You Did, Where Things Go Wrong, Features to Try, On the Horizon, One More Thing.
 
 The interactive CLI flow is:
 
-1. Read your local Codex thread index
+1. Read your local Codex thread index on this machine
 2. Estimate likely analysis token usage (skipped with `--local-only`)
 3. Confirm the plan in a TTY (skipped with `--yes` or `--local-only`)
-4. Write HTML and JSON
-5. Try to open the HTML report
+4. Write HTML and JSON, plus a timestamped copy
+5. Try to open the latest HTML report
 
 ## Usage
 
@@ -155,4 +157,4 @@ npm run generate:test-report
 bash scripts/install.sh
 ```
 
-Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analyzers.md). A native `/insights` command is an unaccepted [proposal](docs/upstream-rfc.md), not a shipped Codex feature.
+Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analyzers.md). A native `/insights` command is an unaccepted [proposal](docs/upstream-rfc.md), not a shipped Codex feature. Maintainers are **mangeshraut712** and **Cursor** only; automated GitHub dependency bots are not used.

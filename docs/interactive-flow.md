@@ -2,7 +2,7 @@
 
 This document describes the **CLI wizard** for `codex-session-insights`.
 
-`$insights` does **not** run this wizard. After [install](install.md), an unspecified `$insights` request uses `--local-only` (zero model calls). Ask for an estimate or a model-assisted report to leave that default.
+`$insights` does **not** run this wizard. After [install](install.md), an unspecified `$insights` request uses `--local-only` (zero model calls). That is stricter than Claude Code `/insights`. Ask for an estimate or a model-assisted report to leave that default.
 
 The CLI goal is to make model-assisted generation feel controlled and reviewable before spend begins.
 

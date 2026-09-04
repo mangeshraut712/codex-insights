@@ -55,6 +55,8 @@ test('insights skill declares an invocable workflow without placeholders', async
   assert.match(skill, /local-only/i)
   assert.match(skill, /model-assisted/i)
   assert.match(skill, /does not name a mode, use \*\*local-only\*\*/)
+  assert.match(skill, /Claude Code/)
+  assert.match(skill, /\$insights/)
   assert.match(agent, /\$insights/)
   assert.match(agent, /allow_implicit_invocation: true/)
 })

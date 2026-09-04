@@ -3,7 +3,12 @@ import assert from 'node:assert/strict'
 import os from 'node:os'
 import path from 'node:path'
 import { promises as fs } from 'node:fs'
-import { buildReport, renderTerminalSummary, writeReportFiles } from '../lib/report.js'
+import {
+  buildReport,
+  formatReportCopyStamp,
+  renderTerminalSummary,
+  writeReportFiles,
+} from '../lib/report.js'
 import { createSampleReport } from './fixtures/sample-report.js'
 
 function makeSummary(overrides = {}) {
@@ -136,6 +141,7 @@ test('buildReport aggregates summary metrics and terminal output', () => {
 
   const terminal = renderTerminalSummary(report)
   assert.match(terminal, /Codex Insights/)
+  assert.match(terminal, /2 sessions \(4 total\)/)
   assert.match(terminal, /Analysis cost: 1.3K tokens across 5 model calls/)
   assert.match(terminal, /Estimate vs Actual: 1.2K tokens -> 0.9K tokens \(fresh\)/)
   assert.match(terminal, /Top Projects:/)
@@ -213,9 +219,12 @@ test('writeReportFiles writes JSON and HTML outputs', async () => {
     estimatedRange: { low: 800, high: 1350 },
   }
 
-  const { jsonPath, htmlPath } = await writeReportFiles(report, { outDir: tempDir })
+  const { jsonPath, htmlPath, archiveHtmlPath, archiveJsonPath } = await writeReportFiles(report, {
+    outDir: tempDir,
+  })
   const html = await fs.readFile(htmlPath, 'utf8')
   const json = JSON.parse(await fs.readFile(jsonPath, 'utf8'))
+  const stamp = formatReportCopyStamp(json.metadata.generatedAt)
 
   assert.match(html, /At a Glance/)
   assert.match(html, /Strong editing loops\./)
@@ -223,6 +232,10 @@ test('writeReportFiles writes JSON and HTML outputs', async () => {
   assert.match(html, /Paste into Codex:/)
   assert.match(html, /Estimate vs Actual/)
   assert.equal(json.insights.at_a_glance.quick_wins, 'Add more repo memory.')
+  assert.equal(path.basename(archiveHtmlPath), `report-${stamp}.html`)
+  assert.equal(path.basename(archiveJsonPath), `report-${stamp}.json`)
+  assert.equal(await fs.readFile(archiveHtmlPath, 'utf8'), html)
+  assert.equal(JSON.parse(await fs.readFile(archiveJsonPath, 'utf8')).schemaVersion, 2)
 })
 
 test('local-only HTML labels deterministic analysis and renders coverage warnings', async () => {
@@ -255,7 +268,10 @@ test('local-only HTML labels deterministic analysis and renders coverage warning
   assert.match(html, /Local-only/)
   assert.match(html, /Deterministic/)
   assert.match(html, /Codex app-server unavailable/)
+  assert.match(html, /4 sessions \(8 total\)/)
+  assert.match(html, /Very short sessions were skipped\./)
   assert.match(terminal, /warning: Codex app-server unavailable/)
+  assert.match(terminal, /4 sessions \(8 total\)/)
   assert.equal(json.analysisMode, 'local-only')
   assert.equal(json.metadata.coverage.failedToRead, 1)
   assert.equal(json.insights.basis, 'deterministic')
@@ -297,4 +313,26 @@ test('writeReportFiles redacts final JSON and HTML boundaries', async () => {
   assert.match(serialized, /\[REDACTED_API_KEY\]/)
   assert.doesNotMatch(JSON.stringify(sanitizedReport), new RegExp(homeDir))
   assert.doesNotMatch(JSON.stringify(sanitizedReport), new RegExp(secret))
+})
+
+test('writeReportFiles keeps the latest report and deletes copies older than 30 days', async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-archive-'))
+  const staleHtml = path.join(tempDir, 'report-2026-02-01T120000Z.html')
+  const staleJson = path.join(tempDir, 'report-2026-02-01T120000Z.json')
+  await fs.writeFile(staleHtml, '<html>stale</html>', 'utf8')
+  await fs.writeFile(staleJson, '{"stale":true}', 'utf8')
+
+  const report = createSampleReport()
+  report.metadata.generatedAt = '2026-04-04T12:00:00.000Z'
+  const { htmlPath, archiveHtmlPath } = await writeReportFiles(report, {
+    outDir: tempDir,
+    now: '2026-04-04T12:00:00.000Z',
+    retentionDays: 30,
+  })
+
+  await assert.rejects(fs.access(staleHtml), { code: 'ENOENT' })
+  await assert.rejects(fs.access(staleJson), { code: 'ENOENT' })
+  await fs.access(htmlPath)
+  await fs.access(archiveHtmlPath)
+  assert.equal(path.basename(archiveHtmlPath), 'report-2026-04-04T120000Z.html')
 })

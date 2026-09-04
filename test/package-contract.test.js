@@ -7,6 +7,7 @@ const REQUIRED_DOCS = [
   'docs/app-server-compatibility.md',
   'docs/contributing-analyzers.md',
   'docs/install.md',
+  'docs/claude-insights.md',
   'docs/github-auth.md',
   'docs/README.md',
   'CONTRIBUTING.md',
@@ -57,6 +58,26 @@ test('install and owner-auth scripts stay token-free and documented', async () =
   assert.doesNotMatch(readme, /feat\/codex-insights-plugin-hardening/)
   assert.match(readme, /cosformula\/codex-session-insights/)
   assert.match(readme, /actions\/workflows\/ci.yml/)
+  assert.match(readme, /Claude Code/)
+  assert.match(readme, /\/insights/)
+  assert.match(readme, /docs\/claude-insights\.md/)
+  assert.match(readme, /automated GitHub dependency bots are not used/)
+  assert.doesNotMatch(readme, /dependabot/i)
+
+  await assert.rejects(fs.access(new URL('../.github/dependabot.yml', import.meta.url)), {
+    code: 'ENOENT',
+  })
+
+  const contributing = await fs.readFile(new URL('../CONTRIBUTING.md', import.meta.url), 'utf8')
+  assert.match(contributing, /mangeshraut712/)
+  assert.match(contributing, /Cursor/)
+  assert.match(contributing, /Do not enable Dependabot/)
+
+  const claudeDocs = await fs.readFile(new URL('../docs/claude-insights.md', import.meta.url), 'utf8')
+  assert.match(claudeDocs, /code\.claude\.com\/docs\/en\/costs/)
+  assert.match(claudeDocs, /200 sessions \(412 total\)/)
+  assert.match(claudeDocs, /cleanupPeriodDays/)
+  assert.match(claudeDocs, /Local-only by default/)
 
   const workflow = await fs.readFile(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8')
   assert.match(workflow, /npm test/)

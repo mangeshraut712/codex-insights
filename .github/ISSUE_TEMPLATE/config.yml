@@ -3,6 +3,9 @@ contact_links:
   - name: Install $insights
     url: https://github.com/mangeshraut712/codex-insights/blob/main/docs/install.md
     about: Marketplace, npx, and one-line installer
+  - name: Claude Code /insights mapping
+    url: https://github.com/mangeshraut712/codex-insights/blob/main/docs/claude-insights.md
+    about: Official Claude /insights vs this Codex plugin
   - name: Privacy and trust
     url: https://github.com/mangeshraut712/codex-insights/blob/main/docs/privacy-and-trust.md
     about: Redaction, coverage, and deletion

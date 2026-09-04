@@ -9,7 +9,7 @@ codex plugin marketplace add mangeshraut712/codex-insights
 codex plugin add codex-insights@codex-insights
 ```
 
-Start a **new** Codex thread and type `$insights`. With no extra wording it builds a **local-only** report (zero model calls). Ask for an estimate or a model-assisted report when you want those routes.
+Start a **new** Codex thread and type `$insights`. With no extra wording it builds a **local-only** report (zero model calls). That is stricter than Claude Code `/insights`, which is model-assisted. Ask for an estimate or a model-assisted report when you want those routes. See [Claude Code `/insights` mapping](claude-insights.md).
 
 ## CLI
 
@@ -68,4 +68,4 @@ codex-session-insights --local-only
 codex-session-insights --estimate-only
 ```
 
-Model-assisted CLI runs still estimate first unless you pass `--yes`. See [Privacy and trust](privacy-and-trust.md) before sharing a report.
+Model-assisted CLI runs still estimate first unless you pass `--yes`. Latest reports land in `~/.codex/usage-data/report.html` with a timestamped copy beside them. See [Privacy and trust](privacy-and-trust.md) before sharing a report.

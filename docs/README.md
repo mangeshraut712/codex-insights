@@ -7,6 +7,7 @@ Start here: [Install the CLI and `$insights`](install.md). Product overview: [RE
 | Guide | Contents |
 | --- | --- |
 | [Install](install.md) | Codex marketplace, `npx`, one-line installer, update, uninstall |
+| [Claude Code `/insights`](claude-insights.md) | Official `/insights` behavior vs this `$insights` plugin |
 | [Privacy and trust](privacy-and-trust.md) | Redaction, coverage, deletion, analysis modes |
 | [Security](../SECURITY.md) | How to report a vulnerability |
 | [App-server compatibility](app-server-compatibility.md) | `auto` / `app-server` / `legacy` collection |
@@ -25,6 +26,6 @@ Start here: [Install the CLI and `$insights`](install.md). Product overview: [RE
 
 | Guide | Contents |
 | --- | --- |
-| [GitHub auth](github-auth.md) | Owner re-oauth so pushes stay HTTP 200, not `cursor[bot]` 403 |
+| [GitHub auth](github-auth.md) | Owner re-oauth so pushes stay HTTP 200 as mangeshraut712, not `cursor[bot]` 403 |
 
 Historical design notes from the plugin hardening work live under `superpowers/`. They are not the current install instructions.
