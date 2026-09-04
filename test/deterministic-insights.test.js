@@ -31,3 +31,12 @@ test('buildDeterministicInsights states limitations instead of inferring outcome
   assert.match(insights.interaction_style.narrative, /does not infer goal completion/)
   assert.match(insights.fun_ending.detail, /No model interpreted/)
 })
+
+test('buildDeterministicInsights uses singular grammar for one analyzed session', () => {
+  const report = createSampleReport()
+  report.metadata.threadCount = 1
+
+  const insights = buildDeterministicInsights(report)
+
+  assert.match(insights.at_a_glance.whats_working, /^1 substantive session was analyzed\./)
+})
