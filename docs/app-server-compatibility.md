@@ -1,6 +1,8 @@
 # Codex app-server compatibility
 
-The default `--data-source auto` mode first uses the documented Codex app-server JSONL protocol. The adapter initializes a read-only stdio connection and calls only `thread/list` and `thread/read`. It does not start turns, mutate threads, edit repositories, or change Codex configuration.
+The default `--data-source auto` mode first uses the documented Codex app-server JSONL protocol. `$insights` keeps that default unless you ask to fail closed (`app-server`) or to force the legacy reader.
+
+The adapter initializes a read-only stdio connection and calls only `thread/list` and `thread/read`. It does not start turns, mutate threads, edit repositories, or change Codex configuration.
 
 If app-server startup or protocol handling fails in `auto` mode, the CLI uses the legacy SQLite and rollout reader and adds the reason to Trust & Coverage. An explicit `--data-source app-server` run fails instead of hiding incompatibility. `--data-source legacy` skips app-server startup.
 

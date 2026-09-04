@@ -1,5 +1,7 @@
 # GitHub auth for owner pushes
 
+Users installing `$insights` do not need this. It is only for pushing to `mangeshraut712/codex-insights` from a Cursor environment.
+
 Pushes to `mangeshraut712/*` return HTTP 403 when git is rewritten to `cursor[bot]`. The owner API is healthy: `GET /user` and `GET /repos/mangeshraut712/codex-insights` return **HTTP 200**, login `mangeshraut712`, and `permissions.push` is true.
 
 Cursor environments rewrite every `https://github.com/` URL to an `x-access-token` for `cursor[bot]`. That token can fetch public repositories. It cannot push this repository.

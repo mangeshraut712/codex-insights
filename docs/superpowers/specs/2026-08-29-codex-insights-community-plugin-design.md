@@ -1,5 +1,7 @@
 # Codex Insights Community Plugin Design
 
+> Historical design notes. Current install and usage: [docs/install.md](../install.md) and the [root README](../../README.md). `$insights` defaults to local-only; distribute with `codex plugin marketplace add mangeshraut712/codex-insights`.
+
 ## Goal
 
 Turn `codex-session-insights` into a trustworthy, locally installable Codex skill and plugin that analyzes Codex work without misattributing subagents, hiding sampling gaps, leaking common secrets, or requiring model calls for basic metrics.
@@ -33,7 +35,14 @@ Reports include a coverage and trust section with data source, fallback warnings
 
 ### Distribution
 
-The repository contains a valid `codex-insights` plugin with an `insights` skill. The skill runs the CLI in estimate, local-only, or model-assisted mode while preserving authorization boundaries. It is validated with the official local plugin/skill validators, installed in the personal marketplace, and exercised from a new Codex task boundary.
+The repository contains a valid `codex-insights` plugin with an `insights` skill. Public install:
+
+```bash
+codex plugin marketplace add mangeshraut712/codex-insights
+codex plugin add codex-insights@codex-insights
+```
+
+Unspecified `$insights` requests use `--local-only`. Model-assisted runs still estimate first and wait for confirmation. Official plugin/skill validators must pass.
 
 ## Architecture
 

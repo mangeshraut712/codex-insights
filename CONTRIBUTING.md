@@ -1,18 +1,20 @@
 # Contributing
 
-Read [docs/contributing-analyzers.md](docs/contributing-analyzers.md) before changing collectors, redaction, or report metadata.
+Read [docs/contributing-analyzers.md](docs/contributing-analyzers.md) before changing collectors, redaction, or report metadata. User-facing install and usage live in [README.md](README.md) and [docs/install.md](docs/install.md).
 
 ```bash
 npm ci
 npm test
 npm run check
 npm run generate:test-report
+bash scripts/install.sh
 ```
 
-Install `$insights` with [docs/install.md](docs/install.md). From a checkout:
+Keep README, `docs/install.md`, and the `$insights` skill in sync when install commands or default modes change. Plugin/skill validators:
 
 ```bash
-bash scripts/install.sh
+python3 /path/to/skill-creator/scripts/quick_validate.py plugin/codex-insights/skills/insights
+python3 /path/to/plugin-creator/scripts/validate_plugin.py plugin/codex-insights
 ```
 
 Owner pushes from a Cursor environment need [docs/github-auth.md](docs/github-auth.md):

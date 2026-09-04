@@ -9,13 +9,15 @@ codex plugin marketplace add mangeshraut712/codex-insights
 codex plugin add codex-insights@codex-insights
 ```
 
-Start a **new** Codex thread and type `$insights`. With no extra flags it builds a **local-only** report (zero model calls).
+Start a **new** Codex thread and type `$insights`. With no extra wording it builds a **local-only** report (zero model calls). Ask for an estimate or a model-assisted report when you want those routes.
 
 ## CLI
 
 ```bash
 npx github:mangeshraut712/codex-insights --local-only
 ```
+
+After a global install, the same flags work as `codex-session-insights`.
 
 ## Both in one step
 
@@ -63,6 +65,7 @@ npm uninstall --global codex-session-insights
 
 ```bash
 codex-session-insights --local-only
+codex-session-insights --estimate-only
 ```
 
-Estimate a model-assisted run with `--estimate-only` before generating narratives.
+Model-assisted CLI runs still estimate first unless you pass `--yes`. See [Privacy and trust](privacy-and-trust.md) before sharing a report.

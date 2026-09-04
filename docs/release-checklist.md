@@ -46,6 +46,7 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 ## Contribution
 
 - Review the full branch against the design and privacy contract.
+- Confirm README, `docs/install.md`, and `$insights` still describe the same install and default mode.
 - Push the verified branch and confirm ahead/behind parity.
 - Open or update the community pull request with behavior, tests, privacy limits, compatibility, and non-goals.
 - Link the `/insights` RFC as a proposal only; do not claim upstream acceptance.

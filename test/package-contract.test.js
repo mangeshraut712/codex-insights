@@ -48,6 +48,9 @@ test('install and owner-auth scripts stay token-free and documented', async () =
   assert.match(installDocs, /npx github:mangeshraut712\/codex-insights/)
   assert.match(readme, /codex plugin marketplace add mangeshraut712\/codex-insights/)
   assert.match(readme, /HEAD\/scripts\/install\.sh/)
+  assert.match(readme, /npx github:mangeshraut712\/codex-insights/)
+  assert.doesNotMatch(readme, /feat\/codex-insights-plugin-hardening/)
+  assert.doesNotMatch(readme, /npx --yes github:/)
 
   assert.match(setup, /EXPECTED_LOGIN:-mangeshraut712/)
   assert.match(setup, /identity insteadOf/)

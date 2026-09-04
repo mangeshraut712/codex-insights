@@ -1,5 +1,7 @@
 # Codex Insights Community Plugin Implementation Plan
 
+> Historical task plan. Current install and usage: [docs/install.md](../install.md) and the [root README](../../README.md). Do not follow the `npm link` / personal-marketplace steps below for public install.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ship a tested, locally installed Codex Insights skill/plugin with documented app-server collection, deterministic local-only reports, representative sampling, privacy redaction, and visible coverage.

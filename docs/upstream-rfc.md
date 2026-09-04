@@ -2,7 +2,14 @@
 
 ## Request
 
-Reserve a native `/insights` entry point in Codex for privacy-aware analysis of a user's own session history. The current community plugin uses `$insights`; this document proposes a product-owned command without claiming acceptance or a delivery commitment.
+Reserve a native `/insights` entry point in Codex for privacy-aware analysis of a user's own session history. The current community plugin is installed as `$insights`:
+
+```bash
+codex plugin marketplace add mangeshraut712/codex-insights
+codex plugin add codex-insights@codex-insights
+```
+
+Unspecified `$insights` requests default to local-only analysis. This RFC proposes a product-owned command without claiming acceptance or a delivery commitment.
 
 ## User value
 

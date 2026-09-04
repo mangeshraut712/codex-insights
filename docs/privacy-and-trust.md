@@ -1,6 +1,8 @@
 # Privacy and trust
 
-Codex Session Insights reads session metadata and transcript excerpts on the machine where the CLI runs. It does not upload reports by itself. The selected analysis mode determines whether session-derived text is passed to a model.
+Codex Session Insights reads session metadata and transcript excerpts on the machine where the CLI or `$insights` runs. It does not upload reports by itself. The selected analysis mode determines whether session-derived text is passed to a model.
+
+Install with [docs/install.md](install.md). In Codex, `$insights` defaults to `--local-only` unless you ask for an estimate or a model-assisted report.
 
 ## Analysis modes
 

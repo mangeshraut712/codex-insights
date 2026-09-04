@@ -33,3 +33,5 @@ npm run generate:test-report
 ```
 
 Do not add a performance percentage without a reproducible benchmark and documented baseline. Do not make a model call from `--local-only`; inject or stub model boundaries in orchestration tests so this remains enforceable.
+
+Skill or install-command changes must update [README.md](../README.md), [docs/install.md](install.md), and `plugin/codex-insights/skills/insights/SKILL.md` together.

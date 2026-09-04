@@ -1,8 +1,10 @@
-# Interactive Report Flow
+# Interactive report flow
 
-This document defines the interactive CLI flow for `codex-session-insights`.
+This document describes the **CLI wizard** for `codex-session-insights`.
 
-The goal is to make report generation feel controlled and reviewable before model spend begins.
+`$insights` does **not** run this wizard. After [install](install.md), an unspecified `$insights` request uses `--local-only` (zero model calls). Ask for an estimate or a model-assisted report to leave that default.
+
+The CLI goal is to make model-assisted generation feel controlled and reviewable before spend begins.
 
 ## Product Goal
 
@@ -104,11 +106,11 @@ Optional:
 Choose model preset:
 
 - Balanced
-  - facet: `gpt-5.3-codex-spark`
-  - fast sections: `gpt-5.3-codex-spark`
+  - facet: `gpt-5.4-mini`
+  - fast sections: `gpt-5.4-mini`
   - final sections: `gpt-5.4`
 - Cheaper
-  - push more section work to `gpt-5.3-codex-spark`
+  - push more section work to `gpt-5.4-mini`
 - Higher Quality
   - use `gpt-5.4` more aggressively
 
