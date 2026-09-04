@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Install $insights
+    url: https://github.com/mangeshraut712/codex-insights/blob/main/docs/install.md
+    about: Marketplace, npx, and one-line installer
+  - name: Privacy and trust
+    url: https://github.com/mangeshraut712/codex-insights/blob/main/docs/privacy-and-trust.md
+    about: Redaction, coverage, and deletion

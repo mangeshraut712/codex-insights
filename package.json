@@ -1,7 +1,7 @@
 {
   "name": "codex-session-insights",
   "version": "0.2.3",
-  "description": "Generate a report analyzing your Codex sessions.",
+  "description": "Generate privacy-aware reports from local Codex sessions.",
   "type": "module",
   "bin": {
     "codex-session-insights": "bin/codex-insights.js"
@@ -10,7 +10,8 @@
     "bin",
     "lib",
     "plugin",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=18.17.0"
@@ -18,25 +19,28 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cosformula/codex-session-insights.git"
+    "url": "git+https://github.com/mangeshraut712/codex-insights.git"
   },
-  "homepage": "https://github.com/cosformula/codex-session-insights#readme",
+  "homepage": "https://github.com/mangeshraut712/codex-insights#readme",
   "bugs": {
-    "url": "https://github.com/cosformula/codex-session-insights/issues"
+    "url": "https://github.com/mangeshraut712/codex-insights/issues"
   },
   "scripts": {
     "report": "node ./bin/codex-insights.js report",
     "report:lite": "node ./bin/codex-insights.js --preset lite --yes",
     "generate:test-report": "node ./scripts/generate-test-report.mjs",
     "test": "node --test",
-    "check": "node --check ./bin/codex-insights.js && node --check ./lib/app-server-client.js && node --check ./lib/app-server-data.js && node --check ./lib/cli.js && node --check ./lib/codex-data.js && node --check ./lib/deterministic-insights.js && node --check ./lib/llm-insights.js && node --check ./lib/model-provider.js && node --check ./lib/redaction.js && node --check ./lib/report.js && node --check ./lib/sampling.js && node --check ./lib/thread-filter.js && npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "check": "node ./scripts/check.mjs",
+    "typecheck": "tsc --noEmit",
+    "ci": "npm test && npm run check && npm pack --dry-run"
   },
   "keywords": [
     "codex",
     "insights",
     "cli",
-    "report"
+    "report",
+    "privacy",
+    "plugin"
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.8.6",

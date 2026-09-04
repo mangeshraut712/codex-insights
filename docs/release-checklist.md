@@ -11,8 +11,7 @@
 
 ```bash
 npm ci
-npm test
-npm run check
+npm run ci
 npm run generate:test-report
 npm pack --dry-run
 python3 /path/to/skill-creator/scripts/quick_validate.py plugin/codex-insights/skills/insights

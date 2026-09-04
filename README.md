@@ -1,11 +1,12 @@
 # Codex Session Insights
 
+[![CI](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
 
 Private reports from your local Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI.
 
-`--local-only` is the private default for `$insights`: deterministic metrics and **zero model calls**. Use `--yes` only when you want model-assisted narratives.
+This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). `--local-only` is the private default for `$insights`: deterministic metrics and **zero model calls**. Use `--yes` only when you want model-assisted narratives.
 
 ![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
 
@@ -149,8 +150,7 @@ User and contributor guides: [docs/README.md](docs/README.md).
 
 ```bash
 npm ci
-npm test
-npm run check
+npm run ci
 npm run generate:test-report
 bash scripts/install.sh
 ```

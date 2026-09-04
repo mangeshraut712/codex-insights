@@ -8,6 +8,7 @@ Start here: [Install the CLI and `$insights`](install.md). Product overview: [RE
 | --- | --- |
 | [Install](install.md) | Codex marketplace, `npx`, one-line installer, update, uninstall |
 | [Privacy and trust](privacy-and-trust.md) | Redaction, coverage, deletion, analysis modes |
+| [Security](../SECURITY.md) | How to report a vulnerability |
 | [App-server compatibility](app-server-compatibility.md) | `auto` / `app-server` / `legacy` collection |
 | [Interactive flow](interactive-flow.md) | CLI wizard vs `$insights` local-only default |
 

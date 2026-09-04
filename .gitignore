@@ -7,4 +7,8 @@ tmp-report/
 tmp-report-usage/
 test-artifacts/
 github.token
+*.tgz
+.env
+.env.*
+coverage/
 .DS_Store

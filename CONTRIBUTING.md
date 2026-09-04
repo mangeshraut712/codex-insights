@@ -4,13 +4,14 @@ Read [docs/contributing-analyzers.md](docs/contributing-analyzers.md) before cha
 
 ```bash
 npm ci
-npm test
-npm run check
+npm run ci
 npm run generate:test-report
 bash scripts/install.sh
 ```
 
-Keep README, `docs/install.md`, and the `$insights` skill in sync when install commands or default modes change. Plugin/skill validators:
+GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Node 20, 22, and 24. Keep README, `docs/install.md`, and the `$insights` skill in sync when install commands or default modes change. Vulnerability reports go to [SECURITY.md](SECURITY.md).
+
+Plugin/skill validators:
 
 ```bash
 python3 /path/to/skill-creator/scripts/quick_validate.py plugin/codex-insights/skills/insights

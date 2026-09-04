@@ -16,6 +16,8 @@ test('plugin manifest and package publication metadata stay aligned', async () =
   assert.equal(manifest.name, 'codex-insights')
   assert.equal(manifest.version, packageJson.version.split('-')[0])
   assert.equal(manifest.license, 'MIT')
+  assert.equal(manifest.homepage, 'https://github.com/mangeshraut712/codex-insights#readme')
+  assert.equal(manifest.repository, 'https://github.com/mangeshraut712/codex-insights')
   assert.equal(manifest.skills, './skills/')
   assert.equal(manifest.mcpServers, undefined)
   assert.equal(manifest.apps, undefined)
