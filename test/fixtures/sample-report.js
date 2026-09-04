@@ -83,7 +83,19 @@ export function createSampleReport() {
       codexHome: '/tmp/.codex',
       days: 30,
       threadPreviewLimit: 10,
+      coverage: {
+        dataSource: 'app-server',
+        discovered: 3,
+        eligible: 2,
+        analyzed: 2,
+        excludedShort: 0,
+        excludedSource: 1,
+        failedToRead: 0,
+        sampled: 2,
+        warnings: [],
+      },
       insightsOverride: {
+        basis: 'model',
         at_a_glance: {
           whats_working: 'You use Codex well for fast edit-review loops and multi-step cleanup tasks.',
           whats_hindering: 'Push failures and repeated context-setting still slow down the final mile.',
@@ -244,7 +256,7 @@ export function createSampleReport() {
   )
 
   report.metadata.generatedAt = '2026-04-04T12:00:00.000Z'
-  report.analysisMode = 'llm'
+  report.analysisMode = 'model-assisted'
   report.provider = 'codex-cli'
   report.analysisUsage = {
     calls: 7,

@@ -127,6 +127,8 @@ test('buildReport aggregates summary metrics and terminal output', () => {
 
   assert.equal(report.metadata.threadCount, 2)
   assert.equal(report.metadata.coverage.dataSource, 'app-server')
+  assert.equal(report.schemaVersion, 2)
+  assert.equal(report.privacy.redactions, 0)
   assert.equal(report.summary.totalUserMessages, 8)
   assert.equal(report.summary.totalTokens, 267)
   assert.equal(report.summary.sessionsUsingTaskAgent, 2)
@@ -138,6 +140,9 @@ test('buildReport aggregates summary metrics and terminal output', () => {
   assert.match(terminal, /Estimate vs Actual: 1.2K tokens -> 0.9K tokens \(fresh\)/)
   assert.match(terminal, /Top Projects:/)
   assert.match(terminal, /Model Mix:/)
+  assert.match(terminal, /Trust & Coverage/)
+  assert.match(terminal, /source=app-server/)
+  assert.match(terminal, /discovered=4/)
 })
 
 test('writeReportFiles writes JSON and HTML outputs', async () => {
@@ -218,6 +223,42 @@ test('writeReportFiles writes JSON and HTML outputs', async () => {
   assert.match(html, /Paste into Codex:/)
   assert.match(html, /Estimate vs Actual/)
   assert.equal(json.insights.at_a_glance.quick_wins, 'Add more repo memory.')
+})
+
+test('local-only HTML labels deterministic analysis and renders coverage warnings', async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-trust-'))
+  const report = createSampleReport()
+  report.analysisMode = 'local-only'
+  report.provider = null
+  report.analysisUsage = null
+  report.analysisEstimate = null
+  report.insights.basis = 'deterministic'
+  report.insights.at_a_glance.basis = 'deterministic'
+  report.metadata.coverage = {
+    dataSource: 'legacy',
+    discovered: 8,
+    eligible: 6,
+    analyzed: 4,
+    excludedShort: 1,
+    excludedSource: 1,
+    failedToRead: 1,
+    sampled: 5,
+    warnings: ['Codex app-server unavailable; used legacy SQLite/rollout reader.'],
+  }
+
+  const { htmlPath, jsonPath } = await writeReportFiles(report, { outDir: tempDir })
+  const html = await fs.readFile(htmlPath, 'utf8')
+  const json = JSON.parse(await fs.readFile(jsonPath, 'utf8'))
+  const terminal = renderTerminalSummary(report)
+
+  assert.match(html, /Trust &amp; Coverage/)
+  assert.match(html, /Local-only/)
+  assert.match(html, /Deterministic/)
+  assert.match(html, /Codex app-server unavailable/)
+  assert.match(terminal, /warning: Codex app-server unavailable/)
+  assert.equal(json.analysisMode, 'local-only')
+  assert.equal(json.metadata.coverage.failedToRead, 1)
+  assert.equal(json.insights.basis, 'deterministic')
 })
 
 test('sample report fixture generates stable HTML output', async () => {

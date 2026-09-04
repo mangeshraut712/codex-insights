@@ -3,6 +3,7 @@ export interface CountMap {
 }
 
 export type DataSource = 'auto' | 'app-server' | 'legacy'
+export type AnalysisMode = 'local-only' | 'model-assisted'
 
 export interface CollectionCoverage {
   dataSource: Exclude<DataSource, 'auto'>
@@ -96,6 +97,7 @@ export interface AtAGlance {
 }
 
 export interface InsightsSections {
+  basis?: 'deterministic' | 'model'
   at_a_glance: AtAGlance
   project_areas: unknown
   interaction_style: unknown
@@ -104,4 +106,20 @@ export interface InsightsSections {
   suggestions: unknown
   on_the_horizon: unknown
   fun_ending: unknown
+}
+
+export interface ReportPrivacy {
+  redactions: number
+}
+
+export interface InsightsReport {
+  schemaVersion: 2
+  analysisMode: AnalysisMode
+  privacy: ReportPrivacy
+  metadata: {
+    coverage: CollectionCoverage | null
+    [key: string]: unknown
+  }
+  insights: InsightsSections
+  [key: string]: unknown
 }
