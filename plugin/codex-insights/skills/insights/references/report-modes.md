@@ -1,12 +1,16 @@
 # Report modes
 
+## Default
+
+If the user does not choose a mode, run **local-only**. It is the private, offline default for `$insights`.
+
 ## Estimate
 
 `--estimate-only` reads and normalizes the selected session population, calculates the planned model calls and token range, and exits before generation. It does not invoke a model.
 
 ## Local-only
 
-`--local-only` performs zero model estimation and generation calls. It renders deterministic counts and conservative findings, including explicit limits on what those counts establish. Use it for offline or private requests.
+`--local-only` performs zero model estimation and generation calls. It renders deterministic counts and conservative findings, including explicit limits on what those counts establish. Use it for unspecified, offline, or private requests.
 
 ## Model-assisted
 

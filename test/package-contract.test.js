@@ -26,18 +26,28 @@ test('package includes public trust and contributor contracts', async () => {
 })
 
 test('install and owner-auth scripts stay token-free and documented', async () => {
-  const install = await fs.readFile(new URL('../scripts/install-insights.sh', import.meta.url), 'utf8')
+  const install = await fs.readFile(new URL('../scripts/install.sh', import.meta.url), 'utf8')
+  const compat = await fs.readFile(new URL('../scripts/install-insights.sh', import.meta.url), 'utf8')
   const setup = await fs.readFile(new URL('../scripts/setup-github-auth.sh', import.meta.url), 'utf8')
   const check = await fs.readFile(new URL('../scripts/check-github-auth.sh', import.meta.url), 'utf8')
   const installDocs = await fs.readFile(new URL('../docs/install.md', import.meta.url), 'utf8')
   const authDocs = await fs.readFile(new URL('../docs/github-auth.md', import.meta.url), 'utf8')
+  const readme = await fs.readFile(new URL('../README.md', import.meta.url), 'utf8')
 
   assert.match(install, /^#!/m)
-  assert.match(install, /feat\/codex-insights-plugin-hardening/)
   assert.match(install, /mangeshraut712\/codex-insights/)
+  assert.match(install, /plugin marketplace add/)
+  assert.match(install, /codex-insights@codex-insights/)
   assert.match(install, /BASH_SOURCE/)
-  assert.match(installDocs, /curl -fsSL https:\/\/raw\.githubusercontent\.com\/mangeshraut712\/codex-insights/)
+  assert.doesNotMatch(install, /feat\/codex-insights-plugin-hardening/)
+  assert.match(compat, /install\.sh/)
+
+  assert.match(installDocs, /codex plugin marketplace add mangeshraut712\/codex-insights/)
   assert.match(installDocs, /codex plugin add codex-insights@codex-insights/)
+  assert.match(installDocs, /scripts\/install\.sh/)
+  assert.match(installDocs, /npx github:mangeshraut712\/codex-insights/)
+  assert.match(readme, /codex plugin marketplace add mangeshraut712\/codex-insights/)
+  assert.match(readme, /HEAD\/scripts\/install\.sh/)
 
   assert.match(setup, /EXPECTED_LOGIN:-mangeshraut712/)
   assert.match(setup, /identity insteadOf/)

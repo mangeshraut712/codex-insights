@@ -1,30 +1,33 @@
 ---
 name: insights
-description: Generate a privacy-aware Codex session report. Use for report estimates, offline or private local-only analysis, and explicitly approved model-assisted analysis.
+description: Generate a privacy-aware report from local Codex sessions. Use when the user asks for $insights, a session report, usage insights, or offline/private analysis of Codex history.
+metadata:
+  short-description: Private reports from local Codex sessions
 ---
 
 # Codex Insights
 
-Use the bundled `scripts/run-insights.mjs` wrapper. Resolve it from this plugin's root; do not copy session data into the conversation.
+Run the bundled wrapper at `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`. Do not copy session data into the conversation.
 
-Choose exactly one route:
+## Choose a route
 
-1. **Estimate** — when the user asks about cost or scope, run:
-   `node <plugin-root>/scripts/run-insights.mjs --estimate-only --no-open`
-2. **Local-only** — when the user asks for private, offline, deterministic, or no-model analysis, run:
-   `node <plugin-root>/scripts/run-insights.mjs --local-only --no-open`
-3. **Model-assisted** — first run the estimate route. Show the estimate and ask for confirmation before running:
-   `node <plugin-root>/scripts/run-insights.mjs --yes --no-open`
+If the user does not name a mode, use **local-only** (private, zero model calls).
 
-Honor user-supplied scope, output, language, data-source, archive, and subagent flags. Use `--data-source app-server` only when the user wants incompatibility to fail visibly; otherwise retain the `auto` default and report any fallback warning.
+| User intent | Command |
+| --- | --- |
+| Unspecified, private, offline, deterministic, no-model | `node <plugin-root>/scripts/run-insights.mjs --local-only --no-open` |
+| Cost, tokens, or scope | `node <plugin-root>/scripts/run-insights.mjs --estimate-only --no-open` |
+| Model-assisted / narrative / interpreted | Estimate first. Show the estimate and wait for confirmation. Then `node <plugin-root>/scripts/run-insights.mjs --yes --no-open` |
 
-After a report is written:
+Honor user-supplied scope, output, language, data-source, archive, and subagent flags. Keep `--data-source auto` unless they ask to fail closed on app-server incompatibility (`--data-source app-server`) or to force the legacy reader.
 
-- report the HTML and JSON paths;
-- summarize Trust & Coverage, including fallback and read-failure warnings;
-- distinguish deterministic findings from model interpretations;
-- do not paste transcript-derived report contents into chat unless the user asks;
-- do not share, upload, publish, or send a report without explicit authorization;
-- do not edit source files, `AGENTS.md`, configuration, or external systems based on recommendations without a separate explicit request.
+Read `references/report-modes.md` only when choosing flags or explaining Trust & Coverage.
 
-Read `references/report-modes.md` when choosing flags or explaining privacy and coverage.
+## After a report
+
+- Give the HTML and JSON paths and invite the user to open the HTML file.
+- Summarize Trust & Coverage (source, analyzed vs discovered, warnings, analysis mode, redactions).
+- Label deterministic findings vs model interpretations.
+- Do not paste transcript-derived report contents unless the user asks.
+- Do not share, upload, publish, or send a report without explicit authorization.
+- Do not edit source files, `AGENTS.md`, configuration, or external systems from report recommendations unless the user separately asks.

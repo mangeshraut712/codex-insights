@@ -30,11 +30,12 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 
 ## Local installation
 
-- One-command download: `curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/feat/codex-insights-plugin-hardening/scripts/install-insights.sh | bash`
-- From a checkout, run `bash scripts/install-insights.sh`.
-- Or: `codex plugin marketplace add <checkout-or-git-url>` then `codex plugin add codex-insights@codex-insights`.
-- Verify `codex plugin list --json` and `skills/insights/SKILL.md` in the installed plugin.
-- Start a new Codex task boundary before checking `$insights` discovery.
+- Codex skill: `codex plugin marketplace add mangeshraut712/codex-insights` then `codex plugin add codex-insights@codex-insights`.
+- CLI: `npx github:mangeshraut712/codex-insights --local-only`.
+- Both: `curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash`.
+- From a checkout: `bash scripts/install.sh`.
+- Verify `codex plugin list` shows `codex-insights@codex-insights` enabled.
+- Start a new Codex thread before checking `$insights` discovery.
 
 ## Owner git push
 

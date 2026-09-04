@@ -2,7 +2,7 @@
 
 | Guide | Contents |
 | --- | --- |
-| [Install the CLI and `$insights` skill](install.md) | Download command, plugin install, and first local-only report |
+| [Install the CLI and `$insights` skill](install.md) | Codex marketplace, `npx`, and one-line installer |
 | [Privacy and trust](privacy-and-trust.md) | Redaction, coverage, deletion, analysis modes |
 | [App-server compatibility](app-server-compatibility.md) | `auto` / `app-server` / `legacy` collection |
 | [Interactive flow](interactive-flow.md) | Wizard, estimate, and local-only CLI behavior |

@@ -1,77 +1,60 @@
 # codex-session-insights
 
-Generate a report analyzing your Codex sessions.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
 
-`codex-session-insights` reads your local Codex history and renders an HTML and JSON report. Use model-assisted analysis for interpreted patterns or `--local-only` for deterministic metrics with zero model calls.
+Generate a report from your local Codex sessions.
+
+Use `$insights` in Codex, or run the CLI. `--local-only` is the private default: deterministic metrics and **zero model calls**. Pass `--yes` only when you want model-assisted narratives.
 
 ![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
 
 ## Install `$insights`
 
-Download and install the CLI plus the Codex plugin skill:
-
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/feat/codex-insights-plugin-hardening/scripts/install-insights.sh | bash
-```
-
-From a checkout:
-
-```bash
-git clone --branch feat/codex-insights-plugin-hardening --single-branch \
-  https://github.com/mangeshraut712/codex-insights.git
-cd codex-insights
-bash scripts/install-insights.sh
-```
-
-Or add the Git marketplace and install from Codex:
-
-```bash
-codex plugin marketplace add https://github.com/mangeshraut712/codex-insights \
-  --ref feat/codex-insights-plugin-hardening
+codex plugin marketplace add mangeshraut712/codex-insights
 codex plugin add codex-insights@codex-insights
 ```
 
-Start a new Codex task after install, then invoke `$insights`. See [docs/install.md](docs/install.md).
+Start a new Codex thread and type `$insights`.
+
+Or install the CLI and the skill together:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash
+```
+
+CLI only:
+
+```bash
+npx github:mangeshraut712/codex-insights --local-only
+```
+
+More options, including uninstall: [docs/install.md](docs/install.md).
 
 ## Quick Start
 
-Run it directly:
+After install, the usual commands are:
 
 ```bash
-npx --yes github:mangeshraut712/codex-insights#feat/codex-insights-plugin-hardening --local-only --no-open
+codex-session-insights --local-only      # private, zero model calls
+codex-session-insights --estimate-only   # token range, no generation
+codex-session-insights --yes             # model-assisted after you confirm
 ```
 
-Published npm remains available when this package is released:
+`npx github:mangeshraut712/codex-insights` is the same CLI without a global install. When this package is published to npm:
 
 ```bash
-npx codex-session-insights --local-only --no-open
+npx codex-session-insights --local-only
 ```
 
-The default flow is:
+The interactive flow is:
 
 1. Read your local Codex thread index
-2. Estimate likely analysis token usage
-3. Let you confirm the plan in an interactive terminal
-4. Generate `report.html` and `report.json`
+2. Estimate likely analysis token usage (skipped with `--local-only`)
+3. Confirm the plan in an interactive terminal (skipped with `--yes` or `--local-only`)
+4. Write `report.html` and `report.json`
 5. Try to open the HTML report in your browser
-
-If you only want the estimate first:
-
-```bash
-npx codex-session-insights --estimate-only
-```
-
-For a private/offline report with no model estimation or generation:
-
-```bash
-npx codex-session-insights --local-only --no-open
-```
-
-If you already know what you want and do not want the confirmation flow:
-
-```bash
-npx codex-session-insights --yes
-```
 
 ## What You Get
 
@@ -160,13 +143,13 @@ npx codex-session-insights --provider openai --api-key $OPENAI_API_KEY
 
 ## Codex Plugin
 
-The package includes a validated `codex-insights` plugin with the `$insights` skill. The skill has three routes:
+`$insights` is the bundled skill. After install, start a **new** thread so Codex can discover it.
 
-- estimate model-assisted scope and cost;
-- create an offline/private local-only report;
-- create a model-assisted report after showing an estimate and receiving confirmation.
+- **Default:** local-only report (private, zero model calls)
+- **Estimate:** planned model calls and token range, no generation
+- **Model-assisted:** estimate first, then generate after confirmation
 
-See [docs/install.md](docs/install.md) for download and marketplace commands. Bundled skills are discovered in new Codex sessions after installation. The skill does not share reports or apply recommendations without separate authorization.
+The skill does not share reports or apply recommendations unless you ask separately.
 
 ## Defaults
 

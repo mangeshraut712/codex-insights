@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Codex Insights",
-    "shortDescription": "Analyze local Codex sessions with visible trust metadata.",
-    "longDescription": "Create deterministic local-only or model-assisted Codex session reports with privacy redaction, source provenance, and collection coverage.",
+    "shortDescription": "Private, trust-aware reports from your local Codex sessions.",
+    "longDescription": "Create a local-only or model-assisted report of your Codex sessions. Local-only is the default: zero model calls, visible coverage, and credential redaction. Model-assisted narratives run only after an estimate and confirmation.",
     "developerName": "Codex Session Insights contributors",
     "category": "Productivity",
     "capabilities": [
@@ -28,9 +28,9 @@
       "Model-assisted reports"
     ],
     "defaultPrompt": [
-      "Estimate a Codex Insights report.",
-      "Create a private local-only insights report.",
-      "Create a model-assisted insights report."
+      "Use $insights to make a private local-only report of my recent Codex sessions.",
+      "Use $insights to estimate a model-assisted report.",
+      "Use $insights to create a model-assisted report after I confirm the estimate."
     ]
   }
 }

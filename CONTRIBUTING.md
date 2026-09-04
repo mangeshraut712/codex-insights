@@ -9,7 +9,13 @@ npm run check
 npm run generate:test-report
 ```
 
-Install and verify the `$insights` skill with [docs/install.md](docs/install.md). Owner pushes from a Cursor environment need [docs/github-auth.md](docs/github-auth.md):
+Install `$insights` with [docs/install.md](docs/install.md). From a checkout:
+
+```bash
+bash scripts/install.sh
+```
+
+Owner pushes from a Cursor environment need [docs/github-auth.md](docs/github-auth.md):
 
 ```bash
 bash scripts/setup-github-auth.sh
