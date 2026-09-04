@@ -20,6 +20,14 @@ test('plugin manifest and package publication metadata stay aligned', async () =
   assert.equal(manifest.mcpServers, undefined)
   assert.equal(manifest.apps, undefined)
   assert.ok(packageJson.files.includes('plugin'))
+
+  const marketplace = JSON.parse(
+    await fs.readFile(new URL('.agents/plugins/marketplace.json', root), 'utf8'),
+  )
+  assert.equal(marketplace.name, 'codex-insights')
+  assert.equal(marketplace.plugins[0].name, 'codex-insights')
+  assert.equal(marketplace.plugins[0].source.path, './plugin/codex-insights')
+  assert.equal(marketplace.plugins[0].source.source, 'local')
 })
 
 test('insights skill declares an invocable workflow without placeholders', async () => {

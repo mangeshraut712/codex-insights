@@ -1,8 +1,10 @@
 node_modules/
 .worktrees/
 .superpowers/
+.tmp/
 codex-insights-output/
 tmp-report/
 tmp-report-usage/
 test-artifacts/
+github.token
 .DS_Store

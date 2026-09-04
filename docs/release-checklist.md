@@ -30,11 +30,17 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 
 ## Local installation
 
-- Link the CLI with `npm link`.
-- Add the plugin to a personal or explicit local marketplace.
-- Install `codex-insights@<marketplace>` and verify `codex plugin list --json`.
-- Verify the installed plugin contains `skills/insights/SKILL.md`.
+- One-command download: `curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/feat/codex-insights-plugin-hardening/scripts/install-insights.sh | bash`
+- From a checkout, run `bash scripts/install-insights.sh`.
+- Or: `codex plugin marketplace add <checkout-or-git-url>` then `codex plugin add codex-insights@codex-insights`.
+- Verify `codex plugin list --json` and `skills/insights/SKILL.md` in the installed plugin.
 - Start a new Codex task boundary before checking `$insights` discovery.
+
+## Owner git push
+
+- Run `bash scripts/setup-github-auth.sh` then `unset GH_TOKEN GITHUB_TOKEN`.
+- `bash scripts/check-github-auth.sh` must report GitHub `/user` HTTP 200 as `mangeshraut712`.
+- `git remote -v` for origin must not embed `x-access-token`.
 
 ## Contribution
 

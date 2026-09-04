@@ -6,12 +6,45 @@ Generate a report analyzing your Codex sessions.
 
 ![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
 
+## Install `$insights`
+
+Download and install the CLI plus the Codex plugin skill:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/feat/codex-insights-plugin-hardening/scripts/install-insights.sh | bash
+```
+
+From a checkout:
+
+```bash
+git clone --branch feat/codex-insights-plugin-hardening --single-branch \
+  https://github.com/mangeshraut712/codex-insights.git
+cd codex-insights
+bash scripts/install-insights.sh
+```
+
+Or add the Git marketplace and install from Codex:
+
+```bash
+codex plugin marketplace add https://github.com/mangeshraut712/codex-insights \
+  --ref feat/codex-insights-plugin-hardening
+codex plugin add codex-insights@codex-insights
+```
+
+Start a new Codex task after install, then invoke `$insights`. See [docs/install.md](docs/install.md).
+
 ## Quick Start
 
 Run it directly:
 
 ```bash
-npx codex-session-insights
+npx --yes github:mangeshraut712/codex-insights#feat/codex-insights-plugin-hardening --local-only --no-open
+```
+
+Published npm remains available when this package is released:
+
+```bash
+npx codex-session-insights --local-only --no-open
 ```
 
 The default flow is:
@@ -133,16 +166,7 @@ The package includes a validated `codex-insights` plugin with the `$insights` sk
 - create an offline/private local-only report;
 - create a model-assisted report after showing an estimate and receiving confirmation.
 
-For local development, link the CLI, add the containing marketplace, and install the plugin with the current Codex CLI:
-
-```bash
-npm link
-codex plugin marketplace add /path/to/marketplace-root
-codex plugin add codex-insights@personal
-codex plugin list --json
-```
-
-Bundled skills are discovered in new Codex sessions after installation. The skill does not share reports or apply recommendations without separate authorization.
+See [docs/install.md](docs/install.md) for download and marketplace commands. Bundled skills are discovered in new Codex sessions after installation. The skill does not share reports or apply recommendations without separate authorization.
 
 ## Defaults
 
@@ -254,5 +278,4 @@ npm run generate:test-report
 `npm run report:lite` runs a smaller local analysis preset for testing prompt and layout changes without paying the full 200/50 default cost.
 `npm run generate:test-report` writes a deterministic sample report page to `test-artifacts/sample-report/`.
 
-Analyzer changes must follow [the analyzer contribution contract](docs/contributing-analyzers.md).
-Release and installation verification is listed in [the release checklist](docs/release-checklist.md). The proposed native command is documented as an unaccepted [upstream RFC](docs/upstream-rfc.md).
+Docs index: [docs/README.md](docs/README.md). Analyzer changes follow [the analyzer contribution contract](docs/contributing-analyzers.md). Release verification is in [the release checklist](docs/release-checklist.md). The proposed native command is an unaccepted [upstream RFC](docs/upstream-rfc.md).
