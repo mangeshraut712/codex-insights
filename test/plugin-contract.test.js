@@ -160,3 +160,11 @@ test('plugin wrapper falls back to the repository CLI', () => {
   assert.match(result.stdout, /codex-session-insights/)
   assert.match(result.stdout, /--local-only/)
 })
+
+test('plugin wrapper searches macOS install locations and tells users how to install the CLI', async () => {
+  const wrapper = await fs.readFile(new URL('scripts/run-insights.mjs', pluginRoot), 'utf8')
+  assert.match(wrapper, /opt\/homebrew\/bin/)
+  assert.match(wrapper, /\.local/)
+  assert.match(wrapper, /Unable to locate the Codex Insights CLI/)
+  assert.match(wrapper, /npm install --global github:mangeshraut712\/codex-insights/)
+})

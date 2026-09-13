@@ -43,7 +43,13 @@ codex-session-insights --help
 codex plugin list
 ```
 
-`$insights` is ready when `codex-insights@codex-insights` is installed and enabled. Packaging matches the official Codex plugin contract; it is still a community marketplace listing. See [Plugin directory](plugin-directory.md).
+`$insights` is ready when `codex-insights@codex-insights` is installed and enabled **and** `codex-session-insights` is on the PATH the Codex app can see. Packaging matches the official Codex plugin contract; it is still a community marketplace listing. See [Plugin directory](plugin-directory.md).
+
+On **macOS**, Homebrew Node often lives at `/opt/homebrew/bin` and a user npm prefix at `~/.local/bin`. Codex Desktop may spawn `$insights` with a PATH that includes neither. `scripts/install.sh` looks for `codex` in those locations, and the `$insights` wrapper prepends them when it runs `codex-session-insights`. If a terminal can run the CLI but `$insights` cannot, add the install prefix to `~/.zshrc` and start a **new** Codex thread:
+
+```bash
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+```
 
 ## Update
 

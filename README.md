@@ -127,7 +127,7 @@ Collection is read-only. The CLI does not start turns or change session state. S
 - Codex CLI for `$insights` and for the default `codex-cli` provider
 - `sqlite3` on `PATH` only for legacy mode
 
-macOS and Linux are expected to work. Windows is not yet verified.
+macOS and Linux are expected to work. Windows is not yet verified. On macOS, `$insights` looks for `codex` and `codex-session-insights` under `/opt/homebrew/bin`, `/usr/local/bin`, and `~/.local/bin` in addition to `PATH`, so Codex Desktop can still spawn app-server after Homebrew installs.
 
 ## Privacy
 

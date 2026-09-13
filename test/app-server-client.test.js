@@ -6,6 +6,7 @@ import {
   AppServerProtocolError,
   createAppServerClient,
 } from '../lib/app-server-client.js'
+import { resolveCodexBin } from '../lib/resolve-bin.js'
 
 function createFakeChild(onRequest) {
   const child = new EventEmitter()
@@ -70,7 +71,7 @@ test('createAppServerClient correlates fragmented JSONL responses after initiali
     clientInfo: {
       name: 'codex-session-insights',
       title: 'Codex Session Insights',
-      version: '0.3.1',
+      version: '0.3.2',
     },
     capabilities: null,
   })
@@ -96,7 +97,30 @@ test('createAppServerClient treats a missing Codex binary as the default `codex`
     timeoutMs: 100,
   })
 
-  assert.deepEqual(spawned, [{ command: 'codex', args: ['app-server', '--listen', 'stdio://'] }])
+  assert.deepEqual(spawned, [
+    { command: resolveCodexBin(null), args: ['app-server', '--listen', 'stdio://'] },
+  ])
+  client.close()
+})
+
+test('createAppServerClient adds Homebrew and ~/.local/bin to the spawn PATH', async () => {
+  let spawnPath = ''
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+    }
+  })
+
+  const client = await createAppServerClient({
+    spawnImpl: (_command, _args, options) => {
+      spawnPath = options?.env?.PATH ?? ''
+      return child
+    },
+    timeoutMs: 100,
+  })
+
+  assert.match(spawnPath, /\.local[/\\]bin/)
+  assert.match(spawnPath, /homebrew/)
   client.close()
 })
 

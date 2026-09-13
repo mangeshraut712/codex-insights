@@ -1,6 +1,6 @@
 {
   "name": "codex-insights",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
