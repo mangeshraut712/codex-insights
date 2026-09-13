@@ -24,6 +24,12 @@ python3 -m pip install pyyaml
 python3 scripts/validate_plugin.py plugin/codex-insights
 ```
 
+If pip is blocked (PEP 668 / uv-managed Python):
+
+```bash
+uv run --with pyyaml python3 scripts/validate_plugin.py plugin/codex-insights
+```
+
 Directory packaging rules: [docs/plugin-directory.md](docs/plugin-directory.md). Do not set `developerName` to `OpenAI` or rename the marketplace to `openai-curated`.
 
 Owner pushes from a Cursor environment need [docs/github-auth.md](docs/github-auth.md):

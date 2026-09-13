@@ -70,12 +70,33 @@ test('createAppServerClient correlates fragmented JSONL responses after initiali
     clientInfo: {
       name: 'codex-session-insights',
       title: 'Codex Session Insights',
-      version: '0.3.0',
+      version: '0.3.1',
     },
     capabilities: null,
   })
   assert.equal(requests[1].id, undefined)
 
+  client.close()
+})
+
+test('createAppServerClient treats a missing Codex binary as the default `codex` command', async () => {
+  const spawned = []
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+    }
+  })
+
+  const client = await createAppServerClient({
+    codexBin: null,
+    spawnImpl: (command, args) => {
+      spawned.push({ command, args })
+      return child
+    },
+    timeoutMs: 100,
+  })
+
+  assert.deepEqual(spawned, [{ command: 'codex', args: ['app-server', '--listen', 'stdio://'] }])
   client.close()
 })
 

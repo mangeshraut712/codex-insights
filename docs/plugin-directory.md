@@ -40,6 +40,14 @@ python3 -m pip install pyyaml
 python3 scripts/validate_plugin.py plugin/codex-insights
 ```
 
+On macOS Python installs that block `--user` pip (PEP 668 / uv-managed), use:
+
+```bash
+uv run --with pyyaml python3 scripts/validate_plugin.py plugin/codex-insights
+```
+
+`npm test` uses `python3` when PyYAML is already importable, otherwise `uv run --with pyyaml`.
+
 `npm test` runs that validator. Regenerating storefront PNGs (needs Chrome or Chromium):
 
 ```bash

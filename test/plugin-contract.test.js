@@ -114,15 +114,32 @@ test('insights skill declares an invocable workflow without placeholders', async
   assert.match(agent, /allow_implicit_invocation: true/)
   assert.match(agent, /Do not share or upload/)
   assert.match(agent, /brand_color: "#0F766E"/)
-  assert.match(skill, /version: "0\.3\.0"/)
+  const packageJson = JSON.parse(await fs.readFile(new URL('package.json', root), 'utf8'))
+  assert.match(skill, new RegExp(`version: "${packageJson.version.replaceAll('.', '\\.')}"`))
 })
 
+function spawnPluginValidator() {
+  const script = fileURLToPath(new URL('scripts/validate_plugin.py', root))
+  const pluginPath = fileURLToPath(pluginRoot)
+  const yamlCheck = spawnSync('python3', ['-c', 'import yaml'], {
+    encoding: 'utf8',
+  })
+  if (yamlCheck.status === 0) {
+    return spawnSync('python3', [script, pluginPath], { encoding: 'utf8' })
+  }
+
+  const uvCheck = spawnSync('uv', ['--version'], { encoding: 'utf8' })
+  if (uvCheck.status === 0) {
+    return spawnSync('uv', ['run', '--with', 'pyyaml', 'python3', script, pluginPath], {
+      encoding: 'utf8',
+    })
+  }
+
+  return yamlCheck
+}
+
 test('plugin archive passes the official Codex plugin-creator validator', () => {
-  const result = spawnSync(
-    'python3',
-    [fileURLToPath(new URL('scripts/validate_plugin.py', root)), fileURLToPath(pluginRoot)],
-    { encoding: 'utf8' },
-  )
+  const result = spawnPluginValidator()
 
   assert.equal(result.status, 0, result.stdout + result.stderr)
   assert.match(result.stdout, /Plugin validation passed/)
