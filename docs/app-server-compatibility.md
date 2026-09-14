@@ -6,6 +6,8 @@ The adapter initializes a read-only stdio connection and calls only `thread/list
 
 If app-server startup or protocol handling fails in `auto` mode, the CLI uses the legacy SQLite and rollout reader and adds the reason to Trust & Coverage. An explicit `--data-source app-server` run fails instead of hiding incompatibility. `--data-source legacy` skips app-server startup.
 
+The adapter spawns `codex app-server` (or `$CODEX_BIN` / `--codex-bin`) with a PATH that includes Homebrew and `~/.local/bin`. That matches Codex Desktop on macOS, where `PATH` often omits those directories even though `codex` is installed.
+
 ```bash
 codex-session-insights --local-only --data-source auto
 codex-session-insights --local-only --data-source app-server
@@ -26,4 +28,4 @@ The legacy reader requires a `state_*.sqlite` index, rollout JSONL files, and `s
 
 ## Diagnosing a fallback
 
-Run with `--data-source app-server` to surface the original error, increase `--app-server-timeout` only when the server is healthy but slow, and verify that the configured `--codex-bin` supports `app-server`. Do not remove a fallback warning from a shared report: it is part of the report's provenance.
+Run with `--data-source app-server` to surface the original error, increase `--app-server-timeout` only when the server is healthy but slow, and verify that the configured `--codex-bin` or `$CODEX_BIN` supports `app-server`. On macOS, confirm `codex` exists at `/opt/homebrew/bin/codex` or `/usr/local/bin/codex` if a GUI-spawned run falls back to legacy. Do not remove a fallback warning from a shared report: it is part of the report's provenance.

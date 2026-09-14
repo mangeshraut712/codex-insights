@@ -13,6 +13,8 @@ codex plugin add codex-insights@codex-insights
 
 Start a new Codex thread and type `$insights`. With no extra wording it builds a **local-only** report (zero model calls).
 
+`$insights` runs the `codex-session-insights` CLI. Install that CLI as well (`scripts/install.sh` or `npm install --global github:mangeshraut712/codex-insights`). On macOS, the wrapper also searches `/opt/homebrew/bin` and `~/.local/bin` because Codex Desktop often has a stripped `PATH`.
+
 ## Capabilities
 
 - **Interactive**: choose local-only, estimate, or a confirmed model-assisted report

@@ -6,9 +6,8 @@ set -euo pipefail
 REPO_SLUG="${INSIGHTS_REPO_SLUG:-mangeshraut712/codex-insights}"
 MARKETPLACE_NAME="codex-insights"
 PLUGIN_ID="codex-insights@codex-insights"
-prefix="${NPM_CONFIG_PREFIX:-$HOME/.local}"
-codex_bin="${CODEX_BIN:-codex}"
 verbose=0
+codex_bin="${CODEX_BIN:-codex}"
 
 usage() {
   cat <<'EOF'
@@ -63,10 +62,51 @@ if [[ -n "${root}" && ! -f "${root}/plugin/codex-insights/.codex-plugin/plugin.j
   root=""
 fi
 
+resolve_npm_prefix() {
+  if [[ -n "${NPM_CONFIG_PREFIX:-}" ]]; then
+    printf '%s\n' "${NPM_CONFIG_PREFIX}"
+    return
+  fi
+  local local_bin="${HOME}/.local/bin"
+  if [[ ":${PATH}:" == *":${local_bin}:"* ]]; then
+    printf '%s\n' "${HOME}/.local"
+    return
+  fi
+  local npm_prefix
+  npm_prefix="$(npm config get prefix 2>/dev/null || true)"
+  if [[ -n "${npm_prefix}" && "${npm_prefix}" != "undefined" && -w "${npm_prefix}" ]]; then
+    printf '%s\n' "${npm_prefix}"
+    return
+  fi
+  printf '%s\n' "${HOME}/.local"
+}
+
+resolve_codex_bin() {
+  if have "${codex_bin}"; then
+    return
+  fi
+  local candidate
+  for candidate in \
+    /opt/homebrew/bin/codex \
+    /usr/local/bin/codex \
+    "${HOME}/.local/bin/codex" \
+    "${HOME}/.cargo/bin/codex" \
+    "${HOME}/.codex/bin/codex"
+  do
+    if [[ -x "${candidate}" ]]; then
+      codex_bin="${candidate}"
+      return
+    fi
+  done
+}
+
 have node || die "Node.js >=18.17.0 is required. See https://nodejs.org"
 have npm || die "npm is required (it ships with Node.js)."
 node -e 'const p=process.versions.node.split(".").map(Number); if (p[0]<18 || (p[0]===18 && p[1]<17)) process.exit(1)' \
   || die "Node.js $(node -p process.version) is too old. Codex Insights needs >=18.17.0."
+
+prefix="$(resolve_npm_prefix)"
+resolve_codex_bin
 
 if [[ -n "${root}" ]]; then
   log "Installing CLI from $(basename "${root}")…"
@@ -80,7 +120,11 @@ fi
 
 bin_dir="${prefix}/bin"
 if [[ ":${PATH}:" != *":${bin_dir}:"* ]]; then
-  log "Note: add ${bin_dir} to PATH to run codex-session-insights."
+  log "Note: add ${bin_dir} to PATH to run codex-session-insights from a terminal."
+  log "  export PATH=\"${bin_dir}:\$PATH\""
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    log "On macOS, put that line in ~/.zshrc. Codex Desktop still finds the CLI via the \$insights wrapper."
+  fi
 fi
 
 if ! have "${codex_bin}"; then

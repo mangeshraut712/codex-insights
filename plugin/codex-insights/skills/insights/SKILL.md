@@ -5,7 +5,7 @@ license: MIT
 metadata:
   short-description: Private reports from local Codex sessions
   author: mangeshraut712
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # Codex Insights
@@ -27,7 +27,7 @@ Stay inside this authorized scope. GPT-class Codex agents, including Astra, must
 
 ## Run
 
-Use `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`.
+Use `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`. The wrapper looks for `codex-session-insights` on PATH and in common install dirs (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`) so Codex Desktop can find a global CLI even when its PATH is stripped. If the CLI is missing, install it with `scripts/install.sh` or `npm install --global github:mangeshraut712/codex-insights` and start a new thread.
 
 ## Choose a route
 

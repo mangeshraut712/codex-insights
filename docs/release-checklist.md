@@ -33,6 +33,7 @@ Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Insp
 - CLI: `npx github:mangeshraut712/codex-insights --local-only`.
 - Both: `curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash`.
 - From a checkout: `bash scripts/install.sh`.
+- On macOS, confirm `codex` is found even when Homebrew is not on the default GUI PATH (`/opt/homebrew/bin/codex`).
 - Verify `codex plugin list` shows `codex-insights@codex-insights` enabled.
 - Start a new Codex thread before checking `$insights` discovery.
 
