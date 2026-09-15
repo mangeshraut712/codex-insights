@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
 
-Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI; `--local-only` is the default (deterministic metrics, **zero model calls**).
+Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. An unspecified `$insights` request defaults to `--local-only` (deterministic metrics, **zero model calls**); the CLI still estimates before a model-assisted run unless you pass `--local-only`.
 
 <p align="center">
   <img src="docs/screenshots/01-home.png" alt="Codex Insights HTML report: header stats, Trust & Coverage, and At a Glance" width="720" />
