@@ -4,13 +4,21 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
 
-Private reports from your local Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. The plugin follows the official Codex plugin ingestion contract (manifest, skill, storefront assets, `validate_plugin.py`). It is a community listing, not an OpenAI-published directory tab. See [docs/plugin-directory.md](docs/plugin-directory.md).
+Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. An unspecified `$insights` request defaults to `--local-only` (deterministic metrics, **zero model calls**); the CLI still estimates before a model-assisted run unless you pass `--local-only`.
 
-This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md).
+<p align="center">
+  <img src="docs/screenshots/01-home.png" alt="Codex Insights HTML report: header stats, Trust & Coverage, and At a Glance" width="720" />
+</p>
+<p align="center"><em>Landing surface of a real HTML report: header stats, Trust & Coverage, and At a Glance.</em></p>
 
-`--local-only` is the private default for `$insights`: deterministic metrics and **zero model calls**. Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
+<p align="center">
+  <img src="docs/screenshots/02-feature.png" alt="Codex Insights HTML report: What You Work On, How You Use Codex, and Impressive Things You Did" width="720" />
+</p>
+<p align="center"><em>Deeper sections from the same report: workstreams, usage patterns, and what went well.</em></p>
 
-![codex-session-insights screenshot](https://raw.githubusercontent.com/cosformula/codex-session-insights/main/assets/screenshot-1.png)
+This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md). Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
+
+The plugin follows the official Codex plugin ingestion contract (manifest, skill, storefront assets, `validate_plugin.py`). It is a community listing, not an OpenAI-published directory tab. See [docs/plugin-directory.md](docs/plugin-directory.md).
 
 ## Install `$insights`
 
