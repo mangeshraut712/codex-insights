@@ -17,7 +17,7 @@ npm pack --dry-run
 python3 scripts/validate_plugin.py plugin/codex-insights
 ```
 
-Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Inspect generated reports for schema version, analysis mode, coverage, warnings, redaction count, and absence of seeded secrets.
+Inspect the package preview for `bin/`, `lib/`, `plugin/`, and `README.md`. Confirm README project-card images under `docs/screenshots/` still resolve. Inspect generated reports for schema version, analysis mode, coverage, warnings, redaction count, and absence of seeded secrets.
 
 ## End-to-end modes
 

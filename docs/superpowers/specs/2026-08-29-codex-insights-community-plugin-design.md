@@ -1,6 +1,6 @@
 # Codex Insights Community Plugin Design
 
-> Historical design notes. Current install and usage: [docs/install.md](../install.md) and the [root README](../../README.md). `$insights` defaults to local-only; distribute with `codex plugin marketplace add mangeshraut712/codex-insights`.
+> Historical design notes. Current install and usage: [docs/install.md](../../install.md) and the [root README](../../README.md). `$insights` defaults to local-only; distribute with `codex plugin marketplace add mangeshraut712/codex-insights`.
 
 ## Goal
 
