@@ -12,10 +12,15 @@ const REQUIRED_DOCS = [
   'docs/install.md',
   'docs/claude-insights.md',
   'docs/github-auth.md',
+  'docs/interactive-flow.md',
+  'docs/release-checklist.md',
+  'docs/upstream-rfc.md',
   'docs/README.md',
   'CONTRIBUTING.md',
   'SECURITY.md',
 ]
+
+const README_SCREENSHOTS = ['docs/screenshots/01-home.png', 'docs/screenshots/02-feature.png']
 
 test('package declares the dependency runtime floor', async () => {
   const packageJson = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url), 'utf8'))
@@ -38,6 +43,14 @@ test('package includes public trust and contributor contracts', async () => {
   for (const relativePath of REQUIRED_DOCS) {
     const contents = await fs.readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8')
     assert.ok(contents.length > 100, `${relativePath} must not be a placeholder`)
+  }
+})
+
+test('README project-card screenshots stay committed and linked', async () => {
+  const readme = await fs.readFile(new URL('../README.md', import.meta.url), 'utf8')
+  for (const relativePath of README_SCREENSHOTS) {
+    assert.match(readme, new RegExp(relativePath.replaceAll('.', '\\.')))
+    await fs.access(new URL(`../${relativePath}`, import.meta.url))
   }
 })
 
@@ -88,6 +101,7 @@ test('install and owner-auth scripts stay token-free and documented', async () =
   assert.match(contributing, /mangeshraut712/)
   assert.match(contributing, /Cursor/)
   assert.match(contributing, /Do not enable Dependabot/)
+  assert.match(contributing, /relative documentation links/)
 
   const claudeDocs = await fs.readFile(new URL('../docs/claude-insights.md', import.meta.url), 'utf8')
   assert.match(claudeDocs, /code\.claude\.com\/docs\/en\/costs/)

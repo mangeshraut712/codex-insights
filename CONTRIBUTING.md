@@ -9,7 +9,7 @@ npm run generate:test-report
 bash scripts/install.sh
 ```
 
-GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Node 20, 22, and 24. Keep README, `docs/install.md`, `docs/claude-insights.md`, and the `$insights` skill in sync when install commands or default modes change. Vulnerability reports go to [SECURITY.md](SECURITY.md).
+GitHub Actions runs `npm test`, `npm run check`, and `npm pack --dry-run` on Node 20, 22, and 24 (the advertised runtime floor in `package.json` remains Node `>=18.17.0`). `npm run check` syntax-checks JS, typechecks `bin/` and `lib/`, and fails on broken relative documentation links and README images. Keep README, `docs/install.md`, `docs/claude-insights.md`, and the `$insights` skill in sync when install commands or default modes change. Vulnerability reports go to [SECURITY.md](SECURITY.md).
 
 ## Maintainers
 
