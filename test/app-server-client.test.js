@@ -7,6 +7,7 @@ import {
   createAppServerClient,
 } from '../lib/app-server-client.js'
 import { resolveCodexBin } from '../lib/resolve-bin.js'
+import { PACKAGE_VERSION } from '../lib/version.js'
 
 function createFakeChild(onRequest) {
   const child = new EventEmitter()
@@ -71,7 +72,7 @@ test('createAppServerClient correlates fragmented JSONL responses after initiali
     clientInfo: {
       name: 'codex-session-insights',
       title: 'Codex Session Insights',
-      version: '0.3.2',
+      version: PACKAGE_VERSION,
     },
     capabilities: null,
   })

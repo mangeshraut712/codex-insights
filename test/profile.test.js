@@ -23,6 +23,41 @@ test('public profile exports only approved aggregates and escapes display text',
   assert.match(html, /177|267/)
 })
 
+test('public profile keeps fractional session hours', () => {
+  const report = createSampleReport()
+  report.summary.totalDurationHours = 1.6
+  assert.match(renderPublicProfile(buildPublicProfile(report)), /<strong>1\.6h<\/strong>/)
+})
+
+test('public profile shows cache and reasoning shares and a --since scope', () => {
+  const report = createSampleReport()
+  Object.assign(report.summary, {
+    totalInputTokens: 1000,
+    totalCachedInputTokens: 900,
+    totalOutputTokens: 200,
+    totalReasoningOutputTokens: 50,
+  })
+  report.metadata.days = null
+  report.metadata.since = '2026-09-01'
+  const html = renderPublicProfile(buildPublicProfile(report))
+  assert.match(html, /Token mix/)
+  assert.match(html, /Served from cache<\/span><strong>90%/)
+  assert.match(html, /Reasoning share of output<\/span><strong>25%/)
+  assert.match(html, /Since 2026-09-01/)
+})
+
+test('public profile omits the token mix when no token data exists', () => {
+  const report = createSampleReport()
+  report.summary.totalInputTokens = 0
+  assert.doesNotMatch(renderPublicProfile(buildPublicProfile(report)), /Token mix/)
+})
+
+test('copy link handler does not read event.currentTarget after awaiting the clipboard', () => {
+  const html = renderPublicProfile(buildPublicProfile(createSampleReport()))
+  assert.doesNotMatch(html, /currentTarget/)
+  assert.match(html, /shareButton\.textContent='Copied'/)
+})
+
 test('profile CLI writes a standalone index from an existing report', async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-profile-'))
   const reportPath = path.join(dir, 'report.json')

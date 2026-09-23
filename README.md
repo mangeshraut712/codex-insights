@@ -79,6 +79,8 @@ The interactive CLI flow is:
 codex-session-insights --preset lite
 codex-session-insights --days 7 --limit 20 --facet-limit 8 --estimate-only
 codex-session-insights --days 0 --local-only
+codex-session-insights --since 2026-09-01 --local-only
+codex-session-insights --version
 codex-session-insights --reanalyze --local-only
 codex-session-insights --out-dir ./insights-output
 codex-session-insights --stdout-json

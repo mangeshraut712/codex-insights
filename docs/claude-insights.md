@@ -24,6 +24,7 @@ From the official docs:
 | How you work, not token billing | Same split: the report is workflow-oriented. `--estimate-only` is the token-scope preview for a **model-assisted** run, not a substitute for Codex billing |
 | Local sessions on this machine | Reads this machine only. Other devices are out of scope |
 | Not in cloud sessions | Same: no remote Codex cloud history |
+| Fixed recent window; date filtering is an [open request](https://github.com/anthropics/claude-code/issues/29539) | `--days N` or `--since YYYY-MM-DD` |
 | Up to 200 unseen sessions; skip very short | Default `--limit 200` is the **unseen** cap. Short threads go to `excludedShort` and are journaled so later runs skip them. Previously analyzed sessions are reused from `seen-sessions.json` unless `--reanalyze` |
 | Header `200 sessions (412 total)` | HTML and terminal use the same shape from Trust & Coverage (`analyzed` vs `discovered`) |
 | `~/.claude/usage-data/report.html` plus timestamped copies | `~/.codex/usage-data/report.html` and `report.json`, plus `report-<stamp>.html` / `.json`. Copies older than **30** days are removed **at startup** and again when a new report is written |

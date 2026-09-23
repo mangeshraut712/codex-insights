@@ -75,6 +75,39 @@ function mainThreadWithItems() {
   })
 }
 
+test('collectAppServerThreadSummaries keeps the thread model and reads token usage from the rollout', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'insights-rollout-'))
+  const rolloutPath = path.join(dir, 'rollout.jsonl')
+  const tokenEvent = total => JSON.stringify({
+    type: 'event_msg',
+    payload: {
+      type: 'token_count',
+      info: { total_token_usage: { input_tokens: total - 10, cached_input_tokens: 5, output_tokens: 10, reasoning_output_tokens: 3, total_tokens: total } },
+    },
+  })
+  await fs.writeFile(rolloutPath, [tokenEvent(100), 'not json', tokenEvent(250), ''].join('\n'))
+  const thread = { ...mainThreadWithItems(), model: 'gpt-6-sol', path: rolloutPath }
+  const client = {
+    async request(method) {
+      if (method === 'thread/list') return { data: [thread], nextCursor: null }
+      if (method === 'thread/read') return { thread }
+      throw new Error(`Unexpected request ${method}`)
+    },
+    close() {},
+  }
+
+  const { summaries } = await collectAppServerThreadSummaries({ limit: 10, createClient: async () => client })
+
+  assert.equal(summaries[0].model, 'gpt-6-sol')
+  assert.deepEqual(summaries[0].tokenUsage, {
+    inputTokens: 240,
+    cachedInputTokens: 5,
+    outputTokens: 10,
+    reasoningOutputTokens: 3,
+    totalTokens: 250,
+  })
+})
+
 test('collectAppServerThreadSummaries paginates all source kinds and excludes subagents locally', async () => {
   const calls = []
   const client = {

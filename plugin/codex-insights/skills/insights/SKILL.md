@@ -5,7 +5,7 @@ license: MIT
 metadata:
   short-description: Private reports from local Codex sessions
   author: mangeshraut712
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # Codex Insights
@@ -43,7 +43,7 @@ If the user does not name a mode, use **local-only**.
 
 Honor user-supplied scope, output, language, data-source, archive, and subagent flags. Keep `--data-source auto` unless they ask to fail closed on app-server incompatibility (`--data-source app-server`) or to force the legacy reader.
 
-Defaults that match Claude Code `/insights` population rules: this machine only, `--limit 200` unseen sessions, skip very short sessions, reuse previously analyzed sessions, HTML header `analyzed sessions (discovered total)` when some are left out. `--days 0` includes all local sessions. `--reanalyze` ignores the seen-session journal.
+Defaults that match Claude Code `/insights` population rules: this machine only, `--limit 200` unseen sessions, skip very short sessions, reuse previously analyzed sessions, HTML header `analyzed sessions (discovered total)` when some are left out. `--days 0` includes all local sessions. `--since YYYY-MM-DD` limits the report to sessions updated on or after that local date and cannot be combined with `--days`. `--reanalyze` ignores the seen-session journal.
 
 Read `references/report-modes.md` only when choosing flags or explaining Trust & Coverage.
 

@@ -2,7 +2,7 @@
 
 [Live example](https://mangeshraut712.github.io/codex-insights/) · [Install or update `$insights`](install.md)
 
-Codex Insights can export a static profile page that opens in any browser. It uses only aggregate fields from an existing local `report.json`: analyzed session count, total tokens, duration, model counts, and dates on which sessions ended. It does not include thread titles, project paths, prompts, transcript text, or report narratives. The export is a snapshot, not a live account feed.
+Codex Insights can export a static profile page that opens in any browser. It uses only aggregate fields from an existing local `report.json`: analyzed session count, total tokens, the token mix (cached input share and reasoning share of output), duration, model counts, and dates on which sessions ended. It does not include thread titles, project paths, prompts, transcript text, or report narratives. The export is a snapshot, not a live account feed.
 
 ## Create and review
 

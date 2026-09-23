@@ -53,7 +53,7 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 ## Update
 
-To get the profile feature, update both the CLI and the installed `$insights` plugin:
+Update both the CLI and the installed `$insights` plugin with one command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash
@@ -63,7 +63,9 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
-Verify the new command with `codex-session-insights profile --help`, then ask `$insights` to create a shareable profile. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
+Verify with `codex-session-insights --version` (expect `0.4.1` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+
+0.4.1 fixes reports built from the Codex app-server, which is the default source. In 0.4.0 those reports showed `(unknown model)` and zero tokens. The first run after updating re-reads previously analyzed sessions once so they get correct model and token data. Regenerate any profile page you exported with 0.4.0. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
 
 ## Uninstall
 

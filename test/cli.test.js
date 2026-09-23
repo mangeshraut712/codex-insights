@@ -4,7 +4,29 @@ import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { __test as cliTest, runCli } from '../lib/cli.js'
+import { SEEN_SESSIONS_SCHEMA_VERSION } from '../lib/seen-sessions.js'
 import { createSampleReport } from './fixtures/sample-report.js'
+
+test('parseArgs accepts --since calendar dates and rejects bad or conflicting values', () => {
+  const parsed = cliTest.parseArgs(['--since', '2026-01-15'])
+  assert.equal(parsed.options.since, '2026-01-15')
+  const command = cliTest.buildEquivalentCommand(parsed.options)
+  assert.match(command, /--since 2026-01-15/)
+  assert.doesNotMatch(command, /--days/)
+  assert.throws(() => cliTest.parseArgs(['--since', '2026-02-30']), /Invalid --since/)
+  assert.throws(() => cliTest.parseArgs(['--since', 'last-week']), /Invalid --since/)
+  assert.throws(() => cliTest.parseArgs(['--since', '2999-01-01']), /in the future/)
+  assert.throws(
+    () => cliTest.parseArgs(['--since', '2026-01-15', '--days', '7']),
+    /--since and --days cannot be used together/,
+  )
+})
+
+test('parseArgs recognizes --version and -V', () => {
+  assert.equal(cliTest.parseArgs(['--version']).version, true)
+  assert.equal(cliTest.parseArgs(['-V']).version, true)
+  assert.equal(cliTest.parseArgs([]).version, false)
+})
 
 test('normalizeLang collapses zh variants and defaults to en', () => {
   assert.equal(cliTest.normalizeLang('zh'), 'zh-CN')
@@ -269,7 +291,7 @@ test('runCli local-only performs zero model estimation or generation calls', asy
   assert.equal(writtenReport.insights.basis, 'deterministic')
   assert.equal(writtenReport.metadata.coverage.warnings.length, 1)
   const seenStore = JSON.parse(await fs.readFile(path.join(tempDir, 'seen-sessions.json'), 'utf8'))
-  assert.equal(seenStore.schemaVersion, 1)
+  assert.equal(seenStore.schemaVersion, SEEN_SESSIONS_SCHEMA_VERSION)
   assert.ok(seenStore.sessions[fixture.threads[0].id])
 })
 
