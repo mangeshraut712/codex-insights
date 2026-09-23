@@ -1,6 +1,6 @@
 {
-  "name": "codex-session-insights",
-  "version": "0.6.0",
+  "name": "@mangeshraut712/codex-insights",
+  "version": "0.6.1",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
@@ -18,6 +18,10 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "engines": {
     "node": ">=18.17.0"
   },

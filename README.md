@@ -1,8 +1,21 @@
-# Codex Session Insights
+# Codex Insights: `/insights` for OpenAI Codex
 
 [![CI](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@mangeshraut712/codex-insights.svg)](https://www.npmjs.com/package/@mangeshraut712/codex-insights)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
+
+Claude Code has `/insights`. Codex doesn't, so this open-source `$insights` skill adds it: a private report on how you work with Codex, plus a public profile page you can share.
+
+- **Private workflow report.** Type `$insights` in Codex for an HTML report on your projects, tools, friction, and what to try next. It runs offline with zero model calls by default.
+- **Shareable Codex profile.** `codex-session-insights profile` turns the stats from the Codex app's private Settings → Profile page (lifetime tokens, streaks, token activity, top skills and plugins) into a page you can publish. [Live example](https://mangeshraut712.github.io/codex-insights/).
+- **Stays current by itself.** `codex-session-insights schedule install` updates the CLI and skill when a new release ships, and can republish your profile on a schedule.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash
+```
+
+Then start a new Codex thread and type `$insights`. Built and maintained by [Mangesh Raut](https://github.com/mangeshraut712); contributions are welcome ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
 Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. An unspecified `$insights` request defaults to `--local-only` (deterministic metrics, **zero model calls**); the CLI still estimates before a model-assisted run unless you pass `--local-only`.
 
@@ -98,7 +111,7 @@ codex-session-insights --open
 
 `auto` is the default data source: app-server first, with a visible warning if it falls back to the legacy reader. `--app-server-timeout 30000` changes the per-request timeout.
 
-Without a global install, prefix the same flags with `npx github:mangeshraut712/codex-insights`. When the package is published to npm, `npx codex-session-insights` works the same way.
+Without a global install, prefix the same flags with `npx @mangeshraut712/codex-insights` (or `npx github:mangeshraut712/codex-insights`). The unscoped `codex-session-insights` npm package is an older upstream release.
 
 ## Defaults
 

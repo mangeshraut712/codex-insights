@@ -108,6 +108,9 @@ node -e 'const p=process.versions.node.split(".").map(Number); if (p[0]<18 || (p
 prefix="$(resolve_npm_prefix)"
 resolve_codex_bin
 
+# Older installs used the unscoped package name, which owns the same codex-session-insights bin.
+npm uninstall --global --prefix "${prefix}" --no-audit --no-fund codex-session-insights >/dev/null 2>&1 || true
+
 if [[ -n "${root}" ]]; then
   log "Installing CLI from $(basename "${root}")…"
   npm install --global --prefix "${prefix}" --omit=dev --ignore-scripts --no-audit --no-fund "${root}"

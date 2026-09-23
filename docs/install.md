@@ -16,8 +16,11 @@ Start a **new** Codex thread and type `$insights`. With no extra wording it buil
 ## CLI
 
 ```bash
-npx github:mangeshraut712/codex-insights --local-only
+npm install --global @mangeshraut712/codex-insights
+codex-session-insights --local-only
 ```
+
+Or without installing: `npx @mangeshraut712/codex-insights --local-only`. The unscoped `codex-session-insights` npm package is an older upstream release; use the scoped name above. Before the first npm release, `npx github:mangeshraut712/codex-insights --local-only` installs straight from GitHub.
 
 After a global install, the same flags work as `codex-session-insights`.
 
