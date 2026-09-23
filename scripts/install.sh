@@ -139,8 +139,10 @@ if ! have "${codex_bin}"; then
 fi
 
 log "Installing \$insights skill…"
-if ! run_json "${codex_bin}" plugin marketplace add "${marketplace_source}" --json; then
-  run_json "${codex_bin}" plugin marketplace upgrade "${MARKETPLACE_NAME}" --json || true
+run_json "${codex_bin}" plugin marketplace add "${marketplace_source}" --json || true
+if [[ -z "${root}" ]]; then
+  run_json "${codex_bin}" plugin marketplace upgrade "${MARKETPLACE_NAME}" --json \
+    || die "Unable to refresh ${MARKETPLACE_NAME} marketplace."
 fi
 run_json "${codex_bin}" plugin remove "${PLUGIN_ID}" --json || true
 "${codex_bin}" plugin add "${PLUGIN_ID}" --json >/dev/null

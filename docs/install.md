@@ -61,6 +61,8 @@ curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/
 
 The installer refreshes the marketplace snapshot and reinstalls the plugin. Start a new Codex thread afterward. From a checkout, run `git pull origin main` and then `bash scripts/install.sh`.
 
+For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
+
 Verify the new command with `codex-session-insights profile --help`, then ask `$insights` to create a shareable profile. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
 
 ## Uninstall
