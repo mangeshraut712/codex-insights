@@ -53,11 +53,15 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 ## Update
 
+To get the profile feature, update both the CLI and the installed `$insights` plugin:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash
 ```
 
-Or from a checkout: `bash scripts/install.sh`.
+The installer refreshes the marketplace snapshot and reinstalls the plugin. Start a new Codex thread afterward. From a checkout, run `git pull origin main` and then `bash scripts/install.sh`.
+
+Verify the new command with `codex-session-insights profile --help`, then ask `$insights` to create a shareable profile. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
 
 ## Uninstall
 

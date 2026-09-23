@@ -1,6 +1,6 @@
 {
   "name": "codex-insights",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
@@ -24,7 +24,7 @@
   "interface": {
     "displayName": "Codex Insights",
     "shortDescription": "Private, trust-aware reports from your local Codex sessions.",
-    "longDescription": "Create a local-only or model-assisted report of your Codex sessions on this machine. Inspired by Claude Code /insights (how you work, not a token bill). Local-only is the default: zero model calls, visible coverage, and credential redaction. Model-assisted narratives run only after an estimate and confirmation.",
+    "longDescription": "Create a local-only or model-assisted report of your Codex sessions on this machine, or export an aggregate-only public profile page when requested. Inspired by Claude Code /insights (how you work, not a token bill). Local-only is the default: zero model calls, visible coverage, and credential redaction. Model-assisted narratives run only after an estimate and confirmation.",
     "developerName": "mangeshraut712",
     "category": "Productivity",
     "capabilities": [
@@ -37,7 +37,7 @@
     "defaultPrompt": [
       "Make a private local-only report of my Codex sessions.",
       "Estimate a model-assisted Codex insights report.",
-      "Create a model-assisted report after I confirm."
+      "Create a local shareable profile page from my Codex insights."
     ],
     "brandColor": "#0F766E",
     "composerIcon": "./assets/icon.png",

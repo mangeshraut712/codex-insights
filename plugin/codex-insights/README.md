@@ -15,6 +15,8 @@ Start a new Codex thread and type `$insights`. With no extra wording it builds a
 
 `$insights` runs the `codex-session-insights` CLI. Install that CLI as well (`scripts/install.sh` or `npm install --global github:mangeshraut712/codex-insights`). On macOS, the wrapper also searches `/opt/homebrew/bin` and `~/.local/bin` because Codex Desktop often has a stripped `PATH`.
 
+Ask `$insights` to create a shareable profile to export an aggregate-only `index.html` from the latest local report. Publishing is a separate, explicit step; see the [profile guide](https://github.com/mangeshraut712/codex-insights/blob/main/docs/shareable-profile.md).
+
 ## Capabilities
 
 - **Interactive**: choose local-only, estimate, or a confirmed model-assisted report

@@ -10,6 +10,8 @@ This matches Claude Code `/insights` on locality (this machine only, not other d
 
 Model-assisted mode sends redacted, sampled session context through either the authenticated Codex CLI or the OpenAI Responses API. Its narratives are interpretations, not measured facts. Review the Trust & Coverage section and underlying metrics before acting on a recommendation.
 
+The optional `profile` command reads an existing report and writes a self-contained HTML snapshot locally. It copies only aggregate totals, model counts, and completed-session dates into the public page; it does not read transcripts or upload anything. A profile becomes public only after you put the exported `index.html` on a web host. See [Shareable profile](shareable-profile.md).
+
 Use an estimate without analysis:
 
 ```bash

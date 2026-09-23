@@ -47,6 +47,8 @@ Update, uninstall, and from-source steps: [docs/install.md](docs/install.md).
 
 In Codex, `$insights` with no extra wording builds a **local-only** report. Ask for an estimate or a model-assisted report when you want those routes. The skill does not share reports or apply recommendations unless you ask separately.
 
+For a web-shareable activity profile, ask `$insights` to create a profile or run `codex-session-insights profile --name "Your name"` after generating a report. The export is a self-contained, aggregate-only page. See the [live example](https://mangeshraut712.github.io/codex-insights/) and [Shareable profile](docs/shareable-profile.md) for review and GitHub Pages publishing steps.
+
 After the CLI is on `PATH`:
 
 ```bash
