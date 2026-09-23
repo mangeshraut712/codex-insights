@@ -8,6 +8,8 @@ On the machine where you run Codex or the CLI, the plugin reads local Codex sess
 
 The `profile` command (default `--source auto`) also reads your account-wide aggregate Codex stats: token totals, streaks, daily token buckets, feature usage percentages, and the names and run counts of your top skills and plugins. It gets them from the Codex app-server and from the Codex profile endpoint on `chatgpt.com`, using the ChatGPT sign-in Codex already stored in `~/.codex/auth.json`. The token is sent only to `chatgpt.com` and is never written to any output. No threads, prompts, or transcripts are read from your account. Use `--source local` to skip this.
 
+If you install the optional schedule (`codex-session-insights schedule install`), it periodically downloads the installer from this GitHub repository when a newer version exists, and, when you pass `--repo`, pushes the regenerated `index.html` and `profile.json` to that repository with your own git credentials.
+
 ## What leaves the machine
 
 - **Local-only** (the `$insights` default): zero model calls. Session text stays on the machine except for the report files you choose to open or copy.

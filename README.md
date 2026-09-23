@@ -81,6 +81,7 @@ codex-session-insights --days 7 --limit 20 --facet-limit 8 --estimate-only
 codex-session-insights --days 0 --local-only
 codex-session-insights --since 2026-09-01 --local-only
 codex-session-insights --version
+codex-session-insights schedule install --repo you/codex-profile   # auto-update skill + profile (macOS)
 codex-session-insights --reanalyze --local-only
 codex-session-insights --out-dir ./insights-output
 codex-session-insights --stdout-json

@@ -65,11 +65,15 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
-Verify with `codex-session-insights --version` (expect `0.5.0` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+Verify with `codex-session-insights --version` (expect `0.6.0` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
 
 In an interactive zsh terminal, paste `codex-session-insights --version` on its own line. Text such as `# should print 0.4.1` after the command can be passed as CLI arguments unless zsh's `interactivecomments` option is enabled.
 
-0.5.0 makes `codex-session-insights profile` read your account-wide Codex stats, so the page matches the Codex app's Settings → Profile (which is private) instead of only this machine's sessions. See [Shareable profile](shareable-profile.md).
+To stop updating by hand, run `codex-session-insights schedule install` (add `--repo owner/name` to also publish your profile). It checks for new releases every 12 hours and reinstalls the CLI and `$insights` skill when one appears. See [Keep it updated automatically](shareable-profile.md#keep-it-updated-automatically).
+
+0.6.0 adds `auto` and `schedule` for automatic updates of the CLI, the skill, and the published profile.
+
+0.5.0 made `codex-session-insights profile` read your account-wide Codex stats, so the page matches the Codex app's Settings → Profile (which is private) instead of only this machine's sessions. See [Shareable profile](shareable-profile.md).
 
 0.4.1 fixed reports built from the Codex app-server, which is the default source. In 0.4.0 those reports showed `(unknown model)` and zero tokens. The first run after updating from 0.4.0 re-reads previously analyzed sessions once so they get correct model and token data. Regenerate any profile page you exported with 0.4.0. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
 

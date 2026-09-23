@@ -5,7 +5,7 @@ license: MIT
 metadata:
   short-description: Private reports from local Codex sessions
   author: mangeshraut712
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Codex Insights
@@ -42,6 +42,8 @@ If the user does not name a mode, use **local-only**.
 | Model-assisted / narrative / interpreted | Estimate first. Show the estimate and wait for confirmation. Then `node <plugin-root>/scripts/run-insights.mjs --yes --no-open` |
 | Shareable activity profile | `node <plugin-root>/scripts/run-insights.mjs profile`. This matches the Codex app profile: lifetime and peak tokens, longest chat, streaks, daily/weekly/cumulative token activity, activity insights, and most used skills and plugins. Name and handle default to the Codex display name and username; pass `--name` / `--handle` only if the user picks different ones. If account stats are unavailable it falls back to the local report (generate one first with `--local-only --days 0 --no-open`). Use `--source local` when the user wants a machine-only profile, and `--source account` to fail instead of falling back. |
 
+| Keep the profile and skill updated automatically | Only when the user asks for automatic or scheduled updates. With a publish target the user named: `node <plugin-root>/scripts/run-insights.mjs schedule install --repo <owner/name> [--every <hours>] [--name "<name>"] [--handle "<handle>"]`. Without one, omit `--repo` (updates the skill and the local profile only). Check with `schedule status`; stop with `schedule remove`. |
+
 Honor user-supplied scope, output, language, data-source, archive, and subagent flags. Keep `--data-source auto` unless they ask to fail closed on app-server incompatibility (`--data-source app-server`) or to force the legacy reader.
 
 Defaults that match Claude Code `/insights` population rules: this machine only, `--limit 200` unseen sessions, skip very short sessions, reuse previously analyzed sessions, HTML header `analyzed sessions (discovered total)` when some are left out. `--days 0` includes all local sessions. `--since YYYY-MM-DD` limits the report to sessions updated on or after that local date and cannot be combined with `--days`. `--reanalyze` ignores the seen-session journal.
@@ -58,5 +60,6 @@ Read `references/report-modes.md` only when choosing flags or explaining Trust &
 ## After a profile export
 
 - Give the local `index.html` and `profile.json` paths (default `~/.codex/usage-data/profile/`) and say which source was used (the command prints `Codex account stats` or `local report`). Explain that it is a static snapshot of aggregate data and omits titles, paths, prompts, and narrative text. For a local-report profile, state analyzed vs discovered coverage and do not present those counts as lifetime totals. If the command printed an activity-insights warning, tell the user those panels are empty.
+- Scheduling with `--repo` authorizes the tool to push the profile's `index.html` and `profile.json` to that repository on every run where the stats changed. Confirm the repository with the user before installing it; never add `--repo` on your own.
 - The Codex app's own profile has a Private setting. This page does not change that setting; it makes a separate static copy that is public only once the user publishes it.
 - Ask the user to review the page before publication. For a web link, follow the [profile publishing guide](https://github.com/mangeshraut712/codex-insights/blob/main/docs/shareable-profile.md); publish only if the user explicitly asks for that step. Do not upload `report.json` or `report.html` as part of profile publishing.

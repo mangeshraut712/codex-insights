@@ -31,6 +31,30 @@ codex-session-insights report --local-only --days 0 --no-open
 codex-session-insights profile --source local --report-json ./report.json --out-dir ./public-profile
 ```
 
+## Keep it updated automatically
+
+On macOS, one command schedules a background refresh:
+
+```bash
+codex-session-insights schedule install --repo YOUR-USERNAME/codex-profile --every 12
+```
+
+It runs once immediately and then every 12 hours (the default). Each run:
+
+1. Checks GitHub for a newer Codex Insights release. If there is one, it runs the installer, which updates both the CLI and the `$insights` skill, and then continues with the new version.
+2. Rebuilds the profile from your Codex account stats (`--source account`, so a signed-out run fails instead of publishing machine-only numbers).
+3. Copies `index.html` and `profile.json` into `docs/` of the repository and pushes, only if the stats changed. It works in its own clone under `~/.codex/usage-data/profile-publish/`, so your working checkouts are never touched. Pushing uses your normal git credentials (the macOS keychain).
+
+Pass `--name` and `--handle` to keep a custom display name, `--site-dir` and `--branch` for a different Pages source, or `--no-self-update` to pin the installed version. Leave out `--repo` to only keep the skill and the local profile current.
+
+```bash
+codex-session-insights schedule status   # interval, agent file, recent log
+codex-session-insights schedule remove   # stop the automatic refresh
+codex-session-insights auto --repo YOUR-USERNAME/codex-profile   # one refresh right now
+```
+
+The job is a launchd agent (`~/Library/LaunchAgents/com.mangeshraut712.codex-insights.auto.plist`) that runs while you are logged in, and logs to `~/.codex/usage-data/auto-update.log`. It records the Node binary you installed it with; if that Node is removed, run `schedule install` again. On Linux, run `codex-session-insights auto --repo …` from cron instead.
+
 ## Put it on the web with GitHub Pages
 
 1. Create a repository for your public profile, such as `codex-profile`.
