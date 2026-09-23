@@ -4,7 +4,9 @@ This policy covers the Codex Insights plugin (`$insights`) and the `codex-sessio
 
 ## What the plugin reads
 
-On the machine where you run Codex or the CLI, the plugin reads local Codex session metadata and transcript excerpts. It does not fetch sessions from other devices or from Codex cloud history.
+On the machine where you run Codex or the CLI, the plugin reads local Codex session metadata and transcript excerpts. Reports do not fetch sessions from other devices or from Codex cloud history.
+
+The `profile` command (default `--source auto`) also reads your account-wide aggregate Codex stats: token totals, streaks, daily token buckets, feature usage percentages, and the names and run counts of your top skills and plugins. It gets them from the Codex app-server and from the Codex profile endpoint on `chatgpt.com`, using the ChatGPT sign-in Codex already stored in `~/.codex/auth.json`. The token is sent only to `chatgpt.com` and is never written to any output. No threads, prompts, or transcripts are read from your account. Use `--source local` to skip this.
 
 ## What leaves the machine
 
