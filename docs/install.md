@@ -2,6 +2,8 @@
 
 Requires [Node.js](https://nodejs.org) `>=18.17.0`. The `$insights` skill also needs the [Codex CLI](https://github.com/openai/codex).
 
+Check `node --version` before running the installer. If it shows an older Node, install a supported version from the [official Node.js download page](https://nodejs.org/en/download) and open a new terminal. Verify that `command -v node` points to the new installation, then retry. The installer does not replace your system Node automatically.
+
 ## Codex skill
 
 ```bash
@@ -64,6 +66,8 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
 Verify with `codex-session-insights --version` (expect `0.4.1` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+
+In an interactive zsh terminal, paste `codex-session-insights --version` on its own line. Text such as `# should print 0.4.1` after the command can be passed as CLI arguments unless zsh's `interactivecomments` option is enabled.
 
 0.4.1 fixes reports built from the Codex app-server, which is the default source. In 0.4.0 those reports showed `(unknown model)` and zero tokens. The first run after updating re-reads previously analyzed sessions once so they get correct model and token data. Regenerate any profile page you exported with 0.4.0. See [Shareable profile](shareable-profile.md) for the report and web publishing steps.
 

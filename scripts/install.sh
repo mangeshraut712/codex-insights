@@ -103,7 +103,7 @@ resolve_codex_bin() {
 have node || die "Node.js >=18.17.0 is required. See https://nodejs.org"
 have npm || die "npm is required (it ships with Node.js)."
 node -e 'const p=process.versions.node.split(".").map(Number); if (p[0]<18 || (p[0]===18 && p[1]<17)) process.exit(1)' \
-  || die "Node.js $(node -p process.version) is too old. Codex Insights needs >=18.17.0."
+  || die "Node.js $(node -p process.version) is too old. Install Node.js >=18.17.0 from https://nodejs.org/en/download, make sure it is first on PATH, then retry."
 
 prefix="$(resolve_npm_prefix)"
 resolve_codex_bin
