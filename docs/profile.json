@@ -3,11 +3,11 @@
   "name": "Mangesh Raut",
   "handle": "mbr63",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-09-23T08:18:40.304Z",
+  "generatedAt": "2026-09-26T18:19:46.041Z",
   "stats": [
     {
       "label": "Lifetime tokens",
-      "value": "7.1B"
+      "value": "7.3B"
     },
     {
       "label": "Peak tokens",
@@ -19,7 +19,7 @@
     },
     {
       "label": "Current streak",
-      "value": "5 days"
+      "value": "8 days"
     },
     {
       "label": "Longest streak",
@@ -689,6 +689,18 @@
       {
         "date": "2026-09-22",
         "value": 18210934
+      },
+      {
+        "date": "2026-09-23",
+        "value": 59960493
+      },
+      {
+        "date": "2026-09-24",
+        "value": 49224414
+      },
+      {
+        "date": "2026-09-25",
+        "value": 37370499
       }
     ],
     "weekly": [
@@ -874,7 +886,7 @@
       },
       {
         "date": "2026-09-20",
-        "value": 80971860
+        "value": 227527266
       }
     ],
     "cumulative": [
@@ -1537,6 +1549,18 @@
       {
         "date": "2026-09-22",
         "value": 7149308994
+      },
+      {
+        "date": "2026-09-23",
+        "value": 7209269487
+      },
+      {
+        "date": "2026-09-24",
+        "value": 7258493901
+      },
+      {
+        "date": "2026-09-25",
+        "value": 7295864400
       }
     ]
   },
@@ -1547,11 +1571,11 @@
       "rows": [
         {
           "label": "Fast Mode",
-          "value": "52%"
+          "value": "51%"
         },
         {
           "label": "Most used reasoning",
-          "value": "High · 43%"
+          "value": "High · 42%"
         },
         {
           "label": "Skills explored",
@@ -1559,11 +1583,11 @@
         },
         {
           "label": "Total skills used",
-          "value": "1,035"
+          "value": "1,036"
         },
         {
           "label": "Total chats",
-          "value": "806"
+          "value": "839"
         }
       ]
     },
@@ -1599,5 +1623,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-09-22, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-09-26, across all devices. Aggregates only; this snapshot does not update automatically."
 }
