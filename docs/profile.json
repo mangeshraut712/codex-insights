@@ -3,11 +3,11 @@
   "name": "Mangesh Raut",
   "handle": "mbr63",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-09-27T09:13:44.624Z",
+  "generatedAt": "2026-09-27T21:13:54.758Z",
   "stats": [
     {
       "label": "Lifetime tokens",
-      "value": "7.3B"
+      "value": "7.4B"
     },
     {
       "label": "Peak tokens",
@@ -19,7 +19,7 @@
     },
     {
       "label": "Current streak",
-      "value": "9 days"
+      "value": "10 days"
     },
     {
       "label": "Longest streak",
@@ -705,6 +705,10 @@
       {
         "date": "2026-09-26",
         "value": 14712246
+      },
+      {
+        "date": "2026-09-27",
+        "value": 89542316
       }
     ],
     "weekly": [
@@ -891,6 +895,10 @@
       {
         "date": "2026-09-20",
         "value": 242239512
+      },
+      {
+        "date": "2026-09-27",
+        "value": 89542316
       }
     ],
     "cumulative": [
@@ -1569,6 +1577,10 @@
       {
         "date": "2026-09-26",
         "value": 7310576646
+      },
+      {
+        "date": "2026-09-27",
+        "value": 7400118962
       }
     ]
   },
@@ -1595,7 +1607,7 @@
         },
         {
           "label": "Total chats",
-          "value": "844"
+          "value": "847"
         }
       ]
     },
