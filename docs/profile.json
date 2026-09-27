@@ -3,7 +3,7 @@
   "name": "Mangesh Raut",
   "handle": "mbr63",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-09-26T18:19:46.041Z",
+  "generatedAt": "2026-09-27T09:13:44.624Z",
   "stats": [
     {
       "label": "Lifetime tokens",
@@ -19,7 +19,7 @@
     },
     {
       "label": "Current streak",
-      "value": "8 days"
+      "value": "9 days"
     },
     {
       "label": "Longest streak",
@@ -701,6 +701,10 @@
       {
         "date": "2026-09-25",
         "value": 37370499
+      },
+      {
+        "date": "2026-09-26",
+        "value": 14712246
       }
     ],
     "weekly": [
@@ -886,7 +890,7 @@
       },
       {
         "date": "2026-09-20",
-        "value": 227527266
+        "value": 242239512
       }
     ],
     "cumulative": [
@@ -1561,6 +1565,10 @@
       {
         "date": "2026-09-25",
         "value": 7295864400
+      },
+      {
+        "date": "2026-09-26",
+        "value": 7310576646
       }
     ]
   },
@@ -1571,7 +1579,7 @@
       "rows": [
         {
           "label": "Fast Mode",
-          "value": "51%"
+          "value": "50%"
         },
         {
           "label": "Most used reasoning",
@@ -1579,15 +1587,15 @@
         },
         {
           "label": "Skills explored",
-          "value": "89"
+          "value": "90"
         },
         {
           "label": "Total skills used",
-          "value": "1,036"
+          "value": "1,038"
         },
         {
           "label": "Total chats",
-          "value": "839"
+          "value": "844"
         }
       ]
     },
@@ -1623,5 +1631,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-09-26, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-09-27, across all devices. Aggregates only; this snapshot does not update automatically."
 }
