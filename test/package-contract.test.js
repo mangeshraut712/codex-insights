@@ -20,7 +20,12 @@ const REQUIRED_DOCS = [
   'SECURITY.md',
 ]
 
-const README_SCREENSHOTS = ['docs/screenshots/01-home.png', 'docs/screenshots/02-feature.png']
+const README_SCREENSHOTS = [
+  'docs/screenshots/01-home.webp',
+  'docs/screenshots/02-report.webp',
+  'docs/screenshots/03-profile.webp',
+  'docs/screenshots/04-activity.webp',
+]
 
 test('package declares the dependency runtime floor', async () => {
   const packageJson = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url), 'utf8'))
