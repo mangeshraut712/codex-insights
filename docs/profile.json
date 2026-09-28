@@ -3,7 +3,7 @@
   "name": "Mangesh Raut",
   "handle": "mbr63",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-09-27T21:13:54.758Z",
+  "generatedAt": "2026-09-28T09:25:43.078Z",
   "stats": [
     {
       "label": "Lifetime tokens",
@@ -708,7 +708,7 @@
       },
       {
         "date": "2026-09-27",
-        "value": 89542316
+        "value": 133146321
       }
     ],
     "weekly": [
@@ -898,7 +898,7 @@
       },
       {
         "date": "2026-09-27",
-        "value": 89542316
+        "value": 133146321
       }
     ],
     "cumulative": [
@@ -1580,7 +1580,7 @@
       },
       {
         "date": "2026-09-27",
-        "value": 7400118962
+        "value": 7443722967
       }
     ]
   },
@@ -1595,7 +1595,7 @@
         },
         {
           "label": "Most used reasoning",
-          "value": "High · 42%"
+          "value": "High · 41%"
         },
         {
           "label": "Skills explored",
@@ -1607,7 +1607,7 @@
         },
         {
           "label": "Total chats",
-          "value": "847"
+          "value": "848"
         }
       ]
     },
@@ -1643,5 +1643,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-09-27, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-09-28, across all devices. Aggregates only; this snapshot does not update automatically."
 }
