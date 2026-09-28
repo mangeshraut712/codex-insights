@@ -19,15 +19,21 @@ Then start a new Codex thread and type `$insights`. Built and maintained by [Man
 
 Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. An unspecified `$insights` request defaults to `--local-only` (deterministic metrics, **zero model calls**); the CLI still estimates before a model-assisted run unless you pass `--local-only`.
 
-<p align="center">
-  <img src="docs/screenshots/01-home.png" alt="Codex Insights HTML report: header stats, Trust & Coverage, and At a Glance" width="720" />
-</p>
-<p align="center"><em>Landing surface of a real HTML report: header stats, Trust & Coverage, and At a Glance.</em></p>
+## Screenshots
 
-<p align="center">
-  <img src="docs/screenshots/02-feature.png" alt="Codex Insights HTML report: What You Work On, How You Use Codex, and Impressive Things You Did" width="720" />
-</p>
-<p align="center"><em>Deeper sections from the same report: workstreams, usage patterns, and what went well.</em></p>
+Framed captures of the current HTML report and shareable profile.
+
+<div align="center">
+
+<img src="docs/screenshots/01-home.webp" alt="Codex Insights HTML report in a Mac frame: See how you work" width="720" />
+
+<img src="docs/screenshots/02-report.webp" alt="Local-only Codex Insights report sections: Stays on this machine" width="720" />
+
+<img src="docs/screenshots/03-profile.webp" alt="Shareable Codex profile page: Share a public page" width="720" />
+
+<img src="docs/screenshots/04-activity.webp" alt="Codex profile daily heatmap and weekly token activity" width="720" />
+
+</div>
 
 This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md). Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
 
