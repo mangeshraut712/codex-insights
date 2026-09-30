@@ -3,7 +3,7 @@
   "name": "Mangesh Raut",
   "handle": "mbr63",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-09-29T17:48:21.717Z",
+  "generatedAt": "2026-09-30T15:40:01.916Z",
   "stats": [
     {
       "label": "Lifetime tokens",
@@ -19,11 +19,11 @@
     },
     {
       "label": "Current streak",
-      "value": "11 days"
+      "value": "13 days"
     },
     {
       "label": "Longest streak",
-      "value": "11 days"
+      "value": "13 days"
     }
   ],
   "activity": {
@@ -713,6 +713,14 @@
       {
         "date": "2026-09-28",
         "value": 129964951
+      },
+      {
+        "date": "2026-09-29",
+        "value": 8191005
+      },
+      {
+        "date": "2026-09-30",
+        "value": 11708688
       }
     ],
     "weekly": [
@@ -902,7 +910,7 @@
       },
       {
         "date": "2026-09-27",
-        "value": 263111272
+        "value": 283010965
       }
     ],
     "cumulative": [
@@ -1589,6 +1597,14 @@
       {
         "date": "2026-09-28",
         "value": 7573687918
+      },
+      {
+        "date": "2026-09-29",
+        "value": 7581878923
+      },
+      {
+        "date": "2026-09-30",
+        "value": 7593587611
       }
     ]
   },
@@ -1615,7 +1631,7 @@
         },
         {
           "label": "Total chats",
-          "value": "853"
+          "value": "856"
         }
       ]
     },
@@ -1651,5 +1667,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-09-29, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-09-30, across all devices. Aggregates only; this snapshot does not update automatically."
 }
