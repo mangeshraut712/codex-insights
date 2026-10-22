@@ -15,3 +15,6 @@ coverage/
 .DS_Store
 __pycache__/
 *.py[cod]
+# Local agent tooling
+.agents/skills/
+skills-lock.json
