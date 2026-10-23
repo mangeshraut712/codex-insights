@@ -55,7 +55,7 @@ test('redactSensitiveText covers more credential shapes and both home-path spell
 
   const result = redactSensitiveText(input, { homeDir })
 
-  for (const secret of secrets) assert.doesNotMatch(result.text, new RegExp(secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  for (const secret of secrets) assert.equal(result.text.includes(secret), false)
   assert.doesNotMatch(result.text, /synthetic-url-secret/)
   assert.doesNotMatch(result.text, /Users\/synthetic|Users\\synthetic/)
   assert.match(result.text, /\[REDACTED_GITHUB_TOKEN\]/)
@@ -71,4 +71,17 @@ test('redactSensitiveText covers more credential shapes and both home-path spell
   const root = redactSensitiveText('keep /etc/passwd', { homeDir: '/' })
   assert.equal(root.text, 'keep /etc/passwd')
   assert.equal(root.redactions, 0)
+})
+
+test('redactSensitiveText matches slack webhook dots as literal hostname characters', () => {
+  const webhook = 'https://hooks.slack.com/services/T00/B00/SYNTHETIC'
+  const anyCharacterHost = 'https://hooksXslackYcom/services/T00/B00/SYNTHETIC'
+  const dottedSuffixHost = 'https://hooks.slack.com.attacker.test/services/T00/B00/SYNTHETIC'
+  const result = redactSensitiveText([webhook, anyCharacterHost, dottedSuffixHost].join('\n'))
+
+  assert.equal(result.text.includes(webhook), false)
+  assert.equal(result.text.includes(anyCharacterHost), true)
+  assert.equal(result.text.includes(dottedSuffixHost), true)
+  assert.match(result.text, /\[REDACTED_SLACK_WEBHOOK\]/)
+  assert.equal(result.redactions, 1)
 })
