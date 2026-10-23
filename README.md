@@ -159,7 +159,7 @@ Collection is read-only. The CLI does not start turns or change session state. S
 - Codex CLI for `$insights` and for the default `codex-cli` provider
 - `sqlite3` on `PATH` only for legacy mode
 
-macOS and Linux are expected to work. Windows is not yet verified. On macOS, `$insights` looks for `codex` and `codex-session-insights` under `/opt/homebrew/bin`, `/usr/local/bin`, and `~/.local/bin` in addition to `PATH`, so Codex Desktop can still spawn app-server after Homebrew installs.
+macOS and Linux are expected to work. Windows is not yet verified. On macOS, `$insights` looks for `codex` and `codex-session-insights` under `/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`, `~/.npm-global/bin`, `~/.cargo/bin`, and `~/.codex/bin` in addition to `PATH`, so Codex Desktop can still spawn app-server after Homebrew installs.
 
 ## Privacy
 
@@ -168,7 +168,8 @@ The tool reads local Codex data on your machine.
 - `--local-only` (the `$insights` default): no model is called
 - `provider=codex-cli`: analysis uses your local Codex CLI session
 - `provider=openai`: prompts go to the OpenAI Responses API
-- Recognized credentials and home paths are redacted before caches, prompts, JSON, and HTML. Pattern-based redaction cannot guarantee every sensitive fact is removed
+- Recognized credentials (API keys, classic and fine-grained GitHub tokens, AWS access keys, Slack tokens, npm tokens, bearer tokens, password assignments, private keys, and URL userinfo) and both slash forms of the home path are redacted before caches, prompts, JSON, and HTML. Pattern-based redaction cannot guarantee every sensitive fact is removed
+- Report and profile files are written so only your user can read them (mode `0600`)
 - Reports may still contain project names, thread titles, and other local development context
 
 Review `report.html` and `report.json` before sharing. See [Privacy and trust](docs/privacy-and-trust.md), the [privacy policy](docs/privacy-policy.md), and [terms](docs/terms.md).

@@ -34,3 +34,52 @@ test('redactSensitiveText removes synthetic secrets and home paths', () => {
   assert.match(result.text, /\[REDACTED_HOME\]\/private\/project/)
   assert.equal(result.redactions, 6)
 })
+
+test('redactSensitiveText covers more credential shapes and both home-path spellings', () => {
+  const homeDir = 'C:\\Users\\synthetic'
+  const secrets = [
+    'github_pat_11SYNTHETICFINEGRAINEDTOKENVALUE',
+    'AKIA1234567890ABCDEF',
+    'xoxb-synthetic-slack-token',
+    'npm_SYNTHETICNPMTOKEN0123456789ABCDEFGHI',
+    'aws_secret_access_key=synthetic-secret-value',
+    'https://hooks.slack.com/services/T00/B00/SYNTHETIC',
+  ]
+  const input = [
+    ...secrets,
+    'https://analyst:synthetic-url-secret@example.test/repo',
+    'C:/Users/synthetic/project',
+    `${homeDir}\\project`,
+    '/etc/passwd',
+  ].join('\n')
+
+  const result = redactSensitiveText(input, { homeDir })
+
+  assert.equal(result.text, [
+    '[REDACTED_GITHUB_TOKEN]',
+    '[REDACTED_AWS_KEY]',
+    '[REDACTED_SLACK_TOKEN]',
+    '[REDACTED_NPM_TOKEN]',
+    '[REDACTED_PASSWORD]',
+    '[REDACTED_SLACK_WEBHOOK]',
+    'https://[REDACTED_URL_CREDENTIALS]@example.test/repo',
+    '[REDACTED_HOME]/project',
+    '[REDACTED_HOME]\\project',
+    '/etc/passwd',
+  ].join('\n'))
+  assert.equal(result.redactions, 9)
+
+  const root = redactSensitiveText('keep /etc/passwd', { homeDir: '/' })
+  assert.equal(root.text, 'keep /etc/passwd')
+  assert.equal(root.redactions, 0)
+})
+
+test('redactSensitiveText matches slack webhook dots as literal hostname characters', () => {
+  const webhook = 'https://hooks.slack.com/services/T00/B00/SYNTHETIC'
+  const anyCharacterHost = 'https://hooksXslackYcom/services/T00/B00/SYNTHETIC'
+  const dottedSuffixHost = 'https://hooks.slack.com.attacker.test/services/T00/B00/SYNTHETIC'
+  const result = redactSensitiveText([webhook, anyCharacterHost, dottedSuffixHost].join('\n'))
+
+  assert.equal(result.text, ['[REDACTED_SLACK_WEBHOOK]', anyCharacterHost, dottedSuffixHost].join('\n'))
+  assert.equal(result.redactions, 1)
+})

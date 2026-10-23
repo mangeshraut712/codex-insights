@@ -42,6 +42,12 @@ test('buildModelCandidates dedupes primary and fallback models', () => {
   )
 })
 
+test('assertHttpsApiBase allows https endpoints and rejects cleartext or embedded credentials', () => {
+  assert.equal(providerTest.assertHttpsApiBase('https://api.openai.com/v1/'), 'https://api.openai.com/v1')
+  assert.throws(() => providerTest.assertHttpsApiBase('http://api.openai.com/v1'), /https/)
+  assert.throws(() => providerTest.assertHttpsApiBase('https://user:secret@api.openai.com/v1'), /credentials/)
+})
+
 test('isRetryableModelError matches unavailable model failures', () => {
   assert.equal(
     providerTest.isRetryableModelError(

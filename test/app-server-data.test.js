@@ -552,3 +552,72 @@ test('collectAppServerThreadSummaries reuses archived sessions and reanalyze rer
   assert.equal(again.coverage.reused, 0)
   assert.equal(again.coverage.unseenAnalyzed, 2)
 })
+
+test('collectAppServerThreadSummaries stops when a page cursor repeats', async () => {
+  let lists = 0
+  const client = {
+    async request(method) {
+      if (method === 'thread/list') {
+        lists += 1
+        return { data: [makeThread({ id: 'only' })], nextCursor: 'same' }
+      }
+      if (method === 'thread/read') return { thread: mainThreadWithItems() }
+      throw new Error(method)
+    },
+    close() {},
+  }
+
+  const { summaries } = await collectAppServerThreadSummaries({
+    limit: 10,
+    createClient: async () => client,
+  })
+  assert.equal(lists, 2)
+  assert.equal(summaries.length, 1)
+})
+
+test('app-server timestamps accept ISO strings and drop sessions before --since', async () => {
+  const started = '2026-04-01T00:00:00.000Z'
+  const ended = '2026-04-01T00:03:00.000Z'
+  const thread = makeThread({
+    createdAt: started,
+    updatedAt: ended,
+    turns: [{
+      startedAt: Date.parse(started),
+      completedAt: Date.parse(ended),
+      items: [
+        { type: 'userMessage', content: [{ type: 'text', text: 'One' }] },
+        { type: 'userMessage', content: [{ type: 'text', text: 'Two' }] },
+      ],
+    }],
+  })
+  const clientFor = listed => ({
+    async request(method) {
+      if (method === 'thread/list') return { data: [listed], nextCursor: null }
+      if (method === 'thread/read') return { thread: listed }
+      throw new Error(method)
+    },
+    close() {},
+  })
+  const sinceEpochSeconds = Math.floor(Date.parse('2026-03-01T00:00:00.000Z') / 1000)
+
+  const recent = await collectAppServerThreadSummaries({
+    limit: 5,
+    sinceEpochSeconds,
+    createClient: async () => clientFor(thread),
+  })
+  assert.equal(recent.summaries.length, 1)
+  assert.equal(recent.summaries[0].durationMinutes, 3)
+  assert.equal(recent.summaries[0].updatedAt, ended)
+
+  const stale = makeThread({
+    ...thread,
+    updatedAt: '2020-01-01T00:00:00.000Z',
+  })
+  const skipped = await collectAppServerThreadSummaries({
+    limit: 5,
+    sinceEpochSeconds,
+    createClient: async () => clientFor(stale),
+  })
+  assert.equal(skipped.summaries.length, 0)
+  assert.equal(skipped.coverage.eligible, 0)
+})

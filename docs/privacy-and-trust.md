@@ -26,7 +26,7 @@ codex-session-insights --local-only --no-open
 
 ## Redaction boundary
 
-Before cache writes, model prompts, JSON, or HTML, the tool replaces recognized API keys, GitHub-style tokens, bearer credentials, password assignments, private-key blocks, and the selected home-directory prefix. Reports include the number of collection-time replacements.
+Before cache writes, model prompts, JSON, or HTML, the tool replaces recognized API keys, classic and fine-grained GitHub tokens, AWS access key IDs, Slack tokens and webhook URLs, npm tokens, bearer credentials, password and secret-access-key assignments, private-key blocks, URL userinfo, and both slash forms of the selected home-directory prefix. A filesystem root is not treated as a home path. Reports include the number of collection-time replacements.
 
 Pattern-based redaction is defense in depth, not a guarantee. It cannot recognize every proprietary token format or sensitive fact expressed in ordinary prose. Inspect both generated files before sharing them. Avoid supplying secrets through titles or prompts in the first place.
 
@@ -38,7 +38,7 @@ Main interactive sessions are included by default. `--limit` (200) is the max **
 
 ## Storage and deletion
 
-Reports default to `~/.codex/usage-data/report.html` and `report.json`, plus timestamped copies `report-<stamp>.html` / `report-<stamp>.json` in the same directory. Copies older than **30** days are deleted at startup (Claude Code uses `cleanupPeriodDays`, default 30) and again when a new report is written. The seen-session journal and archived summaries live beside those reports. Facet caches default to `~/.codex-insights-cache`; session-summary caches for the legacy reader are stored beneath the selected cache root. A custom output or cache directory may be selected with `--out-dir` and `--cache-dir`.
+Reports default to `~/.codex/usage-data/report.html` and `report.json`, plus timestamped copies `report-<stamp>.html` / `report-<stamp>.json` in the same directory. Those files, and a locally generated profile, are written with mode `0600`. A published profile copy is world-readable only after you push it. Copies older than **30** days are deleted at startup (Claude Code uses `cleanupPeriodDays`, default 30) and again when a new report is written. The seen-session journal and archived summaries live beside those reports. Facet caches default to `~/.codex-insights-cache`; session-summary caches for the legacy reader are stored beneath the selected cache root. A custom output or cache directory may be selected with `--out-dir` and `--cache-dir`.
 
 Delete generated artifacts when they are no longer needed:
 

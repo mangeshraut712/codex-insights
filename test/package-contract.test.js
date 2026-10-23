@@ -41,7 +41,8 @@ test('package declares the dependency runtime floor', async () => {
   assert.equal(packageJson.repository.url, 'git+https://github.com/mangeshraut712/codex-insights.git')
   assert.ok(packageJson.files.includes('LICENSE'))
   assert.equal(packageJson.scripts.check, 'node ./scripts/check.mjs')
-  assert.equal(packageJson.scripts.ci, 'npm test && npm run check && npm pack --dry-run')
+  assert.equal(packageJson.scripts.ci, 'npm test && npm run lint && npm run check && npm pack --dry-run')
+  assert.equal(packageJson.scripts.lint, 'eslint bin lib scripts test plugin/codex-insights/scripts')
 })
 
 test('package includes public trust and contributor contracts', async () => {
@@ -116,6 +117,7 @@ test('install and owner-auth scripts stay token-free and documented', async () =
 
   const workflow = await fs.readFile(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8')
   assert.match(workflow, /npm test/)
+  assert.match(workflow, /npm run lint/)
   assert.match(workflow, /npm run check/)
 
   assert.match(setup, /EXPECTED_LOGIN:-mangeshraut712/)
