@@ -197,8 +197,7 @@ test('runInstaller downloads the script without a shell and rejects unsafe slugs
     bash.emit('exit', 0)
   })
   await pending
-  assert.equal(spawned[0][0], 'curl')
-  assert.ok(spawned[0][1].includes('https://raw.githubusercontent.com/ada/site/HEAD/scripts/install.sh'))
+  assert.deepEqual(spawned[0], ['curl', ['-fsSL', 'https://raw.githubusercontent.com/ada/site/HEAD/scripts/install.sh']])
   assert.deepEqual(spawned[1], ['bash', ['-s', '--']])
   assert.equal(spawned.some(item => item[1]?.includes?.('-c')), false)
 })

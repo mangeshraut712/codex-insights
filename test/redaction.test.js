@@ -55,18 +55,19 @@ test('redactSensitiveText covers more credential shapes and both home-path spell
 
   const result = redactSensitiveText(input, { homeDir })
 
-  for (const secret of secrets) assert.equal(result.text.includes(secret), false)
-  assert.doesNotMatch(result.text, /synthetic-url-secret/)
-  assert.doesNotMatch(result.text, /Users\/synthetic|Users\\synthetic/)
-  assert.match(result.text, /\[REDACTED_GITHUB_TOKEN\]/)
-  assert.match(result.text, /\[REDACTED_AWS_KEY\]/)
-  assert.match(result.text, /\[REDACTED_SLACK_TOKEN\]/)
-  assert.match(result.text, /\[REDACTED_NPM_TOKEN\]/)
-  assert.match(result.text, /\[REDACTED_PASSWORD\]/)
-  assert.match(result.text, /\[REDACTED_SLACK_WEBHOOK\]/)
-  assert.match(result.text, /https:\/\/\[REDACTED_URL_CREDENTIALS\]@example\.test\/repo/)
-  assert.match(result.text, /\[REDACTED_HOME\]/)
-  assert.match(result.text, /\/etc\/passwd/)
+  assert.equal(result.text, [
+    '[REDACTED_GITHUB_TOKEN]',
+    '[REDACTED_AWS_KEY]',
+    '[REDACTED_SLACK_TOKEN]',
+    '[REDACTED_NPM_TOKEN]',
+    '[REDACTED_PASSWORD]',
+    '[REDACTED_SLACK_WEBHOOK]',
+    'https://[REDACTED_URL_CREDENTIALS]@example.test/repo',
+    '[REDACTED_HOME]/project',
+    '[REDACTED_HOME]\\project',
+    '/etc/passwd',
+  ].join('\n'))
+  assert.equal(result.redactions, 9)
 
   const root = redactSensitiveText('keep /etc/passwd', { homeDir: '/' })
   assert.equal(root.text, 'keep /etc/passwd')
@@ -79,9 +80,6 @@ test('redactSensitiveText matches slack webhook dots as literal hostname charact
   const dottedSuffixHost = 'https://hooks.slack.com.attacker.test/services/T00/B00/SYNTHETIC'
   const result = redactSensitiveText([webhook, anyCharacterHost, dottedSuffixHost].join('\n'))
 
-  assert.equal(result.text.includes(webhook), false)
-  assert.equal(result.text.includes(anyCharacterHost), true)
-  assert.equal(result.text.includes(dottedSuffixHost), true)
-  assert.match(result.text, /\[REDACTED_SLACK_WEBHOOK\]/)
+  assert.equal(result.text, ['[REDACTED_SLACK_WEBHOOK]', anyCharacterHost, dottedSuffixHost].join('\n'))
   assert.equal(result.redactions, 1)
 })
