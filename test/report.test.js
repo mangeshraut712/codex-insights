@@ -344,3 +344,62 @@ test('writeReportFiles keeps the latest report and deletes copies older than 30 
   await fs.access(archiveHtmlPath)
   assert.equal(path.basename(archiveHtmlPath), 'report-2026-04-04T120000Z.html')
 })
+
+test('buildReport survives partial summaries and counts cross-thread overlaps once', () => {
+  const report = buildReport(
+    [
+      makeSummary({
+        id: 'a:1',
+        updatedAt: '2026-04-01T00:00:00.000Z',
+        toolCounts: undefined,
+        commandKindCounts: undefined,
+        toolFailures: undefined,
+        activeHours: undefined,
+        tokenUsage: undefined,
+        createdAt: undefined,
+        userMessageTimestamps: ['2026-04-02T10:00:00.000Z', '2026-04-02T10:05:00.000Z'],
+      }),
+      makeSummary({
+        id: 'b:2',
+        userMessageTimestamps: ['2026-04-02T10:10:00.000Z'],
+      }),
+      makeSummary({
+        id: 'c:3',
+        userMessageTimestamps: ['2026-04-02T12:00:00.000Z'],
+      }),
+    ],
+    { lang: 'zh-CN' },
+  )
+
+  assert.equal(report.summary.totalTokens, 177 + 177)
+  assert.equal(report.metadata.dateRange.start, '')
+  assert.equal(report.summary.overlap.overlapEvents, 1)
+  assert.equal(report.summary.overlap.threadsInvolved, 2)
+  assert.equal(report.metadata.language, 'zh-CN')
+})
+
+test('HTML reports use the selected language and private file permissions', async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-private-'))
+  const existing = path.join(tempDir, 'report.html')
+  await fs.writeFile(existing, '<html>old</html>', { mode: 0o644 })
+  const report = buildReport([makeSummary()], {
+    lang: 'zh-CN',
+    insightsOverride: {
+      at_a_glance: {
+        whats_working: '顺',
+        whats_hindering: '阻',
+        quick_wins: '快',
+        ambitious_workflows: '远',
+      },
+    },
+  })
+
+  const { htmlPath, jsonPath } = await writeReportFiles(report, { outDir: tempDir, archiveCopies: false })
+  const html = await fs.readFile(htmlPath, 'utf8')
+  assert.match(html, /<html lang="zh-CN">/)
+  assert.match(html, /上午/)
+  assert.match(html, /aria-live="polite"/)
+  assert.match(html, /复制失败/)
+  assert.equal((await fs.stat(htmlPath)).mode & 0o777, 0o600)
+  assert.equal((await fs.stat(jsonPath)).mode & 0o777, 0o600)
+})

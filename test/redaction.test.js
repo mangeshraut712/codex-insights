@@ -34,3 +34,41 @@ test('redactSensitiveText removes synthetic secrets and home paths', () => {
   assert.match(result.text, /\[REDACTED_HOME\]\/private\/project/)
   assert.equal(result.redactions, 6)
 })
+
+test('redactSensitiveText covers more credential shapes and both home-path spellings', () => {
+  const homeDir = 'C:\\Users\\synthetic'
+  const secrets = [
+    'github_pat_11SYNTHETICFINEGRAINEDTOKENVALUE',
+    'AKIA1234567890ABCDEF',
+    'xoxb-synthetic-slack-token',
+    'npm_SYNTHETICNPMTOKEN0123456789ABCDEFGHI',
+    'aws_secret_access_key=synthetic-secret-value',
+    'https://hooks.slack.com/services/T00/B00/SYNTHETIC',
+  ]
+  const input = [
+    ...secrets,
+    'https://analyst:synthetic-url-secret@example.test/repo',
+    'C:/Users/synthetic/project',
+    `${homeDir}\\project`,
+    '/etc/passwd',
+  ].join('\n')
+
+  const result = redactSensitiveText(input, { homeDir })
+
+  for (const secret of secrets) assert.doesNotMatch(result.text, new RegExp(secret.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  assert.doesNotMatch(result.text, /synthetic-url-secret/)
+  assert.doesNotMatch(result.text, /Users\/synthetic|Users\\synthetic/)
+  assert.match(result.text, /\[REDACTED_GITHUB_TOKEN\]/)
+  assert.match(result.text, /\[REDACTED_AWS_KEY\]/)
+  assert.match(result.text, /\[REDACTED_SLACK_TOKEN\]/)
+  assert.match(result.text, /\[REDACTED_NPM_TOKEN\]/)
+  assert.match(result.text, /\[REDACTED_PASSWORD\]/)
+  assert.match(result.text, /\[REDACTED_SLACK_WEBHOOK\]/)
+  assert.match(result.text, /https:\/\/\[REDACTED_URL_CREDENTIALS\]@example\.test\/repo/)
+  assert.match(result.text, /\[REDACTED_HOME\]/)
+  assert.match(result.text, /\/etc\/passwd/)
+
+  const root = redactSensitiveText('keep /etc/passwd', { homeDir: '/' })
+  assert.equal(root.text, 'keep /etc/passwd')
+  assert.equal(root.redactions, 0)
+})

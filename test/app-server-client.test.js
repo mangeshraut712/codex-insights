@@ -176,3 +176,38 @@ test('createAppServerClient kills the child exactly once after malformed JSONL',
   client.close()
   assert.equal(child.killCount, 1)
 })
+
+test('createAppServerClient correlates numeric requests with string JSON-RPC ids', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":"1","result":{"protocolVersion":"1"}}\n')
+      return
+    }
+    if (message.method === 'thread/list') {
+      process.stdout.write(`{"id":"${message.id}","result":{"ok":true}}\n`)
+    }
+  })
+
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  assert.deepEqual(await client.request('thread/list', { archived: false }), { ok: true })
+  client.close()
+})
+
+test('createAppServerClient rejects an oversized stdout line', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+      return
+    }
+    if (message.method !== 'thread/list') return
+    queueMicrotask(() => process.stdout.write(`${'x'.repeat(200)}\n`))
+  })
+
+  const client = await createAppServerClient({
+    spawnImpl: () => child,
+    timeoutMs: 100,
+    maxStdoutBuffer: 64,
+  })
+  await assert.rejects(client.request('thread/list', { archived: false }), /buffer limit/i)
+  client.close()
+})

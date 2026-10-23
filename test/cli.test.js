@@ -116,6 +116,12 @@ test('parseArgs accepts local data controls and validates their values', () => {
     () => cliTest.parseArgs(['--app-server-timeout', '0']),
     /positive integer/,
   )
+  assert.throws(() => cliTest.parseArgs(['--days', '10abc']), /non-negative integer/)
+  assert.throws(() => cliTest.parseArgs(['--days', '--limit']), /requires a value/)
+  assert.throws(() => cliTest.parseArgs(['--branch', '--force']), /requires a value/)
+  assert.throws(() => cliTest.parseArgs(['--branch', 'release/../main']), /Invalid --branch/)
+  assert.throws(() => cliTest.parseArgs(['--api-base', 'http://127.0.0.1/v1']), /https/)
+  assert.equal(cliTest.parseArgs(['--api-base', 'https://example.test/v1/']).options.apiBase, 'https://example.test/v1')
   assert.throws(
     () => cliTest.parseArgs(['--local-only', '--estimate-only']),
     /cannot be used together/,

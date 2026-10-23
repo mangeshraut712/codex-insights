@@ -3,8 +3,10 @@ import assert from 'node:assert/strict'
 import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { compareVersions, selfUpdate } from '../lib/auto-update.js'
-import { publishProfileSite, validateRepoSlug, validateSiteDir } from '../lib/publish.js'
+import { EventEmitter } from 'node:events'
+import { PassThrough } from 'node:stream'
+import { compareVersions, fetchLatestVersion, runInstaller, selfUpdate } from '../lib/auto-update.js'
+import { publishProfileSite, validateBranchName, validateRepoSlug, validateSiteDir } from '../lib/publish.js'
 import { LAUNCH_AGENT_LABEL, buildLaunchAgentPlist, installSchedule, readScheduleStatus, removeSchedule } from '../lib/schedule.js'
 import { __test as cliTest, runCli } from '../lib/cli.js'
 import { normalizeAccountProfile } from '../lib/account-profile.js'
@@ -157,4 +159,71 @@ test('parseArgs reads schedule subcommands and auto options', () => {
   assert.equal(parsed.options.publishRepo, 'ada/site')
   assert.equal(parsed.options.selfUpdate, false)
   assert.throws(() => cliTest.parseArgs(['auto', '--repo', 'not a slug']), /Invalid --repo/)
+})
+
+test('fetchLatestVersion rejects prerelease versions and unsafe repository slugs', async () => {
+  await assert.rejects(
+    fetchLatestVersion({ fetchImpl: async () => ({ ok: true, json: async () => ({ version: '1.2.3-beta.1' }) }) }),
+    /stable version/,
+  )
+  await assert.rejects(
+    fetchLatestVersion({ repoSlug: 'ada/site;touch /tmp/pwned', fetchImpl: async () => { throw new Error('should not fetch') } }),
+    /Invalid --repo/,
+  )
+})
+
+test('runInstaller downloads the script without a shell and rejects unsafe slugs', async () => {
+  assert.throws(
+    () => runInstaller({ repoSlug: 'ada/site;touch /tmp/pwned', spawnImpl: () => { throw new Error('should not spawn') } }),
+    /Invalid --repo/,
+  )
+
+  const spawned = []
+  const curl = new EventEmitter()
+  curl.stdout = new PassThrough()
+  curl.kill = () => {}
+  const bash = new EventEmitter()
+  bash.stdin = new PassThrough()
+  bash.kill = () => {}
+  const pending = runInstaller({
+    repoSlug: 'ada/site',
+    spawnImpl: (command, args) => {
+      spawned.push([command, args])
+      return command === 'curl' ? curl : bash
+    },
+  })
+  queueMicrotask(() => {
+    curl.emit('exit', 0)
+    bash.emit('exit', 0)
+  })
+  await pending
+  assert.equal(spawned[0][0], 'curl')
+  assert.ok(spawned[0][1].includes('https://raw.githubusercontent.com/ada/site/HEAD/scripts/install.sh'))
+  assert.deepEqual(spawned[1], ['bash', ['-s', '--']])
+  assert.equal(spawned.some(item => item[1]?.includes?.('-c')), false)
+})
+
+test('publishProfileSite refuses to delete an unrelated working directory', async () => {
+  const root = await tempDir('codex-insights-publish-guard-')
+  const workDir = path.join(root, 'not-a-clone')
+  const profileDir = path.join(root, 'profile')
+  await fs.mkdir(workDir)
+  await fs.writeFile(path.join(workDir, 'keep.txt'), 'keep')
+  await writeProfile(profileDir, { stats: [{ value: 'new' }] })
+  await assert.rejects(
+    publishProfileSite({
+      profileDir,
+      repo: 'ada/site',
+      workDir,
+      git: async () => { throw new Error('git should not run') },
+    }),
+    /Refusing to delete/,
+  )
+  assert.equal(await fs.readFile(path.join(workDir, 'keep.txt'), 'utf8'), 'keep')
+})
+
+test('validateBranchName rejects option-like and parent-path branch names', () => {
+  assert.equal(validateBranchName('feature/profile'), 'feature/profile')
+  assert.throws(() => validateBranchName('--force'), /Invalid --branch/)
+  assert.throws(() => validateBranchName('release/../main'), /Invalid --branch/)
 })

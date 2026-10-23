@@ -4,6 +4,10 @@
 set -euo pipefail
 
 REPO_SLUG="${INSIGHTS_REPO_SLUG:-mangeshraut712/codex-insights}"
+if [[ ! "${REPO_SLUG}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+  printf 'error: INSIGHTS_REPO_SLUG must look like owner/name\n' >&2
+  exit 1
+fi
 MARKETPLACE_NAME="codex-insights"
 PLUGIN_ID="codex-insights@codex-insights"
 verbose=0

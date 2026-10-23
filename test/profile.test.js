@@ -181,3 +181,16 @@ test('profile CLI prefers account stats and falls back to the local report on fa
   )
   await assert.rejects(runCli(['profile', '--source', 'cloud']), /Invalid --source/)
 })
+
+test('profile HTML escapes chart text and exposes keyboard tabs', () => {
+  const profile = buildAccountProfile(accountFixture())
+  profile.activity.unit = '"><script>alert(1)</script>'
+  const html = renderPublicProfile(profile)
+  assert.doesNotMatch(html, /<script>alert\(1\)<\/script>/)
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/)
+  assert.match(html, /role="tablist"/)
+  assert.match(html, /role="tabpanel"/)
+  assert.match(html, /aria-controls="panel-weekly"/)
+  assert.match(html, /ArrowRight/)
+  assert.match(html, /class="sr-only"/)
+})
