@@ -5,15 +5,15 @@ import os from 'node:os'
 import path from 'node:path'
 import { commonBinDirectories, mergeLookupPath, resolveCodexBin } from '../lib/resolve-bin.js'
 
-test('mergeLookupPath prepends Homebrew and ~/.local/bin without dropping the original PATH', () => {
+test('mergeLookupPath keeps caller PATH ahead of Homebrew and ~/.local/bin fallbacks', () => {
   const env = mergeLookupPath({ PATH: '/usr/bin:/bin' }, '/Users/demo')
   const parts = env.PATH.split(path.delimiter)
 
-  assert.equal(parts[0], path.join('/Users/demo', '.local', 'bin'))
+  assert.equal(parts[0], '/usr/bin')
+  assert.equal(parts[1], '/bin')
+  assert.ok(parts.includes(path.join('/Users/demo', '.local', 'bin')))
   assert.ok(parts.includes('/opt/homebrew/bin'))
   assert.ok(parts.includes('/usr/local/bin'))
-  assert.ok(parts.includes('/usr/bin'))
-  assert.ok(parts.includes('/bin'))
   assert.deepEqual(commonBinDirectories('/Users/demo')[0], path.join('/Users/demo', '.local', 'bin'))
 })
 
