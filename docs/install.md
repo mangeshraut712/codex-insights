@@ -16,11 +16,11 @@ Start a **new** Codex thread and type `$insights`. With no extra wording it buil
 ## CLI
 
 ```bash
-npm install --global github:mangeshraut712/codex-insights
+npm install --global @mangeshraut712/codex-insights
 codex-session-insights --local-only
 ```
 
-Or without a global installation: `npx github:mangeshraut712/codex-insights --local-only`. As of November 12, 2026, the scoped npm package is not published. The short registry command is not available yet. The unscoped `codex-session-insights` package is an older upstream release. For reproducibility, append `#COMMIT_SHA` to the GitHub package spec using a reviewed revision.
+Or without a global installation: `npx @mangeshraut712/codex-insights --local-only`. Pin `@mangeshraut712/codex-insights@0.7.0` for a reproducible release. The unscoped `codex-session-insights` package is an older upstream release. The GitHub source route remains `npx github:mangeshraut712/codex-insights --local-only`.
 
 After a global install, the same flags work as `codex-session-insights`.
 
