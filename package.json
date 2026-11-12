@@ -1,6 +1,6 @@
 {
   "name": "@mangeshraut712/codex-insights",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.",
   "author": {
     "name": "mangeshraut712",
@@ -16,14 +16,18 @@
     "lib",
     "plugin",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "docs/*.md",
+    "docs/screenshots/*.webp",
+    "docs/adoption.json",
+    "CONTRIBUTING.md"
   ],
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "engines": {
-    "node": ">=18.17.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "license": "MIT",
   "repository": {
@@ -43,7 +47,8 @@
     "lint": "eslint bin lib scripts test plugin/codex-insights/scripts",
     "check": "node ./scripts/check.mjs",
     "typecheck": "tsc --noEmit",
-    "ci": "npm test && npm run lint && npm run check && npm pack --dry-run"
+    "ci": "npm test && npm run lint && npm run check && npm pack --dry-run",
+    "metrics": "python3 scripts/update-adoption.py"
   },
   "keywords": [
     "codex",
@@ -61,14 +66,17 @@
     "agent-skills"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^7.8.6",
-    "ora": "^8.2.0"
+    "@inquirer/prompts": "^8.8.0",
+    "ora": "^10.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/node": "^24.6.0",
-    "eslint": "^9.39.1",
-    "globals": "^16.4.0",
-    "typescript": "^5.9.3"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "minimatch": "^11.0.8"
   }
 }

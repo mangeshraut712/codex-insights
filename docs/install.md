@@ -1,6 +1,6 @@
 # Install Codex Insights and `$insights`
 
-Requires [Node.js](https://nodejs.org) `>=18.17.0`. The `$insights` skill also needs the [Codex CLI](https://github.com/openai/codex).
+Requires [Node.js](https://nodejs.org) `^22.22.2 || ^24.15.0 || >=26.0.0`. The `$insights` skill also needs the [Codex CLI](https://github.com/openai/codex).
 
 Check `node --version` before running the installer. If it shows an older Node, install a supported version from the [official Node.js download page](https://nodejs.org/en/download) and open a new terminal. Verify that `command -v node` points to the new installation, then retry. The installer does not replace your system Node automatically.
 
@@ -16,11 +16,11 @@ Start a **new** Codex thread and type `$insights`. With no extra wording it buil
 ## CLI
 
 ```bash
-npm install --global @mangeshraut712/codex-insights
+npm install --global github:mangeshraut712/codex-insights
 codex-session-insights --local-only
 ```
 
-Or without installing: `npx @mangeshraut712/codex-insights --local-only`. The unscoped `codex-session-insights` npm package is an older upstream release; use the scoped name above. To install the current GitHub HEAD instead of the published npm release, use `npx github:mangeshraut712/codex-insights --local-only`.
+Or without a global installation: `npx github:mangeshraut712/codex-insights --local-only`. As of November 12, 2026, the scoped npm package is not published. The short registry command is not available yet. The unscoped `codex-session-insights` package is an older upstream release. For reproducibility, append `#COMMIT_SHA` to the GitHub package spec using a reviewed revision.
 
 After a global install, the same flags work as `codex-session-insights`.
 

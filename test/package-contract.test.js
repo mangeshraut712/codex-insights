@@ -30,7 +30,7 @@ const README_SCREENSHOTS = [
 test('package declares the dependency runtime floor', async () => {
   const packageJson = JSON.parse(await fs.readFile(new URL('../package.json', import.meta.url), 'utf8'))
 
-  assert.equal(packageJson.engines.node, '>=18.17.0')
+  assert.equal(packageJson.engines.node, '^22.22.2 || ^24.15.0 || >=26.0.0')
   assert.equal(
     packageJson.description,
     'Private, trust-aware reports from local Codex sessions. Community $insights skill inspired by Claude Code /insights.',

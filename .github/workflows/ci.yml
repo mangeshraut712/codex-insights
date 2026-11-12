@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22', '24']
+        node: ['22', '24', '26']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,3 +31,4 @@ jobs:
       - run: npm test
       - run: npm run check
       - run: npm pack --dry-run
+      - run: python3 -B -m unittest discover -s scripts -p "test_adoption.py"

@@ -1,15 +1,14 @@
 # Codex Insights: `/insights` for OpenAI Codex
 
 [![CI](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@mangeshraut712/codex-insights.svg)](https://www.npmjs.com/package/@mangeshraut712/codex-insights)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](https://nodejs.org)
+[![Node.js](https://img.shields.io/badge/node-22%20%7C%2024%20%7C%2026-brightgreen.svg)](https://nodejs.org)
 
-Claude Code has `/insights`. Codex doesn't, so this open-source `$insights` skill adds it: a private report on how you work with Codex, plus a public profile page you can share.
+This community `$insights` skill adds a private report on how you work with Codex, plus a public profile page you can share.
 
 - **Private workflow report.** Type `$insights` in Codex for an HTML report on your projects, tools, friction, and what to try next. It runs offline with zero model calls by default.
 - **Shareable Codex profile.** `codex-session-insights profile` turns the stats from the Codex app's private Settings → Profile page (lifetime tokens, streaks, token activity, top skills and plugins) into a page you can publish. [Live example](https://mangeshraut712.github.io/codex-insights/).
-- **Stays current by itself.** `codex-session-insights schedule install` updates the CLI and skill when a new release ships, and can republish your profile on a schedule.
+- **Optional scheduled updates.** `codex-session-insights schedule install` updates the CLI and skill when a new release ships, and can republish your profile on a schedule.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash
@@ -35,7 +34,7 @@ Framed captures of the current HTML report and shareable profile.
 
 </div>
 
-This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. Codex has no native `/insights`. Mapping: [docs/claude-insights.md](docs/claude-insights.md). Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
+This is a community continuation of [cosformula/codex-session-insights](https://github.com/cosformula/codex-session-insights). It is inspired by Claude Code [`/insights`](https://code.claude.com/docs/en/costs): a report on **how you work** on this machine, not a token bill. This plugin uses the `$insights` skill invocation. Mapping: [docs/claude-insights.md](docs/claude-insights.md). Claude’s `/insights` is model-assisted; ask for `--yes` only when you want that kind of narrative.
 
 The plugin follows the official Codex plugin ingestion contract (manifest, skill, storefront assets, `validate_plugin.py`). It is a community listing, not an OpenAI-published directory tab. See [docs/plugin-directory.md](docs/plugin-directory.md).
 
@@ -194,3 +193,9 @@ bash scripts/install.sh
 ```
 
 Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analyzers.md). A native `/insights` command is an unaccepted [proposal](docs/upstream-rfc.md), not a shipped Codex feature. Maintainers are **mangeshraut712** and **Cursor** only; automated GitHub dependency bots are not used.
+
+## Project status and adoption
+
+[Mangesh’s Merge Guide](https://github.com/mangeshraut712/mangeshs-merge-guide) handles contribution selection, testing and maintainer feedback. These are separate skills with different installation routes.
+
+As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The scoped npm package is **not published**, so npm downloads are **unavailable**, not a measured zero. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.

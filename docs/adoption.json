@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-11-12T08:39:58.417952+00:00",
+  "repository": "mangeshraut712/codex-insights",
+  "github": {
+    "source": "https://api.github.com/repos/mangeshraut712/codex-insights",
+    "stars": 0,
+    "forks": 0,
+    "release_asset_downloads_lifetime": 0
+  },
+  "npm": {
+    "package": "@mangeshraut712/codex-insights",
+    "source": "https://registry.npmjs.org/%40mangeshraut712%2Fcodex-insights",
+    "status": "not_published",
+    "downloads_source": "https://api.npmjs.org/downloads/point/last-month/%40mangeshraut712%2Fcodex-insights",
+    "last_month": null
+  }
+}

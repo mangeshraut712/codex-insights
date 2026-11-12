@@ -25,7 +25,7 @@ Options:
   -h, --help      Show this help
   -v, --verbose   Print Codex JSON output
 
-Requires Node.js >=18.17.0. Codex CLI is required for $insights.
+Requires Node.js ^22.22.2 || ^24.15.0 || >=26.0.0. Codex CLI is required for $insights.
 EOF
 }
 
@@ -104,10 +104,10 @@ resolve_codex_bin() {
   done
 }
 
-have node || die "Node.js >=18.17.0 is required. See https://nodejs.org"
+have node || die "Node.js ^22.22.2 || ^24.15.0 || >=26.0.0 is required. See https://nodejs.org"
 have npm || die "npm is required (it ships with Node.js)."
-node -e 'const p=process.versions.node.split(".").map(Number); if (p[0]<18 || (p[0]===18 && p[1]<17)) process.exit(1)' \
-  || die "Node.js $(node -p process.version) is too old. Install Node.js >=18.17.0 from https://nodejs.org/en/download, make sure it is first on PATH, then retry."
+node -e 'const p=process.versions.node.split(".").map(Number); if (!((p[0]===22 && (p[1]>22 || (p[1]===22 && p[2]>=2))) || (p[0]===24 && p[1]>=15) || p[0]>=26)) process.exit(1)' \
+  || die "Node.js $(node -p process.version) is too old. Install Node.js ^22.22.2 || ^24.15.0 || >=26.0.0 from https://nodejs.org/en/download, make sure it is first on PATH, then retry."
 
 prefix="$(resolve_npm_prefix)"
 resolve_codex_bin

@@ -2,7 +2,7 @@
 
 ## Contracts
 
-- Node.js floor is `>=18.17.0`.
+- Node.js floor is `^22.22.2 || ^24.15.0 || >=26.0.0`.
 - Plugin and package base versions match.
 - JSON schema version, analysis modes, and coverage fields are documented.
 - No raw personal transcript, internal identifier, credential, or machine-specific path is committed.
