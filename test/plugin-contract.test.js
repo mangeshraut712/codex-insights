@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { promises as fs } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
+import os from 'node:os'
+import path from 'node:path'
 
 const root = new URL('../', import.meta.url)
 const pluginRoot = new URL('../plugin/codex-insights/', import.meta.url)
@@ -166,5 +168,25 @@ test('plugin wrapper searches macOS install locations and tells users how to ins
   assert.match(wrapper, /opt\/homebrew\/bin/)
   assert.match(wrapper, /\.local/)
   assert.match(wrapper, /Unable to locate the Codex Insights CLI/)
-  assert.match(wrapper, /npm install --global github:mangeshraut712\/codex-insights/)
+  assert.match(wrapper, /npm install --global @mangeshraut712\/codex-insights/)
+})
+
+
+test('plugin wrapper honors caller PATH over a stale user installation', { skip: process.platform === 'win32' }, async () => {
+  const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'insights-wrapper-'))
+  try {
+    const selected = path.join(temp, 'selected')
+    const stale = path.join(temp, '.local', 'bin')
+    for (const [dir, label] of [[selected, 'selected'], [stale, 'stale']]) {
+      await fs.mkdir(dir, { recursive: true })
+      await fs.writeFile(path.join(dir, 'codex-session-insights'), `#!/bin/sh\nprintf '${label}\\n'\n`, { mode: 0o755 })
+    }
+    const result = spawnSync(process.execPath, [fileURLToPath(new URL('scripts/run-insights.mjs', pluginRoot)), '--help'], {
+      encoding: 'utf8', env: { ...process.env, HOME: temp, PATH: selected },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.stdout.trim(), 'selected')
+  } finally {
+    await fs.rm(temp, { recursive: true, force: true })
+  }
 })

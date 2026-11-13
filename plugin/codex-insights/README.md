@@ -13,9 +13,9 @@ codex plugin add codex-insights@codex-insights
 
 Start a new Codex thread and type `$insights`. With no extra wording it builds a **local-only** report (zero model calls).
 
-`$insights` runs the `codex-session-insights` CLI. Install that CLI as well (`scripts/install.sh` or `npm install --global github:mangeshraut712/codex-insights`). On macOS, the wrapper also searches `/opt/homebrew/bin` and `~/.local/bin` because Codex Desktop often has a stripped `PATH`.
+`$insights` runs the `codex-session-insights` CLI. Install that CLI as well (`npm install --global @mangeshraut712/codex-insights`). On macOS, the wrapper also searches `/opt/homebrew/bin` and `~/.local/bin` because Codex Desktop often has a stripped `PATH`.
 
-Ask `$insights` to create a shareable profile to export an aggregate-only `index.html` from the latest local report. Publishing is a separate, explicit step; see the [profile guide](https://github.com/mangeshraut712/codex-insights/blob/main/docs/shareable-profile.md).
+Ask `$insights` to create a shareable profile to export an aggregate-only `index.html` from Codex account aggregates, with a fallback to the latest local report when account stats are unavailable. Use `--source local` for machine-only data. Publishing is a separate, explicit step; see the [profile guide](https://github.com/mangeshraut712/codex-insights/blob/main/docs/shareable-profile.md).
 
 ## Capabilities
 
