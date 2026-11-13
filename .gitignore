@@ -18,3 +18,5 @@ __pycache__/
 # Local agent tooling
 .agents/skills/
 skills-lock.json
+
+.e2e/
