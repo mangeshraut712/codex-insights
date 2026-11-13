@@ -23,13 +23,13 @@ Stay inside the user’s authorized scope and preserve these privacy boundaries:
 - Do not share, upload, email, publish, or send a report unless the user separately authorizes that exact action.
 - A public profile export is allowed only when the user asks for a profile or shareable link. Creating the local profile page does not authorize publishing it. Review the generated page before any separately authorized publish action.
 - Do not edit source files, `AGENTS.md`, configuration, or external systems from report recommendations unless the user separately asks.
-- Model-assisted mode sends redacted excerpts to a model. Estimate first, show the estimate, and wait for confirmation. Tokens count against the selected provider.
+- Model-assisted mode sends redacted excerpts to a model. Estimate first and show the estimate. If the user has already authorized model-assisted processing for this provider, scope and budget, continue within that authorization; otherwise ask for confirmation. Tokens count against the selected provider.
 - Redaction is not a guarantee. Do not treat the report as safe to paste or forward.
 - This is not `/usage` or a plan bill.
 
 ## Run
 
-Use `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`. The wrapper looks for `codex-session-insights` on PATH and in common install dirs (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`) so Codex Desktop can find a global CLI even when its PATH is stripped. If the CLI is missing, install it with `scripts/install.sh` or `npm install --global github:mangeshraut712/codex-insights` and start a new thread. Do not install the unscoped `codex-session-insights` npm package; it is an older upstream release.
+Use `<plugin-root>/scripts/run-insights.mjs`. The plugin root is the directory that contains `.codex-plugin/` and `scripts/`. The wrapper looks for `codex-session-insights` on PATH and in common install dirs (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`) so Codex Desktop can find a global CLI even when its PATH is stripped. If the CLI is missing, install it with `npm install --global @mangeshraut712/codex-insights` and start a new thread. The wrapper honors the caller’s PATH before checking fallback directories. Do not install the unscoped `codex-session-insights` npm package; it is an older upstream release.
 
 ## Choose a route
 
@@ -39,7 +39,7 @@ If the user does not name a mode, use **local-only**.
 | --- | --- |
 | Unspecified, private, offline, deterministic, no-model | `node <plugin-root>/scripts/run-insights.mjs --local-only --no-open` |
 | Cost, tokens, or scope of a **model-assisted** run | `node <plugin-root>/scripts/run-insights.mjs --estimate-only --no-open` |
-| Model-assisted / narrative / interpreted | Estimate first. Show the estimate and wait for confirmation. Then `node <plugin-root>/scripts/run-insights.mjs --yes --no-open` |
+| Model-assisted / narrative / interpreted | Estimate first and show it. Confirm if the provider, scope or budget is not already authorized. Then `node <plugin-root>/scripts/run-insights.mjs --yes --no-open` |
 | Shareable activity profile | `node <plugin-root>/scripts/run-insights.mjs profile`. This matches the Codex app profile: lifetime and peak tokens, longest chat, streaks, daily/weekly/cumulative token activity, activity insights, and most used skills and plugins. Name and handle default to the Codex display name and username; pass `--name` / `--handle` only if the user picks different ones. If account stats are unavailable it falls back to the local report (generate one first with `--local-only --days 0 --no-open`). Use `--source local` when the user wants a machine-only profile, and `--source account` to fail instead of falling back. |
 | Keep the profile and skill updated automatically | Only when the user asks for automatic or scheduled updates. With a publish target the user named: `node <plugin-root>/scripts/run-insights.mjs schedule install --repo <owner/name> [--every <hours>] [--name "<name>"] [--handle "<handle>"]`. Without one, omit `--repo` (updates the skill and the local profile only). Check with `schedule status`; stop with `schedule remove`. |
 

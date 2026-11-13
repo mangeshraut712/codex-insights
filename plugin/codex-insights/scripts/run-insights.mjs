@@ -39,7 +39,7 @@ function withLookupPath(baseEnv) {
   const current = typeof baseEnv.PATH === 'string' ? baseEnv.PATH : ''
   const merged = []
   const seen = new Set()
-  for (const dir of [...extra, ...current.split(delimiter)]) {
+  for (const dir of [...current.split(delimiter), ...extra]) {
     if (!dir || seen.has(dir)) continue
     seen.add(dir)
     merged.push(dir)
@@ -62,7 +62,7 @@ function writeInstallHelp() {
       'Unable to locate the Codex Insights CLI (codex-session-insights).',
       '$insights needs that CLI on PATH. Codex Desktop often omits Homebrew and ~/.local/bin.',
       'Install it, then start a new Codex thread:',
-      '  npm install --global github:mangeshraut712/codex-insights',
+      '  npm install --global @mangeshraut712/codex-insights',
       '  curl -fsSL https://raw.githubusercontent.com/mangeshraut712/codex-insights/HEAD/scripts/install.sh | bash',
       '',
     ].join('\n'),

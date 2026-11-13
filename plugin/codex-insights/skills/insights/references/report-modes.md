@@ -20,7 +20,7 @@ A run reads sessions on this machine only, targets up to **200 unseen** substant
 
 ## Model-assisted
 
-Model-assisted mode extracts sampled facets and generates narrative sections (closer to Claude’s `/insights`). Run `--estimate-only` first and obtain confirmation before generation. Redaction happens before model prompts, but the report can still contain sensitive ordinary prose. Tokens for this path use the selected provider (`codex-cli` or `openai`) and count against that account.
+Model-assisted mode extracts sampled facets and generates narrative sections (closer to Claude’s `/insights`). Run `--estimate-only` first and show the estimate. Proceed when the selected provider, scope and budget are already authorized; otherwise obtain confirmation before generation. Redaction happens before model prompts, but the report can still contain sensitive ordinary prose. Tokens for this path use the selected provider (`codex-cli` or `openai`) and count against that account.
 
 ## Data sources
 
