@@ -199,3 +199,7 @@ Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analy
 [Mangesh’s Merge Guide](https://github.com/mangeshraut712/mangeshs-merge-guide) handles contribution selection, testing and maintainer feedback. These are separate skills with different installation routes.
 
 As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
+
+## End-to-end verification
+
+Synthetic CLI and browser journeys exercise generated reports and profiles without real session data or model calls. Run `npm run test:tester-army`; setup and limits are in [the end-to-end guide](docs/tester-army.md).

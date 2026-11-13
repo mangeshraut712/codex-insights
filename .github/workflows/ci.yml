@@ -32,3 +32,25 @@ jobs:
       - run: npm run check
       - run: npm pack --dry-run
       - run: python3 -B -m unittest discover -s scripts -p "test_adoption.py"
+
+  tester-army:
+    env:
+      E2E_TELEMETRY_DISABLED: "1"
+    name: Synthetic CLI and report journeys
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y sqlite3
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:tester-army
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tester-army-report
+          path: .e2e/
+          include-hidden-files: true

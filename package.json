@@ -48,7 +48,10 @@
     "check": "node ./scripts/check.mjs",
     "typecheck": "tsc --noEmit",
     "ci": "npm test && npm run lint && npm run check && npm pack --dry-run",
-    "metrics": "python3 scripts/update-adoption.py"
+    "metrics": "python3 scripts/update-adoption.py",
+    "test:tester-army": "E2E_TELEMETRY_DISABLED=1 e2e run",
+    "test:tester-army:cli": "E2E_TELEMETRY_DISABLED=1 e2e run --target cli",
+    "test:tester-army:web": "E2E_TELEMETRY_DISABLED=1 e2e run --target report-web"
   },
   "keywords": [
     "codex",
@@ -70,8 +73,10 @@
     "ora": "^10.0.0"
   },
   "devDependencies": {
+    "@e2e-dev/web": "0.15.5",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
+    "e2e": "0.23.0",
     "eslint": "^10.14.0",
     "globals": "^17.14.0",
     "typescript": "^7.0.2"
