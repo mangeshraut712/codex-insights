@@ -2,6 +2,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
+import { promises as fs } from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import {
   AppServerProtocolError,
   createAppServerClient,
@@ -102,6 +105,40 @@ test('createAppServerClient treats a missing Codex binary as the default `codex`
     { command: resolveCodexBin(null), args: ['app-server', '--listen', 'stdio://'] },
   ])
   client.close()
+})
+
+test('createAppServerClient resolves the default binary from the caller PATH before supplemental directories', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'insights-app-server-bin-'))
+  const binDir = path.join(root, 'bin')
+  const fakeCodex = path.join(binDir, 'codex')
+  const originalPath = process.env.PATH
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('{"id":1,"result":{"protocolVersion":"1"}}\n')
+    }
+  })
+  const spawned = []
+
+  try {
+    await fs.mkdir(binDir)
+    await fs.writeFile(fakeCodex, '#!/bin/sh\nexit 0\n', { mode: 0o755 })
+    process.env.PATH = binDir
+
+    const client = await createAppServerClient({
+      spawnImpl: command => {
+        spawned.push(command)
+        return child
+      },
+      timeoutMs: 100,
+    })
+
+    assert.deepEqual(spawned, [fakeCodex])
+    client.close()
+  } finally {
+    if (originalPath === undefined) delete process.env.PATH
+    else process.env.PATH = originalPath
+    await fs.rm(root, { recursive: true, force: true })
+  }
 })
 
 test('createAppServerClient adds Homebrew and ~/.local/bin to the spawn PATH', async () => {

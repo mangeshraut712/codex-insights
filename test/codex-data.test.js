@@ -9,6 +9,7 @@ import {
   summarizeThread,
 } from '../lib/codex-data.js'
 import { createCoverage, loadUnseenAwarePopulation } from '../lib/seen-sessions.js'
+import { buildReport, renderTerminalSummary } from '../lib/report.js'
 
 function legacyCollection() {
   return {
@@ -239,13 +240,18 @@ test('filterSubstantiveThreads keeps only substantial threads and sorts by recen
 
 test('collectThreadData auto falls back with a warning after an app-server protocol failure', async () => {
   let legacyCalls = 0
+  const homeDir = '/Users/synthetic-fallback'
+  const secret = 'sk-proj-SYNTHETICFALLBACKSECRET123456'
   const result = await collectThreadData({
+    homeDir,
     createClient: async () => ({
       async request(method) {
         if (method === 'thread/list') {
           return { data: [{ id: 'thread-main', source: 'cli', updatedAt: 1 }], nextCursor: null }
         }
-        if (method === 'thread/read') throw new AppServerProtocolError('Malformed JSONL from app-server')
+        if (method === 'thread/read') {
+          throw new AppServerProtocolError(`Malformed JSONL at ${homeDir}: Bearer ${secret}`)
+        }
         throw new Error(`Unexpected request ${method}`)
       },
       close() {},
@@ -258,7 +264,14 @@ test('collectThreadData auto falls back with a warning after an app-server proto
 
   assert.equal(legacyCalls, 1)
   assert.equal(result.coverage.dataSource, 'legacy')
-  assert.match(result.coverage.warnings[0], /malformed jsonl from app-server/i)
+  assert.match(result.coverage.warnings[0], /malformed jsonl/i)
+  assert.doesNotMatch(result.coverage.warnings[0], new RegExp(secret))
+  assert.doesNotMatch(result.coverage.warnings[0], new RegExp(homeDir))
+  assert.match(result.coverage.warnings[0], /\[REDACTED_API_KEY\]/)
+  assert.doesNotMatch(
+    renderTerminalSummary(buildReport([], { coverage: result.coverage })),
+    new RegExp(secret),
+  )
 })
 
 test('collectThreadData with explicit legacy source does not initialize app-server', async () => {

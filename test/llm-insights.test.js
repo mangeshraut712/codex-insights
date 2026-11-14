@@ -52,6 +52,34 @@ test('planFacetJobs reuses redacted caches and samples uncached project-week str
   assert.doesNotMatch(await fs.readFile(cachePath, 'utf8'), new RegExp(secret))
 })
 
+test('planFacetJobs restricts a clean reused facet cache', async () => {
+  const cacheDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-facets-'))
+  const model = 'synthetic-model'
+  const thread = makeThread('clean-cached', '/repo/alpha', '2026-01-05T12:00:00.000Z')
+  const cachePath = path.join(cacheDir, `${thread.id}.json`)
+  try {
+    await fs.writeFile(
+      cachePath,
+      JSON.stringify({
+        versionKey: llmTest.buildFacetVersionKey(thread, model),
+        facet: { threadId: thread.id, brief_summary: 'Synthetic clean cache.' },
+      }),
+      { encoding: 'utf8', mode: 0o644 },
+    )
+
+    const jobs = await llmTest.planFacetJobs([thread], {
+      cacheDir,
+      model,
+      uncachedLimit: 1,
+    })
+
+    assert.equal(jobs[0].cachedFacet.brief_summary, 'Synthetic clean cache.')
+    assert.equal((await fs.stat(cachePath)).mode & 0o777, 0o600)
+  } finally {
+    await fs.rm(cacheDir, { recursive: true, force: true })
+  }
+})
+
 test('planFacetJobs sanitizes stale unselected facet caches', async () => {
   const cacheDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-stale-facets-'))
   const model = 'synthetic-model'
