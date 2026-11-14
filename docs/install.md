@@ -68,7 +68,7 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
-Verify with `codex-session-insights --version` (expect `0.6.0` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+Verify with `codex-session-insights --version` (expect the version you installed; the currently published release is `0.7.0`) and `codex plugin list`, then ask `$insights` to create a shareable profile.
 
 In an interactive zsh terminal, paste `codex-session-insights --version` on its own line. Text such as `# should print 0.4.1` after the command can be passed as CLI arguments unless zsh's `interactivecomments` option is enabled.
 
@@ -96,3 +96,22 @@ codex-session-insights --estimate-only
 ```
 
 Model-assisted CLI runs still estimate first unless you pass `--yes`. Latest reports land in `~/.codex/usage-data/report.html` with a timestamped copy beside them. See [Privacy and trust](privacy-and-trust.md) before sharing a report.
+
+## Diagnose a missing CLI or npm login
+
+Installing this public package does not require npm sign-in. `npm ping` checks registry connectivity; `npm whoami` checks publisher authentication and can report `ENEEDAUTH` even when installation works. Maintainers who need to publish can use `npm login --auth-type=web` and complete verification in the browser. Never paste email codes, passwords or tokens into a chat or issue.
+
+An enabled plugin does not guarantee its companion CLI is installed. If the skill reports that it cannot locate `codex-session-insights`, run:
+
+```bash
+npm install --global @mangeshraut712/codex-insights
+codex-session-insights --version
+codex-session-insights --help
+npm config get prefix
+```
+
+On macOS/Linux, global executables live in the prefix's `bin` directory; on Windows they live directly in the prefix. If installation succeeds but the command is missing, check that directory against the terminal and agent PATH. The wrapper checks the common directories listed above, but a custom npm prefix must be added to the agent's PATH. Start a new Codex thread after changing its environment.
+
+If an explicit `--data-source app-server` run reports that a response exceeds the buffer limit, it stops rather than returning a partial success. The default `--data-source auto` can fall back to local legacy data and records the fallback in the report. Check Trust & Coverage before treating a report as complete; an empty report is not proof that no sessions exist. Keep the bounded response limit in place.
+
+The 0.7.1 candidate preserves UTF-8 characters split across app-server output chunks. Its source tests are separate from npm publication; use the published version above until the registry confirms the new release.

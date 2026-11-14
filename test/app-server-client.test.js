@@ -211,3 +211,22 @@ test('createAppServerClient rejects an oversized stdout line', async () => {
   await assert.rejects(client.request('thread/list', { archived: false }), /buffer limit/i)
   client.close()
 })
+
+
+test('createAppServerClient preserves UTF-8 characters split across stdout chunks', async () => {
+  const expected = { title: '修复 café 🚀' }
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write(JSON.stringify({ id: message.id, result: {} }) + '\n')
+    } else if (message.method === 'thread/list') {
+      const bytes = Buffer.from(JSON.stringify({ id: message.id, result: expected }) + '\n')
+      for (const byte of bytes) process.stdout.write(Buffer.from([byte]))
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  try {
+    assert.deepEqual(await client.request('thread/list', {}), expected)
+  } finally {
+    client.close()
+  }
+})
