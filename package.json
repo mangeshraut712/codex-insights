@@ -20,7 +20,9 @@
     "docs/*.md",
     "docs/screenshots/*.webp",
     "docs/adoption.json",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "docs/screenshots/*.png",
+    "SECURITY.md"
   ],
   "publishConfig": {
     "access": "public",
