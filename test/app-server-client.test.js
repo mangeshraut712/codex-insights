@@ -230,3 +230,18 @@ test('createAppServerClient preserves UTF-8 characters split across stdout chunk
     client.close()
   }
 })
+
+test('createAppServerClient allows history pagination but rejects mutating methods', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.id) process.stdout.write(JSON.stringify({ id: message.id, result: { data: [] } }) + '\n')
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  try {
+    for (const method of ['thread/turns/list', 'thread/items/list']) {
+      assert.deepEqual(await client.request(method, { threadId: 'example-thread' }), { data: [] })
+    }
+    await assert.rejects(client.request('thread/start', {}), /Unsupported read-only/)
+  } finally {
+    client.close()
+  }
+})
