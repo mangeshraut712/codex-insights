@@ -692,3 +692,20 @@ test('collectAppServerThreadSummaries scopes item pages to enumerated turns whil
   assert.equal(result.coverage.analyzed, 1)
   assert.equal(result.summaries[0].userMessages, 2)
 })
+
+test('collectAppServerThreadSummaries rejects malformed history entries as protocol errors', async () => {
+  for (const entry of [null, {}, { turnId: 'turn-1' }, { turnId: 'turn-1', item: null }, { turnId: 'turn-1', item: {} }]) {
+    await assert.rejects(collectAppServerThreadSummaries({
+      createClient: async () => ({
+        close() {},
+        async request(method) {
+          const thread = makeThread({ historyMode: 'paginated' })
+          if (method === 'thread/list') return { data: [thread] }
+          if (method === 'thread/read') return { thread }
+          if (method === 'thread/turns/list') return { data: [{ id: 'turn-1', items: [] }] }
+          return { data: [entry] }
+        },
+      }),
+    }), error => error instanceof AppServerProtocolError)
+  }
+})
