@@ -20,7 +20,7 @@ npm install --global @mangeshraut712/codex-insights
 codex-session-insights --local-only
 ```
 
-Or without a global installation: `npx @mangeshraut712/codex-insights --local-only`. Pin `@mangeshraut712/codex-insights@0.7.0` for a reproducible release. The unscoped `codex-session-insights` package is an older upstream release. The GitHub source route remains `npx github:mangeshraut712/codex-insights --local-only`.
+Or without a global installation: `npx @mangeshraut712/codex-insights --local-only`. Pin `@mangeshraut712/codex-insights@0.7.1` for a reproducible release. The unscoped `codex-session-insights` package is an older upstream release. The GitHub source route remains `npx github:mangeshraut712/codex-insights --local-only`.
 
 After a global install, the same flags work as `codex-session-insights`.
 
@@ -68,7 +68,7 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
-Verify with `codex-session-insights --version` (expect the version you installed; the currently published release is `0.7.0`) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+Verify with `codex-session-insights --version` (expect the version you installed; the currently published release is `0.7.1`) and `codex plugin list`, then ask `$insights` to create a shareable profile.
 
 In an interactive zsh terminal, paste `codex-session-insights --version` on its own line. Text such as `# should print 0.4.1` after the command can be passed as CLI arguments unless zsh's `interactivecomments` option is enabled.
 
@@ -116,4 +116,4 @@ If an explicit `--data-source app-server` run reports that a response exceeds th
 
 For an uncapped deterministic collection of the history exposed by app-server, use `--local-only --data-source app-server --days 0 --limit 0 --include-archived --reanalyze --no-open`. Add `--include-subagents` to request delegated threads. Discovery is limited to the inventory returned by app-server: some server versions can omit locally stored subagents from `thread/list` even though individual reads work. A zero failed-read count does not prove that those omitted threads were discovered. Reports still exclude short sessions and bound transcript excerpts; local-only mode makes no model calls.
 
-The 0.7.1 candidate preserves UTF-8 characters split across app-server output chunks and pages modern thread history. Its source tests are separate from npm publication; use the published version above until the registry confirms the new release.
+Release 0.7.1 preserves UTF-8 characters split across app-server output chunks and pages modern thread history. The npm registry confirms publication with provenance; fresh-cache npx version and bounded app-server report checks passed on 14 November 2026.

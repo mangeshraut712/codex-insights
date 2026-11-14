@@ -20,15 +20,15 @@ The image is an actual browser capture of the generated fixture, not a live acco
 Using the published CLI:
 
 ```sh
-npx @mangeshraut712/codex-insights@0.7.0 --local-only --days 7 --no-open
+npx @mangeshraut712/codex-insights@0.7.1 --local-only --days 7 --no-open
 ```
 
-Inspect Trust & Coverage and the output paths printed by the CLI. This reads local session data; it is separate from the synthetic example. The published version does not yet include the source candidate's pagination fixes.
+Inspect Trust & Coverage and the output paths printed by the CLI. This reads local session data; it is separate from the synthetic example. Release 0.7.1 includes the pagination fixes.
 
-From the reviewed source candidate, request an uncapped main-thread collection:
+Using the published CLI, request an uncapped main-thread collection:
 
 ```sh
-node bin/codex-insights.js --local-only --data-source app-server --days 0 --limit 0 --include-archived --reanalyze --no-open
+npx @mangeshraut712/codex-insights@0.7.1 --local-only --data-source app-server --days 0 --limit 0 --include-archived --reanalyze --no-open
 ```
 
 Short sessions are still excluded, transcript excerpts are bounded, and discovery depends on the server's inventory. See [known collection limits](app-server-compatibility.md). Review reports before sharing; local-only means no model calls, not automatic removal of all sensitive context.

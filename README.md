@@ -20,7 +20,7 @@ Private HTML and JSON reports from your **local** Codex sessions. Use `$insights
 
 ## November 2026 status
 
-Verified **14 November 2026**: this public repository and bundled skill are MIT-licensed. npm currently publishes **0.7.0**; source `main` contains the **0.7.1 release candidate**, including paginated history and cache-privacy fixes. Source changes are not available through the npm `latest` tag until a release is published. See [compatibility and validation](docs/compatibility.md).
+Verified **14 November 2026**: this public repository and bundled skill are MIT-licensed. npm publishes **0.7.1**, including paginated history and cache-privacy fixes, with GitHub Actions provenance. Fresh-cache npx version and bounded local-only app-server report checks passed. See [compatibility and validation](docs/compatibility.md).
 
 For a reproducible example that reads no personal sessions and makes no model calls, see [worked examples](docs/examples.md).
 
