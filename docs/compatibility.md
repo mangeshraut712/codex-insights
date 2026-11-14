@@ -1,6 +1,6 @@
 # Compatibility and validation — November 2026
 
-Use maintained LTS runtimes. [Node’s release table](https://nodejs.org/en/about/previous-releases) lists Node 22, 24 and 26 as LTS in November 2026; Node 18 and 20 are end-of-life. Repository constraints take precedence over upgrading an upstream contributor’s toolchain just because a newer version exists.
+Runtime requirements below come from this repository’s package manifest and CI configuration, checked on 14 November 2026.
 
 ## Codex Insights
 
@@ -14,4 +14,6 @@ Run `npm ci && npm run ci` for tests, lint, JavaScript/type checks, documentatio
 
 ## Verified locally in this refresh
 
-On macOS with Node 26.13.0: 114 JavaScript tests passed, ESLint 10 passed, TypeScript 7 passed, syntax/documentation checks passed, both skill metadata validators passed, and package preview includes documentation and screenshots. Three analytics tests cover missing packages, pagination, and preserving old snapshots on network failures. npm audit reported zero vulnerabilities for the locked dependency tree. No private session collection or model-quality benchmark was run.
+On 14 November 2026, the source candidate passed 128 JavaScript tests, 20 synthetic CLI/browser journeys, lint, typechecking and documentation/package checks. Hosted Node 22/24/26 tests and CodeQL passed on the merged source. Earlier plugin validation passed; this documentation refresh does not change the plugin. See [app-server compatibility](app-server-compatibility.md) for the separately verified live collection and discovery limits. Windows runtime support and model-quality benchmarks remain unverified.
+
+npm `latest` is **0.7.0** as checked on this date; `main` identifies the **0.7.1 candidate**. Installing the registry package does not install unreleased source fixes.

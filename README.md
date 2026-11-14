@@ -6,7 +6,7 @@
 
 This community `$insights` skill adds a private report on how you work with Codex, plus a public profile page you can share.
 
-- **Private workflow report.** Type `$insights` in Codex for an HTML report on your projects, tools, friction, and what to try next. It runs offline with zero model calls by default.
+- **Private workflow report.** Type `$insights` in Codex for an HTML report on your projects, tools, friction, and what to try next. It runs locally with zero model calls by default.
 - **Shareable Codex profile.** `codex-session-insights profile` turns the stats from the Codex app's private Settings → Profile page (lifetime tokens, streaks, token activity, top skills and plugins) into a page you can publish. [Live example](https://mangeshraut712.github.io/codex-insights/).
 - **Optional scheduled updates.** `codex-session-insights schedule install` updates the CLI and skill when a new release ships, and can republish your profile on a schedule.
 
@@ -18,9 +18,15 @@ Then start a new Codex thread and type `$insights`. Built and maintained by [Man
 
 Private HTML and JSON reports from your **local** Codex sessions. Use `$insights` in Codex or the `codex-session-insights` CLI. An unspecified `$insights` request defaults to `--local-only` (deterministic metrics, **zero model calls**); the CLI still estimates before a model-assisted run unless you pass `--local-only`.
 
+## November 2026 status
+
+Verified **14 November 2026**: this public repository and bundled skill are MIT-licensed. npm currently publishes **0.7.0**; source `main` contains the **0.7.1 release candidate**, including paginated history and cache-privacy fixes. Source changes are not available through the npm `latest` tag until a release is published. See [compatibility and validation](docs/compatibility.md).
+
+For a reproducible example that reads no personal sessions and makes no model calls, see [worked examples](docs/examples.md).
+
 ## Screenshots
 
-Framed captures of the current HTML report and shareable profile.
+The framed images below are illustrative captures with example data, not live usage or billing evidence. A [fresh synthetic report capture](docs/screenshots/05-synthetic-report.png) was generated from the current renderer on 14 November 2026; its fixture dates and model-assisted labels are synthetic.
 
 <div align="center">
 
@@ -147,14 +153,14 @@ codex-session-insights \
 
 ## What it reads
 
-- Codex app-server `thread/list` and `thread/read` in default `auto` mode
+- Codex app-server `thread/list`, `thread/read`, `thread/turns/list` and `thread/items/list` in default `auto` mode
 - `~/.codex/state_*.sqlite` and rollout JSONL only for `--data-source legacy` or a recorded `auto` fallback
 
 Collection is read-only. The CLI does not start turns or change session state. See [App-server compatibility](docs/app-server-compatibility.md).
 
 ## Requirements
 
-- Node.js `>=18.17.0`
+- Node.js `^22.22.2 || ^24.15.0 || >=26.0.0` (matches `package.json`)
 - Codex CLI for `$insights` and for the default `codex-cli` provider
 - `sqlite3` on `PATH` only for legacy mode
 
@@ -198,8 +204,12 @@ Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analy
 
 [Mangesh’s Merge Guide](https://github.com/mangeshraut712/mangeshs-merge-guide) handles contribution selection, testing and maintainer feedback. These are separate skills with different installation routes.
 
-As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
+The public snapshot retrieved **14 November 2026** records **0 stars**, **0 forks** and **182 npm downloads** for **14 October–12 November 2026**. These are API counters, not unique users or successful skill runs. GitHub release assets record **0 downloads**. See [adoption data and methodology](docs/analytics.md) and [the timestamped snapshot](docs/adoption.json).
 
 ## End-to-end verification
 
 Synthetic CLI and browser journeys exercise generated reports and profiles without real session data or model calls. Run `npm run test:tester-army`; setup and limits are in [the end-to-end guide](docs/tester-army.md).
+
+## License
+
+[MIT](LICENSE), including the [standalone skill license](plugin/codex-insights/skills/insights/LICENSE.txt). Contributions follow [CONTRIBUTING.md](CONTRIBUTING.md); report sensitive vulnerabilities through [SECURITY.md](SECURITY.md).

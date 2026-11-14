@@ -2,6 +2,7 @@
 
 Start with the [project README](../README.md) for installation and first use.
 
+- [Worked examples and reproducible screenshot](examples.md)
 - [Analytics](analytics.md)
 - [App server compatibility](app-server-compatibility.md)
 - [Claude insights](claude-insights.md)

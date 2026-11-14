@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-12T08:39:58.417952+00:00",
+  "checked_at": "2026-11-14T07:42:05.103025+00:00",
   "repository": "mangeshraut712/codex-insights",
   "github": {
     "source": "https://api.github.com/repos/mangeshraut712/codex-insights",
@@ -10,8 +10,13 @@
   "npm": {
     "package": "@mangeshraut712/codex-insights",
     "source": "https://registry.npmjs.org/%40mangeshraut712%2Fcodex-insights",
-    "status": "not_published",
+    "status": "published",
     "downloads_source": "https://api.npmjs.org/downloads/point/last-month/%40mangeshraut712%2Fcodex-insights",
-    "last_month": null
+    "last_month": {
+      "downloads": 182,
+      "start": "2026-10-14",
+      "end": "2026-11-12",
+      "package": "@mangeshraut712/codex-insights"
+    }
   }
 }
