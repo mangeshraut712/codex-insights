@@ -245,3 +245,36 @@ test('createAppServerClient allows history pagination but rejects mutating metho
     client.close()
   }
 })
+
+test('createAppServerClient bounds each response rather than a batch of valid lines', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') process.stdout.write('{"id":1,"result":{}}\n')
+    if (message.method === 'thread/list') {
+      const notification = JSON.stringify({ method: 'notice', params: 'x'.repeat(25) }) + '\n'
+      process.stdout.write(notification.repeat(3) + JSON.stringify({ id: message.id, result: { ok: true } }) + '\n')
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, maxStdoutBuffer: 64 })
+  try {
+    assert.deepEqual(await client.request('thread/list', {}), { ok: true })
+  } finally {
+    client.close()
+  }
+})
+
+test('createAppServerClient rejects oversized unterminated responses across chunks', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') process.stdout.write('{"id":1,"result":{}}\n')
+    if (message.method === 'thread/list') {
+      process.stdout.write('x'.repeat(40))
+      process.stdout.write('x'.repeat(40))
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, maxStdoutBuffer: 64 })
+  try {
+    await assert.rejects(client.request('thread/list', {}), /buffer limit/)
+    assert.equal(child.killCount, 1)
+  } finally {
+    client.close()
+  }
+})
