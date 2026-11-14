@@ -211,3 +211,70 @@ test('createAppServerClient rejects an oversized stdout line', async () => {
   await assert.rejects(client.request('thread/list', { archived: false }), /buffer limit/i)
   client.close()
 })
+
+
+test('createAppServerClient preserves UTF-8 characters split across stdout chunks', async () => {
+  const expected = { title: '修复 café 🚀' }
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write(JSON.stringify({ id: message.id, result: {} }) + '\n')
+    } else if (message.method === 'thread/list') {
+      const bytes = Buffer.from(JSON.stringify({ id: message.id, result: expected }) + '\n')
+      for (const byte of bytes) process.stdout.write(Buffer.from([byte]))
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  try {
+    assert.deepEqual(await client.request('thread/list', {}), expected)
+  } finally {
+    client.close()
+  }
+})
+
+test('createAppServerClient allows history pagination but rejects mutating methods', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.id) process.stdout.write(JSON.stringify({ id: message.id, result: { data: [] } }) + '\n')
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  try {
+    for (const method of ['thread/turns/list', 'thread/items/list']) {
+      assert.deepEqual(await client.request(method, { threadId: 'example-thread' }), { data: [] })
+    }
+    await assert.rejects(client.request('thread/start', {}), /Unsupported read-only/)
+  } finally {
+    client.close()
+  }
+})
+
+test('createAppServerClient bounds each response rather than a batch of valid lines', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') process.stdout.write('{"id":1,"result":{}}\n')
+    if (message.method === 'thread/list') {
+      const notification = JSON.stringify({ method: 'notice', params: 'x'.repeat(25) }) + '\n'
+      process.stdout.write(notification.repeat(3) + JSON.stringify({ id: message.id, result: { ok: true } }) + '\n')
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, maxStdoutBuffer: 64 })
+  try {
+    assert.deepEqual(await client.request('thread/list', {}), { ok: true })
+  } finally {
+    client.close()
+  }
+})
+
+test('createAppServerClient rejects oversized unterminated responses across chunks', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') process.stdout.write('{"id":1,"result":{}}\n')
+    if (message.method === 'thread/list') {
+      process.stdout.write('x'.repeat(40))
+      process.stdout.write('x'.repeat(40))
+    }
+  })
+  const client = await createAppServerClient({ spawnImpl: () => child, maxStdoutBuffer: 64 })
+  try {
+    await assert.rejects(client.request('thread/list', {}), /buffer limit/)
+    assert.equal(child.killCount, 1)
+  } finally {
+    client.close()
+  }
+})

@@ -68,7 +68,7 @@ The installer refreshes the marketplace snapshot and reinstalls the plugin. Star
 
 For a plugin-only refresh after the CLI is already current, run `codex plugin marketplace upgrade codex-insights`, then remove and re-add `codex-insights@codex-insights`.
 
-Verify with `codex-session-insights --version` (expect `0.6.0` or later) and `codex plugin list`, then ask `$insights` to create a shareable profile.
+Verify with `codex-session-insights --version` (expect the version you installed; the currently published release is `0.7.0`) and `codex plugin list`, then ask `$insights` to create a shareable profile.
 
 In an interactive zsh terminal, paste `codex-session-insights --version` on its own line. Text such as `# should print 0.4.1` after the command can be passed as CLI arguments unless zsh's `interactivecomments` option is enabled.
 
@@ -96,3 +96,24 @@ codex-session-insights --estimate-only
 ```
 
 Model-assisted CLI runs still estimate first unless you pass `--yes`. Latest reports land in `~/.codex/usage-data/report.html` with a timestamped copy beside them. See [Privacy and trust](privacy-and-trust.md) before sharing a report.
+
+## Diagnose a missing CLI or npm login
+
+Installing this public package does not require npm sign-in. `npm ping` checks registry connectivity; `npm whoami` checks publisher authentication and can report `ENEEDAUTH` even when installation works. Maintainers who need to publish can use `npm login --auth-type=web` and complete verification in the browser. Never paste email codes, passwords or tokens into a chat or issue.
+
+An enabled plugin does not guarantee its companion CLI is installed. If the skill reports that it cannot locate `codex-session-insights`, run:
+
+```bash
+npm install --global @mangeshraut712/codex-insights
+codex-session-insights --version
+codex-session-insights --help
+npm config get prefix
+```
+
+On macOS/Linux, global executables live in the prefix's `bin` directory; on Windows they live directly in the prefix. If installation succeeds but the command is missing, check that directory against the terminal and agent PATH. The wrapper checks the common directories listed above, but a custom npm prefix must be added to the agent's PATH. Start a new Codex thread after changing its environment.
+
+If an explicit `--data-source app-server` run reports that a response exceeds the buffer limit, it stops rather than returning a partial success. The default `--data-source auto` can fall back to local legacy data and records the fallback in the report. Check Trust & Coverage before treating a report as complete; an empty report is not proof that no sessions exist. The 8 MiB per-response bound remains in place, including unfinished responses spread across chunks. Several individually valid responses arriving together do not share one size allowance. Modern threads with `historyMode: paginated` are read through turn and item pages instead of a single full-history response. Item pages are scoped to the turns enumerated for that run; turns created afterward are picked up on the next run. Older threads keep their existing full-read path. A single oversized item or legacy response can still exceed the bound. Repeated history cursors and items for an unexpected turn fail explicitly instead of returning partial history.
+
+For an uncapped deterministic collection of the history exposed by app-server, use `--local-only --data-source app-server --days 0 --limit 0 --include-archived --reanalyze --no-open`. Add `--include-subagents` to request delegated threads. Discovery is limited to the inventory returned by app-server: some server versions can omit locally stored subagents from `thread/list` even though individual reads work. A zero failed-read count does not prove that those omitted threads were discovered. Reports still exclude short sessions and bound transcript excerpts; local-only mode makes no model calls.
+
+The 0.7.1 candidate preserves UTF-8 characters split across app-server output chunks and pages modern thread history. Its source tests are separate from npm publication; use the published version above until the registry confirms the new release.

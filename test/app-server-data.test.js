@@ -621,3 +621,91 @@ test('app-server timestamps accept ISO strings and drop sessions before --since'
   assert.equal(skipped.summaries.length, 0)
   assert.equal(skipped.coverage.eligible, 0)
 })
+
+test('collectAppServerThreadSummaries reads every paginated turn and item without full hydration', async () => {
+  const original = mainThreadWithItems()
+  const thread = makeThread({ historyMode: 'paginated' })
+  const requests = []
+  const result = await collectAppServerThreadSummaries({
+    reanalyze: true,
+    createClient: async () => ({
+      close() {},
+      async request(method, params) {
+        requests.push({ method, params })
+        if (method === 'thread/list') return { data: [thread], nextCursor: null }
+        if (method === 'thread/read') {
+          assert.equal(params.includeTurns, false)
+          return { thread }
+        }
+        if (method === 'thread/turns/list') {
+          assert.equal(params.itemsView, 'notLoaded')
+          return { data: [{ ...original.turns[0], id: params.cursor ? 'turn-2' : 'turn-1', items: [] }], nextCursor: params.cursor ? null : 'next-turn' }
+        }
+        if (method === 'thread/items/list') {
+          return { data: original.turns[0].items.slice(params.cursor ? 2 : 0, params.cursor ? undefined : 2).map(item => ({ turnId: params.turnId, item })), nextCursor: params.cursor ? null : 'next-item' }
+        }
+        throw new Error(`Unexpected method ${method}`)
+      },
+    }),
+  })
+  assert.equal(result.coverage.analyzed, 1)
+  assert.equal(result.coverage.failedToRead, 0)
+  assert.equal(result.summaries[0].userMessages, 4)
+  assert.equal(result.summaries[0].assistantMessages, 2)
+  assert.equal(result.summaries[0].gitCommits, 2)
+  assert.equal(requests.filter(r => r.method === 'thread/items/list').length, 4)
+})
+
+test('collectAppServerThreadSummaries rejects repeated history cursors instead of reporting partial coverage', async () => {
+  await assert.rejects(collectAppServerThreadSummaries({
+    createClient: async () => ({
+      close() {},
+      async request(method) {
+        const thread = makeThread({ historyMode: 'paginated' })
+        if (method === 'thread/list') return { data: [thread] }
+        if (method === 'thread/read') return { thread }
+        return { data: [], nextCursor: 'repeated' }
+      },
+    }),
+  }), /repeated.*cursor/i)
+})
+
+test('collectAppServerThreadSummaries scopes item pages to enumerated turns while a chat grows', async () => {
+  const original = mainThreadWithItems()
+  const thread = makeThread({ historyMode: 'paginated' })
+  const result = await collectAppServerThreadSummaries({
+    createClient: async () => ({
+      close() {},
+      async request(method, params) {
+        if (method === 'thread/list') return { data: [thread] }
+        if (method === 'thread/read') return { thread }
+        if (method === 'thread/turns/list') return { data: [{ ...original.turns[0], id: 'existing-turn', items: [] }] }
+        if (method === 'thread/items/list') {
+          const data = original.turns[0].items.map(item => ({ turnId: 'existing-turn', item }))
+          if (!params.turnId) data.push({ turnId: 'new-live-turn', item: original.turns[0].items[0] })
+          return { data }
+        }
+        throw new Error('Unexpected request')
+      },
+    }),
+  })
+  assert.equal(result.coverage.analyzed, 1)
+  assert.equal(result.summaries[0].userMessages, 2)
+})
+
+test('collectAppServerThreadSummaries rejects malformed history entries as protocol errors', async () => {
+  for (const entry of [null, {}, { turnId: 'turn-1' }, { turnId: 'turn-1', item: null }, { turnId: 'turn-1', item: {} }]) {
+    await assert.rejects(collectAppServerThreadSummaries({
+      createClient: async () => ({
+        close() {},
+        async request(method) {
+          const thread = makeThread({ historyMode: 'paginated' })
+          if (method === 'thread/list') return { data: [thread] }
+          if (method === 'thread/read') return { thread }
+          if (method === 'thread/turns/list') return { data: [{ id: 'turn-1', items: [] }] }
+          return { data: [entry] }
+        },
+      }),
+    }), error => error instanceof AppServerProtocolError)
+  }
+})
