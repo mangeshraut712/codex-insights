@@ -3,11 +3,11 @@
   "name": "Mangesh Raut",
   "handle": "mangeshraut712",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-11-14T16:58:59.661Z",
+  "generatedAt": "2026-11-16T11:04:35.526Z",
   "stats": [
     {
       "label": "Lifetime tokens",
-      "value": "9.3B"
+      "value": "9.5B"
     },
     {
       "label": "Peak tokens",
@@ -100,7 +100,7 @@
       },
       {
         "date": "2026-11-14",
-        "value": 39821197
+        "value": 277625551
       }
     ],
     "weekly": [
@@ -114,7 +114,7 @@
       },
       {
         "date": "2026-11-08",
-        "value": 2375652513
+        "value": 2613456867
       }
     ],
     "cumulative": [
@@ -188,7 +188,7 @@
       },
       {
         "date": "2026-11-14",
-        "value": 9265897475
+        "value": 9503701829
       }
     ]
   },
@@ -203,19 +203,19 @@
         },
         {
           "label": "Most used reasoning",
-          "value": "Max · 30%"
+          "value": "Medium · 32%"
         },
         {
           "label": "Skills explored",
-          "value": "66"
+          "value": "67"
         },
         {
           "label": "Total skills used",
-          "value": "1,872"
+          "value": "1,981"
         },
         {
           "label": "Total chats",
-          "value": "268"
+          "value": "303"
         }
       ]
     },
@@ -226,7 +226,7 @@
         {
           "label": "unified-computer-use",
           "prefix": "@",
-          "value": "3,837 runs"
+          "value": "4,196 runs"
         },
         {
           "label": "Threads",
@@ -236,12 +236,12 @@
         {
           "label": "GitHub",
           "prefix": "@",
-          "value": "1,295 runs"
+          "value": "1,421 runs"
         },
         {
           "label": "Gmail",
           "prefix": "@",
-          "value": "575 runs"
+          "value": "655 runs"
         },
         {
           "label": "connector-openai-automations",
@@ -251,5 +251,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-11-14, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-11-16, across all devices. Aggregates only; this snapshot does not update automatically."
 }
