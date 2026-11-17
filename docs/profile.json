@@ -3,11 +3,11 @@
   "name": "Mangesh Raut",
   "handle": "mangeshraut712",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-11-16T11:04:35.526Z",
+  "generatedAt": "2026-11-17T14:06:40.764Z",
   "stats": [
     {
       "label": "Lifetime tokens",
-      "value": "9.5B"
+      "value": "9.6B"
     },
     {
       "label": "Peak tokens",
@@ -19,7 +19,7 @@
     },
     {
       "label": "Current streak",
-      "value": "16 days"
+      "value": "1 day"
     },
     {
       "label": "Longest streak",
@@ -101,6 +101,10 @@
       {
         "date": "2026-11-14",
         "value": 277625551
+      },
+      {
+        "date": "2026-11-16",
+        "value": 55055506
       }
     ],
     "weekly": [
@@ -115,6 +119,10 @@
       {
         "date": "2026-11-08",
         "value": 2613456867
+      },
+      {
+        "date": "2026-11-15",
+        "value": 55055506
       }
     ],
     "cumulative": [
@@ -189,6 +197,10 @@
       {
         "date": "2026-11-14",
         "value": 9503701829
+      },
+      {
+        "date": "2026-11-16",
+        "value": 9558757335
       }
     ]
   },
@@ -203,7 +215,7 @@
         },
         {
           "label": "Most used reasoning",
-          "value": "Medium · 32%"
+          "value": "Medium · 33%"
         },
         {
           "label": "Skills explored",
@@ -211,11 +223,11 @@
         },
         {
           "label": "Total skills used",
-          "value": "1,981"
+          "value": "2,040"
         },
         {
           "label": "Total chats",
-          "value": "303"
+          "value": "312"
         }
       ]
     },
@@ -226,7 +238,7 @@
         {
           "label": "unified-computer-use",
           "prefix": "@",
-          "value": "4,196 runs"
+          "value": "4,372 runs"
         },
         {
           "label": "Threads",
@@ -236,12 +248,12 @@
         {
           "label": "GitHub",
           "prefix": "@",
-          "value": "1,421 runs"
+          "value": "1,542 runs"
         },
         {
           "label": "Gmail",
           "prefix": "@",
-          "value": "655 runs"
+          "value": "721 runs"
         },
         {
           "label": "connector-openai-automations",
@@ -251,5 +263,5 @@
       ]
     }
   ],
-  "footer": "Codex account stats as of 2026-11-16, across all devices. Aggregates only; this snapshot does not update automatically."
+  "footer": "Codex account stats as of 2026-11-17, across all devices. Aggregates only; this snapshot does not update automatically."
 }
