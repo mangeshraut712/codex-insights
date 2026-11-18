@@ -3,11 +3,11 @@
   "name": "Mangesh Raut",
   "handle": "mangeshraut712",
   "intro": "Account-wide Codex activity, shared by choice.",
-  "generatedAt": "2026-11-17T14:06:40.764Z",
+  "generatedAt": "2026-11-18T02:06:52.469Z",
   "stats": [
     {
       "label": "Lifetime tokens",
-      "value": "9.6B"
+      "value": "9.7B"
     },
     {
       "label": "Peak tokens",
@@ -19,7 +19,7 @@
     },
     {
       "label": "Current streak",
-      "value": "1 day"
+      "value": "2 days"
     },
     {
       "label": "Longest streak",
@@ -105,6 +105,10 @@
       {
         "date": "2026-11-16",
         "value": 55055506
+      },
+      {
+        "date": "2026-11-17",
+        "value": 149075345
       }
     ],
     "weekly": [
@@ -122,7 +126,7 @@
       },
       {
         "date": "2026-11-15",
-        "value": 55055506
+        "value": 204130851
       }
     ],
     "cumulative": [
@@ -201,6 +205,10 @@
       {
         "date": "2026-11-16",
         "value": 9558757335
+      },
+      {
+        "date": "2026-11-17",
+        "value": 9707832680
       }
     ]
   },
@@ -215,7 +223,7 @@
         },
         {
           "label": "Most used reasoning",
-          "value": "Medium · 33%"
+          "value": "Medium · 34%"
         },
         {
           "label": "Skills explored",
@@ -223,11 +231,11 @@
         },
         {
           "label": "Total skills used",
-          "value": "2,040"
+          "value": "2,063"
         },
         {
           "label": "Total chats",
-          "value": "312"
+          "value": "345"
         }
       ]
     },
@@ -238,7 +246,7 @@
         {
           "label": "unified-computer-use",
           "prefix": "@",
-          "value": "4,372 runs"
+          "value": "4,436 runs"
         },
         {
           "label": "Threads",
@@ -248,12 +256,12 @@
         {
           "label": "GitHub",
           "prefix": "@",
-          "value": "1,542 runs"
+          "value": "1,627 runs"
         },
         {
           "label": "Gmail",
           "prefix": "@",
-          "value": "721 runs"
+          "value": "746 runs"
         },
         {
           "label": "connector-openai-automations",
