@@ -372,7 +372,8 @@ test('buildReport survives partial summaries and counts cross-thread overlaps on
   )
 
   assert.equal(report.summary.totalTokens, 177 + 177)
-  assert.equal(report.metadata.dateRange.start, '')
+  // a:1 has no createdAt; the start comes from the other threads.
+  assert.equal(report.metadata.dateRange.start, '2026-04-01')
   assert.equal(report.summary.overlap.overlapEvents, 1)
   assert.equal(report.summary.overlap.threadsInvolved, 2)
   assert.equal(report.metadata.language, 'zh-CN')
@@ -402,4 +403,13 @@ test('HTML reports use the selected language and private file permissions', asyn
   assert.match(html, /复制失败/)
   assert.equal((await fs.stat(htmlPath)).mode & 0o777, 0o600)
   assert.equal((await fs.stat(jsonPath)).mode & 0o777, 0o600)
+})
+
+test('buildReport date range uses the earliest creation, not the oldest update', () => {
+  const report = buildReport([
+    makeSummary({ id: 'old-but-active', createdAt: '2020-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' }),
+    makeSummary({ id: 'recent', createdAt: '2025-06-01T00:00:00.000Z', updatedAt: '2025-07-01T00:00:00.000Z' }),
+  ])
+
+  assert.deepEqual(report.metadata.dateRange, { start: '2020-01-01', end: '2026-01-01' })
 })
