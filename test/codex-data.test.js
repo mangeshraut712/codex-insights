@@ -418,3 +418,10 @@ test('session summary cache keys do not fingerprint raw secret values', () => {
   assert.equal(first, second)
   assert.notEqual(second, changed)
 })
+
+test('median averages the two middle values for an even count', () => {
+  assert.equal(codexDataTest.median([]), 0)
+  assert.equal(codexDataTest.median([7]), 7)
+  assert.equal(codexDataTest.median([30, 10, 20]), 20)
+  assert.equal(codexDataTest.median([40, 10, 30, 20]), 25)
+})
