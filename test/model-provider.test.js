@@ -64,6 +64,8 @@ test('isRetryableModelError matches unavailable model failures', () => {
 test('provider=openai gives up on a stalled Responses API call', async () => {
   const originalFetch = globalThis.fetch
   const signals = []
+  // AbortSignal.timeout uses an unref'd timer; a real fetch keeps the loop alive, the stub does not.
+  const keepAlive = setInterval(() => {}, 1000)
   globalThis.fetch = (_url, init) => {
     signals.push(init?.signal)
     return new Promise((_resolve, reject) => {
@@ -83,6 +85,7 @@ test('provider=openai gives up on a stalled Responses API call', async () => {
     assert.ok(signals.length > 0)
     assert.ok(signals.every(signal => signal instanceof AbortSignal))
   } finally {
+    clearInterval(keepAlive)
     globalThis.fetch = originalFetch
   }
 })
