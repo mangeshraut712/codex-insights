@@ -425,3 +425,30 @@ test('median averages the two middle values for an even count', () => {
   assert.equal(codexDataTest.median([30, 10, 20]), 20)
   assert.equal(codexDataTest.median([40, 10, 30, 20]), 25)
 })
+
+test('summarizeThread falls back to thread times when boundary events have no timestamp', () => {
+  const thread = {
+    id: 'thread-no-ts',
+    title: 'Edge timestamps',
+    firstUserMessage: 'Check the parser.',
+    cwd: '/repo/project',
+    model: 'gpt-5.4',
+    modelProvider: 'openai',
+    createdAt: Date.parse('2026-04-01T10:00:00Z') / 1000,
+    updatedAt: Date.parse('2026-04-01T10:30:00Z') / 1000,
+    tokensUsed: 10,
+  }
+  const events = [
+    { type: 'session_meta', payload: { id: 'thread-no-ts' } },
+    {
+      timestamp: '2026-04-01T10:01:00Z',
+      type: 'event_msg',
+      payload: { type: 'user_message', message: 'Check the parser.' },
+    },
+    { type: 'event_msg', payload: { type: 'agent_message', message: 'Done.' } },
+  ]
+
+  const summary = summarizeThread(thread, events)
+
+  assert.equal(summary.durationMinutes, 30)
+})
