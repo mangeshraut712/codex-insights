@@ -10,6 +10,7 @@ import {
   loadUnseenAwarePopulation,
   persistAnalyzedSessions,
   readArchivedSummary,
+  SEEN_SESSIONS_SCHEMA_VERSION,
 } from '../lib/seen-sessions.js'
 
 test('loadSeenStore recovers from corrupt JSON instead of failing the report', async () => {
@@ -17,6 +18,23 @@ test('loadSeenStore recovers from corrupt JSON instead of failing the report', a
   await fs.writeFile(path.join(dir, 'seen-sessions.json'), '{', 'utf8')
   const store = await loadSeenStore(dir)
   assert.deepEqual(store.sessions, {})
+})
+
+test('loadSeenStore treats a wrong-shaped sessions field as corrupt', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-insights-seen-'))
+  try {
+    for (const sessions of ['oops', [], 7]) {
+      await fs.writeFile(
+        path.join(dir, 'seen-sessions.json'),
+        JSON.stringify({ schemaVersion: SEEN_SESSIONS_SCHEMA_VERSION, sessions }),
+        'utf8',
+      )
+      const store = await loadSeenStore(dir)
+      assert.deepEqual(store.sessions, {}, JSON.stringify(sessions))
+    }
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true })
+  }
 })
 
 test('loadUnseenAwarePopulation refreshes a corrupt archived session summary', async () => {
