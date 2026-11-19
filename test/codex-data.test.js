@@ -161,6 +161,35 @@ test('summarizeThread extracts tool, patch, git, and failure signals', () => {
   })
 })
 
+test('summarizeThread counts apply_patch lines whose content starts with ++ or --', () => {
+  const thread = {
+    id: 'thread-plusplus',
+    title: 'Counter tweak',
+    firstUserMessage: 'Bump the counter.',
+    cwd: '/repo/project',
+    createdAt: Date.parse('2026-04-01T10:00:00Z') / 1000,
+    updatedAt: Date.parse('2026-04-01T10:01:00Z') / 1000,
+  }
+  const patch = [
+    '*** Begin Patch',
+    '*** Update File: src/counter.c',
+    '---flag;',
+    '+++counter;',
+    '+return counter;',
+    '*** End Patch',
+  ].join('\n')
+  const summary = summarizeThread(thread, [
+    {
+      timestamp: '2026-04-01T10:00:20Z',
+      type: 'response_item',
+      payload: { type: 'function_call', name: 'apply_patch', arguments: patch },
+    },
+  ])
+  assert.equal(summary.linesAdded, 2)
+  assert.equal(summary.linesRemoved, 1)
+  assert.equal(summary.filesModified, 1)
+})
+
 test('summarizeThread redacts sensitive text before a summary can be persisted', () => {
   const homeDir = '/Users/synthetic-analyst'
   const openaiKey = 'sk-proj-SYNTHETICOPENAIKEY1234567890'
