@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { __test as providerTest } from '../lib/model-provider.js'
+import { __test as providerTest, callTextModel } from '../lib/model-provider.js'
 
 test('parseFirstJsonObject extracts and repairs wrapped JSON', () => {
   const parsed = providerTest.parseFirstJsonObject(
@@ -59,4 +59,30 @@ test('isRetryableModelError matches unavailable model failures', () => {
     providerTest.isRetryableModelError(new Error('Unexpected JSON parse failure')),
     false,
   )
+})
+
+test('provider=openai gives up on a stalled Responses API call', async () => {
+  const originalFetch = globalThis.fetch
+  const signals = []
+  globalThis.fetch = (_url, init) => {
+    signals.push(init?.signal)
+    return new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener('abort', () => reject(init.signal.reason))
+    })
+  }
+  try {
+    await assert.rejects(
+      callTextModel({
+        provider: 'openai',
+        model: 'gpt-test',
+        systemPrompt: 'system',
+        userPrompt: 'user',
+        options: { apiKey: 'test-key', timeoutMs: 50 },
+      }),
+    )
+    assert.ok(signals.length > 0)
+    assert.ok(signals.every(signal => signal instanceof AbortSignal))
+  } finally {
+    globalThis.fetch = originalFetch
+  }
 })
