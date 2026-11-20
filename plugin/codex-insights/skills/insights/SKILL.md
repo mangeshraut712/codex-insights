@@ -5,7 +5,7 @@ license: MIT
 metadata:
   short-description: Private reports from local Codex sessions
   author: mangeshraut712
-  version: "0.7.1"
+  version: "0.7.2"
 ---
 
 # Codex Insights
@@ -68,3 +68,5 @@ Read `references/report-modes.md` only when choosing flags or explaining Trust &
 Use the installed CLI’s `--help` to confirm options. Keep local-only analysis independent of model availability. For model-assisted analysis, discover account-supported models and reasoning efforts through Codex `model/list` when available; do not substitute a marketing model name or higher reasoning level without checking compatibility and the requested budget. Report model/provider failures directly rather than silently changing providers.
 
 Distinguish project adoption (public npm/GitHub counters) from the user’s private workflow metrics. Neither download counts nor successful fixture tests establish report accuracy or productivity gains.
+
+For OSS work, use Insights to describe covered Codex activity and workflow patterns. Verify GitHub contribution counts, PR status, and merges through GitHub. Cite the GitHub snapshot and its date separately from the Insights report scope. A session or tool call does not establish a commit or other GitHub contribution.
