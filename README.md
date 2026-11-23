@@ -3,6 +3,9 @@
 [![CI](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/codex-insights/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-22%20%7C%2024%20%7C%2026-brightgreen.svg)](https://nodejs.org)
+[![npm downloads per week](https://img.shields.io/npm/dw/@mangeshraut712/codex-insights)](https://www.npmjs.com/package/@mangeshraut712/codex-insights)
+
+**640 npm downloads** from launch on November 12 through November 22, 2026. [Verify on npm](https://api.npmjs.org/downloads/point/2026-11-12:2026-11-22/@mangeshraut712/codex-insights).
 
 This community `$insights` skill adds a private report on how you work with Codex, plus a public profile page you can share.
 
@@ -204,7 +207,7 @@ Analyzer changes follow [docs/contributing-analyzers.md](docs/contributing-analy
 
 [Mangesh’s Merge Guide](https://github.com/mangeshraut712/mangeshs-merge-guide) handles contribution selection, testing and maintainer feedback. These are separate skills with different installation routes.
 
-The public snapshot retrieved **14 November 2026** records **0 stars**, **0 forks** and **182 npm downloads** for **14 October–12 November 2026**. These are API counters, not unique users or successful skill runs. GitHub release assets record **0 downloads**. See [adoption data and methodology](docs/analytics.md) and [the timestamped snapshot](docs/adoption.json).
+npm recorded **176 downloads** during November 16–22, 2026. Downloads include repeat installs and CI. [Weekly count](https://api.npmjs.org/downloads/point/2026-11-16:2026-11-22/@mangeshraut712/codex-insights) · [Adoption data](docs/adoption.json) · [Methodology](docs/analytics.md).
 
 ## End-to-end verification
 
