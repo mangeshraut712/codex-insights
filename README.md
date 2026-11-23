@@ -7,6 +7,8 @@
 
 **640 npm downloads** from launch on November 12 through November 22, 2026. [Verify on npm](https://api.npmjs.org/downloads/point/2026-11-12:2026-11-22/@mangeshraut712/codex-insights).
 
+If Insights helped you spot a pattern in your Codex sessions, [star the repository](https://github.com/mangeshraut712/codex-insights) or [support development on GitHub Sponsors](https://github.com/sponsors/mangeshraut712).
+
 This community `$insights` skill adds a private report on how you work with Codex, plus a public profile page you can share.
 
 - **Private workflow report.** Type `$insights` in Codex for an HTML report on your projects, tools, friction, and what to try next. It runs locally with zero model calls by default.
