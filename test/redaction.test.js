@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { redactSensitiveText } from '../lib/redaction.js'
+import { redactSensitiveText, redactSessionSummary } from '../lib/redaction.js'
 
 test('redactSensitiveText removes synthetic secrets and home paths', () => {
   const homeDir = '/Users/synthetic-analyst'
@@ -82,4 +82,36 @@ test('redactSensitiveText matches slack webhook dots as literal hostname charact
 
   assert.equal(result.text, ['[REDACTED_SLACK_WEBHOOK]', anyCharacterHost, dottedSuffixHost].join('\n'))
   assert.equal(result.redactions, 1)
+})
+
+test('redactSensitiveText redacts quoted JSON password keys', () => {
+  const result = redactSensitiveText('{"password": "hunter2-synthetic", "pwd":"other-synthetic"}')
+
+  assert.equal(result.text, '{[REDACTED_PASSWORD], [REDACTED_PASSWORD]}')
+  assert.equal(result.redactions, 2)
+})
+
+test('redactSensitiveText leaves quoted keys that only end in -password alone', () => {
+  const result = redactSensitiveText('{"forgot-password": "/account/recover", "password": "synthetic-secret"}')
+
+  assert.equal(result.text, '{"forgot-password": "/account/recover", [REDACTED_PASSWORD]}')
+  assert.equal(result.redactions, 1)
+})
+
+test('redactSessionSummary keeps a seeded JSON password out of the serialized summary', () => {
+  const summary = redactSessionSummary({
+    firstMessage: 'config is {"password": "seeded-json-secret"}',
+    transcript: [{ role: 'user', text: "{'pwd': 'seeded-yaml-secret'}" }],
+  })
+
+  const serialized = JSON.stringify(summary)
+  assert.doesNotMatch(serialized, /seeded-json-secret|seeded-yaml-secret/)
+  assert.equal(summary.redactions, 2)
+})
+
+test('redactSensitiveText only redacts the home directory as a whole path segment', () => {
+  const result = redactSensitiveText('/Users/bob/app /Users/bobby/app /Users/bob.', { homeDir: '/Users/bob' })
+
+  assert.equal(result.text, '[REDACTED_HOME]/app /Users/bobby/app [REDACTED_HOME].')
+  assert.equal(result.redactions, 2)
 })
