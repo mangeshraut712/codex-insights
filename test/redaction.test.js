@@ -83,3 +83,11 @@ test('redactSensitiveText matches slack webhook dots as literal hostname charact
   assert.equal(result.text, ['[REDACTED_SLACK_WEBHOOK]', anyCharacterHost, dottedSuffixHost].join('\n'))
   assert.equal(result.redactions, 1)
 })
+
+test('redactSensitiveText redacts quoted JSON password keys', () => {
+  const result = redactSensitiveText('{"password": "hunter2-synthetic", "pwd":"other-synthetic"}')
+
+  assert.equal(result.text, '{[REDACTED_PASSWORD], [REDACTED_PASSWORD]}')
+  assert.equal(result.redactions, 2)
+})
+
