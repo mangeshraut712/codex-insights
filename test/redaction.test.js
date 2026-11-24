@@ -91,3 +91,9 @@ test('redactSensitiveText redacts quoted JSON password keys', () => {
   assert.equal(result.redactions, 2)
 })
 
+test('redactSensitiveText only redacts the home directory as a whole path segment', () => {
+  const result = redactSensitiveText('/Users/bob/app /Users/bobby/app /Users/bob.', { homeDir: '/Users/bob' })
+
+  assert.equal(result.text, '[REDACTED_HOME]/app /Users/bobby/app [REDACTED_HOME].')
+  assert.equal(result.redactions, 2)
+})
