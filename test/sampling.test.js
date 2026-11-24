@@ -51,3 +51,19 @@ test('selectRepresentativeThreads covers every available stratum before repeatin
     new Set(['alpha-w1-new', 'alpha-w2-new', 'beta-w1', 'beta-w2', 'beta-w3']),
   )
 })
+
+test('selectRepresentativeThreads buckets epoch-second timestamps into calendar weeks', () => {
+  const threads = [
+    makeThread('alpha-w2-new', '/repo/alpha', 1768219200),
+    makeThread('alpha-w2-old', '/repo/alpha', 1768215600),
+    makeThread('alpha-w1', '/repo/alpha', 1767614400),
+    makeThread('beta-w1', '/repo/beta', 1767614400),
+  ]
+
+  const selected = selectRepresentativeThreads(threads, 3)
+
+  assert.deepEqual(
+    new Set(selected.map(thread => thread.id)),
+    new Set(['alpha-w2-new', 'alpha-w1', 'beta-w1']),
+  )
+})
