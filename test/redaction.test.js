@@ -170,3 +170,42 @@ test('env-style secret redaction never splits a credential URL whose password ha
   assert.doesNotMatch(result.text, /remaining-secret|password/)
   assert.equal(result.text, 'SERVICE_SECRET=[REDACTED_SECRET]')
 })
+
+test('env-style secret redaction stays on its line and covers quoted keys, literal quotes and commas', () => {
+  const input = [
+    'OPENROUTER_API_KEY=',
+    'DATABASE_HOST=db.internal.example',
+    '"SERVICE_TOKEN": "synthetic-yaml-token-value"',
+    "DEPLOY_SECRET='$synthetic-literal-dollar'",
+    'WEBHOOK_SECRET=[synthetic-bracket-value]',
+    'APP_SECRET=abc,synthetic-after-comma',
+    'see SENTRY_AUTH_TOKEN=synthetic-sentry-value, then rerun',
+  ].join('\n')
+
+  const result = redactSensitiveText(input)
+
+  assert.equal(result.text, [
+    'OPENROUTER_API_KEY=',
+    'DATABASE_HOST=db.internal.example',
+    '"SERVICE_TOKEN": [REDACTED_SECRET]',
+    'DEPLOY_SECRET=[REDACTED_SECRET]',
+    'WEBHOOK_SECRET=[REDACTED_SECRET]',
+    'APP_SECRET=[REDACTED_SECRET]',
+    'see SENTRY_AUTH_TOKEN=[REDACTED_SECRET], then rerun',
+  ].join('\n'))
+  assert.equal(result.redactions, 5)
+})
+
+test('redactSessionSummary keeps the new key shapes out of the serialized summary', () => {
+  const summary = redactSessionSummary({
+    firstMessage: 'GEMINI_API_KEY=AIzaSySYNTHETICgoogleKEY0123456789abcdE',
+    transcript: [
+      { role: 'user', text: 'stripe sk_live_SYNTHETICstripeKEY0123 hf_SYNTHETICHUGGINGFACETOKEN0123456789' },
+      { role: 'assistant', text: 'OPENROUTER_API_KEY=synthetic-openrouter-value-123' },
+    ],
+  })
+
+  const serialized = JSON.stringify(summary)
+  assert.doesNotMatch(serialized, /SYNTHETIC|synthetic-openrouter/)
+  assert.equal(summary.redactions, 4)
+})
