@@ -161,3 +161,12 @@ test('env-style secret redaction leaves variable references and short config val
   assert.equal(result.text, input)
   assert.equal(result.redactions, 0)
 })
+
+test('env-style secret redaction never splits a credential URL whose password has a comma or semicolon', () => {
+  const input = 'SERVICE_SECRET=https://alice:password;remaining-secret@example.test/path'
+
+  const result = redactSensitiveText(input)
+
+  assert.doesNotMatch(result.text, /remaining-secret|password/)
+  assert.equal(result.text, 'SERVICE_SECRET=[REDACTED_SECRET]')
+})
