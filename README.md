@@ -158,8 +158,8 @@ codex-session-insights \
 
 ## What it reads
 
-- Codex app-server `thread/list`, `thread/read`, `thread/turns/list` and `thread/items/list` in default `auto` mode
-- `~/.codex/state_*.sqlite` and rollout JSONL only for `--data-source legacy` or a recorded `auto` fallback
+- Codex app-server `thread/list`, `thread/read`, `thread/turns/list` and `thread/items/list` in default `auto` mode, plus each thread's rollout JSONL file for its `token_count` events (token totals only)
+- `~/.codex/state_*.sqlite` and full rollout JSONL parsing only for `--data-source legacy` or a recorded `auto` fallback
 
 Collection is read-only. The CLI does not start turns or change session state. See [App-server compatibility](docs/app-server-compatibility.md).
 
