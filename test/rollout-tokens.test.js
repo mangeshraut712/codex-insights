@@ -81,6 +81,31 @@ test('readRolloutTokenUsage keeps the last valid snapshot and skips malformed or
   }
 })
 
+test('readRolloutTokenUsage ignores a trailing token_count that is not an event_msg', async () => {
+  // The foreign record is last, so accepting non-event_msg records would change the result.
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'rollout-tokens-'))
+  try {
+    const file = path.join(dir, 'rollout.jsonl')
+    const foreign = JSON.stringify({
+      type: 'response_item',
+      payload: {
+        type: 'token_count',
+        info: { total_token_usage: { input_tokens: 900, cached_input_tokens: 900, output_tokens: 900, reasoning_output_tokens: 900, total_tokens: 1800 } },
+      },
+    })
+    await writeFile(file, `${[tokenCountEvent(300, 60), foreign].join('\n')}\n`)
+    assert.deepEqual(await readRolloutTokenUsage(file), {
+      inputTokens: 300,
+      cachedInputTokens: 150,
+      outputTokens: 60,
+      reasoningOutputTokens: 0,
+      totalTokens: 360,
+    })
+  } finally {
+    await rm(dir, { recursive: true, force: true })
+  }
+})
+
 test('readRolloutTokenUsage reports zero usage when there is nothing to read', async () => {
   assert.deepEqual(await readRolloutTokenUsage(undefined), emptyTokenUsage())
   const missing = path.join(os.tmpdir(), `codex-insights-missing-${process.pid}.jsonl`)
