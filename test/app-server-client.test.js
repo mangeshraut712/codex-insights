@@ -315,3 +315,38 @@ test('createAppServerClient rejects oversized unterminated responses across chun
     client.close()
   }
 })
+
+test('createAppServerClient does not treat server-initiated requests as responses', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write(`{"id":${message.id},"result":{"protocolVersion":"1"}}\n`)
+      return
+    }
+    if (message.method === 'thread/list') {
+      // The app-server numbers its own requests from 1 too, so ids can collide.
+      process.stdout.write(`{"id":${message.id},"method":"account/chatgptAuthTokens/refresh","params":{}}\n`)
+      process.stdout.write(`{"id":${message.id},"result":{"data":["thread-1"]}}\n`)
+    }
+  })
+
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  assert.deepEqual(await client.request('thread/list', { archived: false }), { data: ['thread-1'] })
+  client.close()
+})
+
+test('createAppServerClient skips stdout lines that are JSON but not objects', async () => {
+  const child = createFakeChild((message, process) => {
+    if (message.method === 'initialize') {
+      process.stdout.write('null\n7\n')
+      process.stdout.write(`{"id":${message.id},"result":{"protocolVersion":"1"}}\n`)
+      return
+    }
+    if (message.method === 'thread/list') {
+      process.stdout.write(`{"id":${message.id},"result":{"ok":true}}\n`)
+    }
+  })
+
+  const client = await createAppServerClient({ spawnImpl: () => child, timeoutMs: 100 })
+  assert.deepEqual(await client.request('thread/list', { archived: false }), { ok: true })
+  client.close()
+})
