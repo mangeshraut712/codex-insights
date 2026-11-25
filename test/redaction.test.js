@@ -209,3 +209,11 @@ test('redactSessionSummary keeps the new key shapes out of the serialized summar
   assert.doesNotMatch(serialized, /SYNTHETIC|synthetic-openrouter/)
   assert.equal(summary.redactions, 4)
 })
+
+test('env-style secret redaction also covers bare secret names', () => {
+  const input = ['API_KEY=synthetic-bare-api-key', 'TOKEN: "synthetic-bare-token"', 'SECRET_KEY=synthetic-bare-secret'].join('\n')
+
+  const result = redactSensitiveText(input)
+
+  assert.equal(result.text, ['API_KEY=[REDACTED_SECRET]', 'TOKEN: [REDACTED_SECRET]', 'SECRET_KEY=[REDACTED_SECRET]'].join('\n'))
+})
