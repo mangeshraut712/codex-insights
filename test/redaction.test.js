@@ -115,3 +115,49 @@ test('redactSensitiveText only redacts the home directory as a whole path segmen
   assert.equal(result.text, '[REDACTED_HOME]/app /Users/bobby/app [REDACTED_HOME].')
   assert.equal(result.redactions, 2)
 })
+
+test('redactSensitiveText covers Google, Stripe and Hugging Face keys and env-style secret assignments', () => {
+  const secrets = {
+    google: 'AIzaSySYNTHETICgoogleKEY0123456789abcdE',
+    stripe: 'sk_live_SYNTHETICstripeKEY0123',
+    stripeRestricted: 'rk_test_SYNTHETICstripeKEY0123',
+    huggingface: 'hf_SYNTHETICHUGGINGFACETOKEN0123456789',
+    openrouter: 'synthetic-openrouter-value-123',
+    sentry: 'synthetic-sentry-auth-value',
+  }
+  const input = [
+    `GEMINI_API_KEY=${secrets.google}`,
+    `stripe ${secrets.stripe} and ${secrets.stripeRestricted}`,
+    `token ${secrets.huggingface}`,
+    `OPENROUTER_API_KEY=${secrets.openrouter}`,
+    `SENTRY_AUTH_TOKEN: "${secrets.sentry}"`,
+  ].join('\n')
+
+  const result = redactSensitiveText(input)
+
+  for (const secret of Object.values(secrets)) {
+    assert.doesNotMatch(result.text, new RegExp(secret))
+  }
+  assert.equal(result.text, [
+    'GEMINI_API_KEY=[REDACTED_API_KEY]',
+    'stripe [REDACTED_API_KEY] and [REDACTED_API_KEY]',
+    'token [REDACTED_HF_TOKEN]',
+    'OPENROUTER_API_KEY=[REDACTED_SECRET]',
+    'SENTRY_AUTH_TOKEN: [REDACTED_SECRET]',
+  ].join('\n'))
+  assert.equal(result.redactions, 6)
+})
+
+test('env-style secret redaction leaves variable references and short config values alone', () => {
+  const input = [
+    'GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}',
+    'OPENAI_API_KEY=$OPENAI_API_KEY',
+    'MAX_TOKENS=4096',
+    'CSRF_TOKEN=on',
+  ].join('\n')
+
+  const result = redactSensitiveText(input)
+
+  assert.equal(result.text, input)
+  assert.equal(result.redactions, 0)
+})
