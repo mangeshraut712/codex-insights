@@ -5,7 +5,7 @@ license: MIT
 metadata:
   short-description: Private reports from local Codex sessions
   author: mangeshraut712
-  version: "0.7.2"
+  version: "0.7.3"
 ---
 
 # Codex Insights
